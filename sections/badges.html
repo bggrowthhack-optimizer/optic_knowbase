@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аудиобейджи — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--red    { background: var(--red-bg); }
+  .card-icon--purple { background: rgba(91,94,244,0.12); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Tabs ── */
+  .tabs-row {
+    display: flex; gap: 0;
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px;
+  }
+  .tab {
+    flex: 1; text-align: center; padding: 10px 14px;
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    background: var(--surface-2); border-right: 1px solid var(--border); cursor: pointer;
+  }
+  .tab:last-child { border-right: none; }
+  .tab--active { color: var(--accent); background: var(--accent-light); }
+
+  /* ── Form demo ── */
+  .form-demo {
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px;
+  }
+  .form-head {
+    padding: 10px 14px; background: var(--surface-2); border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 700; color: var(--text-primary);
+  }
+  .form-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-field { display: flex; flex-direction: column; gap: 4px; }
+  .form-label { font-size: 11.5px; font-weight: 600; color: var(--text-muted); }
+  .form-input {
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 7px 10px; font-size: 13px; color: var(--text-secondary);
+    background: var(--surface); font-family: inherit;
+  }
+  .form-input--select { color: var(--text-muted); }
+  .form-btn {
+    align-self: flex-start; font-size: 13px; font-weight: 600; color: #fff;
+    background: var(--accent); border: none;
+    padding: 8px 18px; border-radius: 5px; cursor: pointer; font-family: inherit;
+  }
+
+  /* ── Table ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    text-align: left; padding: 8px 12px;
+    background: var(--surface-2); color: var(--text-muted);
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
+    vertical-align: middle; color: var(--text-secondary);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td:first-child { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Status chips ── */
+  .chip {
+    display: inline-flex; align-items: center;
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px;
+  }
+  .chip--green  { background: var(--green-bg);  color: var(--green); }
+  .chip--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .chip--red    { background: var(--red-bg);    color: var(--red); }
+  .chip--muted  { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+  .chip--accent { background: var(--accent-light); color: var(--accent); }
+
+  .action-btn {
+    font-size: 11.5px; font-weight: 600; color: var(--accent);
+    background: var(--accent-light); border: 1px solid rgba(91,94,244,0.2);
+    padding: 3px 10px; border-radius: 5px; cursor: pointer; font-family: inherit;
+  }
+  .action-btn--warn {
+    color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.2);
+  }
+
+  /* ── Upload dialog demo ── */
+  .upload-demo {
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  }
+  .upload-head {
+    padding: 10px 14px; background: var(--surface-2); border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .upload-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .upload-file-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; background: var(--surface-2); border-radius: 5px;
+    font-size: 13px; color: var(--text-primary); font-weight: 600;
+  }
+  .upload-check { font-size: 16px; }
+  .upload-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .upload-meta-cell {
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 5px;
+    background: var(--surface);
+  }
+  .upload-meta-label { font-size: 10.5px; color: var(--text-muted); font-weight: 500; margin-bottom: 2px; }
+  .upload-meta-val   { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .upload-match {
+    padding: 10px 14px; background: var(--green-bg);
+    border: 1px solid rgba(22,163,74,0.2); border-radius: 5px;
+    font-size: 13px; color: var(--green);
+  }
+  .upload-match-label { font-size: 10.5px; font-weight: 700; margin-bottom: 6px; }
+  .upload-match-row { display: flex; gap: 6px; }
+  .upload-match-key { color: rgba(22,163,74,0.7); }
+  .upload-match-val { font-weight: 700; }
+  .upload-error {
+    padding: 10px 14px; background: var(--red-bg);
+    border: 1px solid rgba(220,38,38,0.2); border-radius: 5px;
+    font-size: 13px; color: var(--red); display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── Validation checklist ── */
+  .validation-list { display: flex; flex-direction: column; gap: 6px; }
+  .validation-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13.5px; color: var(--text-secondary); line-height: 1.5;
+  }
+  .v-icon { font-size: 14px; flex-shrink: 0; }
+
+  /* ── Day process timeline ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .timeline-group { margin-bottom: 20px; }
+  .timeline-period {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-bottom: 10px; padding-left: 38px;
+  }
+  .timeline-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
+  .t-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .t-num--morning { background: rgba(91,94,244,0.12); color: var(--accent); }
+  .t-num--evening { background: var(--yellow-bg); color: var(--yellow); }
+  .t-body { padding-top: 3px; }
+  .t-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .t-desc  { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── Rules list ── */
+  .rules-list { display: flex; flex-direction: column; gap: 10px; }
+  .rule-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .rule-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+  .rule-text { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+  .rule-text strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: var(--radius); padding: 14px 18px;
+    font-size: 13.5px; line-height: 1.6;
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 12px;
+  }
+  .callout--blue   { background: rgba(91,94,244,0.07);  border: 1px solid rgba(91,94,244,0.18); color: #3a3da8; }
+  .callout--yellow { background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.2);   color: #7a4f00; }
+  .callout--red    { background: var(--red-bg);    border: 1px solid rgba(220,38,38,0.2);    color: #7f1d1d; }
+  .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Аудиобейджи</h1>
+    <p class="hero-desc">
+      Раздел для управления аудиобейджами — устройствами, которые записывают взаимодействия сотрудников с клиентами.
+      Здесь регистрируется выдача и возврат бейджей, загружаются записи для анализа и ведётся история.
+    </p>
+  </div>
+
+  <!-- Роли -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">👥</div>
+      Кто работает с разделом
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>РОП</strong> — понимает весь процесс, отвечает за организацию. Проверяет, что бейджи выдаются и записи загружаются корректно.</div>
+      <div class="bullet-item"><strong>Администратор бейджей</strong> — выполняет ежедневные операции: регистрирует выдачу и возврат, проверяет и загружает записи, ведёт заметки по плохим файлам.</div>
+      <div class="bullet-item"><strong>Сотрудник</strong> (врач или консультант) — носит бейдж, соблюдает правила записи. В систему не заходит.</div>
+    </div>
+  </div>
+
+  <!-- Устройство страницы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Устройство страницы
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">Страница разделена на две вкладки.</p>
+
+    <div class="tabs-row">
+      <div class="tab tab--active">Ежедневная регистрация</div>
+      <div class="tab">Справочник аудиобейджей</div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Ежедневная регистрация</strong> — форма выдачи, загрузка записей, таблица текущих выдач и история возвратов с аудио.</div>
+      <div class="bullet-item"><strong>Справочник аудиобейджей</strong> — список всех устройств, добавление нового бейджа, активация и деактивация.</div>
+    </div>
+  </div>
+
+  <!-- Справочник -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📋</div>
+      Справочник аудиобейджей
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Здесь регистрируются все устройства. Прежде чем выдавать бейдж сотруднику, его нужно добавить в справочник.
+    </p>
+
+    <div class="form-demo" style="margin-bottom:14px">
+      <div class="form-head">Добавить новый аудиобейдж</div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-field">
+            <div class="form-label">Номер аудиобейджа</div>
+            <div class="form-input">10196891</div>
+          </div>
+          <div class="form-field">
+            <div class="form-label">Описание (необязательно)</div>
+            <div class="form-input form-input--select">Например: синий, кабинет №3</div>
+          </div>
+        </div>
+        <button class="form-btn">Добавить аудиобейдж</button>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Номер</th>
+            <th>Описание</th>
+            <th>Статус</th>
+            <th>Использование</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>10196891</td>
+            <td style="color:var(--text-muted)">Синий, кабинет №3</td>
+            <td><span class="chip chip--green">Активен</span></td>
+            <td style="color:var(--text-muted)">Свободен</td>
+            <td><button class="action-btn action-btn--warn" style="font-size:11px">Деактивировать</button></td>
+          </tr>
+          <tr>
+            <td>10196892</td>
+            <td style="color:var(--text-muted)">—</td>
+            <td><span class="chip chip--green">Активен</span></td>
+            <td>Смирнова Е.О.</td>
+            <td><button class="action-btn action-btn--warn" style="font-size:11px">Деактивировать</button></td>
+          </tr>
+          <tr>
+            <td>10194403</td>
+            <td style="color:var(--text-muted)">Запасной</td>
+            <td><span class="chip chip--muted">Неактивен</span></td>
+            <td style="color:var(--text-muted)">—</td>
+            <td><button class="action-btn" style="font-size:11px">Активировать</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--blue" style="margin-top:14px">
+      <span class="callout-icon">ℹ️</span>
+      В выпадающем списке при регистрации выдачи показываются только <strong>активные и свободные</strong> бейджи.
+      Если бейдж уже на руках — он там не появится.
+    </div>
+  </div>
+
+  <!-- Ежедневный процесс -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">📅</div>
+      Ежедневный процесс
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-group">
+        <div class="timeline-period">Утро — перед началом смены</div>
+        <div class="timeline-item">
+          <div class="t-num t-num--morning">1</div>
+          <div class="t-body">
+            <div class="t-title">Добавить бейдж в справочник (если новый)</div>
+            <div class="t-desc">Перейди на вкладку «Справочник» и добавь устройство с его номером. Делается один раз при появлении нового бейджа.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="t-num t-num--morning">2</div>
+          <div class="t-body">
+            <div class="t-title">Зарегистрировать выдачу в Оптимайзере</div>
+            <div class="t-desc">Заполни форму на вкладке «Ежедневная регистрация»: выбери сотрудника, бейдж, дату и время выдачи.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="t-num t-num--morning">3</div>
+          <div class="t-body">
+            <div class="t-title">Выдать бейдж сотруднику</div>
+            <div class="t-desc">Убедись, что бейдж включён и надет правильно — микрофон открыт, устройство на груди. Запись идёт непрерывно весь день.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-group">
+        <div class="timeline-period">Вечер — после окончания смены</div>
+        <div class="timeline-item">
+          <div class="t-num t-num--evening">4</div>
+          <div class="t-body">
+            <div class="t-title">Принять бейдж и нажать «Вернуть»</div>
+            <div class="t-desc">В таблице «Текущие выдачи» найди запись и нажми кнопку «Вернуть» — система зафиксирует время возврата.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="t-num t-num--evening">5</div>
+          <div class="t-body">
+            <div class="t-title">Подключить к компьютеру и проверить записи</div>
+            <div class="t-desc">Прослушай фрагменты файлов. Хорошие — с целевым взаимодействием, нормальным звуком, соответствуют расписанию. Плохие — не загружать.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="t-num t-num--evening">6</div>
+          <div class="t-body">
+            <div class="t-title">Загрузить хорошие записи, добавить заметки на плохие</div>
+            <div class="t-desc">Кнопка «Загрузить запись» — система автоматически найдёт регистрацию по имени файла. Для плохих записей отредактируй заметку в истории выдач — укажи причину.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="t-num t-num--evening">7</div>
+          <div class="t-body">
+            <div class="t-title">Поставить на зарядку</div>
+            <div class="t-desc">Бейдж ставится на зарядку до следующего рабочего дня.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Форма выдачи -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📝</div>
+      Форма регистрации выдачи
+    </div>
+
+    <div class="form-demo" style="margin-bottom:14px">
+      <div class="form-head">Зарегистрировать выдачу аудиобейджа</div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-field">
+            <div class="form-label">Сотрудник *</div>
+            <div class="form-input form-input--select">Смирнова Е.О. (Врач) ▾</div>
+          </div>
+          <div class="form-field">
+            <div class="form-label">Аудиобейдж *</div>
+            <div class="form-input form-input--select">10196891 ▾</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <div class="form-label">Дата и время выдачи *</div>
+            <div class="form-input">19.05.2026 &nbsp; 09:00</div>
+          </div>
+          <div class="form-field">
+            <div class="form-label">Заметки (необязательно)</div>
+            <div class="form-input form-input--select">Комментарий</div>
+          </div>
+        </div>
+        <button class="form-btn">Зарегистрировать</button>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Сотрудник</strong> — поиск по имени, показывается роль рядом с именем.</div>
+      <div class="bullet-item"><strong>Аудиобейдж</strong> — только активные и свободные устройства. Если все выданы — появится сообщение «Нет доступных аудиобейджей».</div>
+      <div class="bullet-item"><strong>Дата и время</strong> — по умолчанию текущие. Можно поменять для ретроспективной записи.</div>
+      <div class="bullet-item"><strong>Заметки</strong> — необязательное поле. Используй для дополнительного контекста при выдаче.</div>
+    </div>
+  </div>
+
+  <!-- Текущие выдачи -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📌</div>
+      Текущие выдачи
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Таблица со всеми бейджами, которые сейчас на руках у сотрудников.
+    </p>
+
+    <div style="overflow-x:auto; margin-bottom:12px">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Сотрудник</th>
+            <th>Аудиобейдж</th>
+            <th>Выдан</th>
+            <th>Заметки</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Смирнова Е.О. <span style="font-size:11px;color:var(--text-muted);font-weight:400">Врач</span></td>
+            <td style="font-weight:400">10196891</td>
+            <td style="font-weight:400; color:var(--text-muted)">19.05.2026 09:00</td>
+            <td style="font-weight:400; color:var(--text-muted)">—</td>
+            <td><button class="action-btn">Вернуть</button></td>
+          </tr>
+          <tr>
+            <td>Иванова А.В. <span style="font-size:11px;color:var(--text-muted);font-weight:400">Консультант</span></td>
+            <td style="font-weight:400">10196892</td>
+            <td style="font-weight:400; color:var(--text-muted)">19.05.2026 09:15</td>
+            <td style="font-weight:400; color:var(--text-muted)">—</td>
+            <td><button class="action-btn">Вернуть</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--yellow">
+      <span class="callout-icon">⚠️</span>
+      Кнопка «Вернуть» фиксирует время возврата прямо сейчас и переносит запись в историю. Подтверждения нет — нажимай только когда бейдж физически в руках.
+    </div>
+  </div>
+
+  <!-- Загрузка записи -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🎵</div>
+      Загрузка аудиозаписи
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Кнопка «Загрузить запись» открывает диалог загрузки. Система автоматически сопоставляет файл с нужной регистрацией по имени файла.
+    </p>
+
+    <!-- Upload demo — matched -->
+    <div class="section-label">Пример: файл найден и готов к загрузке</div>
+    <div class="upload-demo" style="margin-bottom:14px">
+      <div class="upload-head">🎵 Загрузка аудиозаписи</div>
+      <div class="upload-body">
+        <div class="upload-file-row">
+          <span class="upload-check">✅</span>
+          <span>EM_STORE_20260519-090215_10196891.wav</span>
+          <span style="color:var(--text-muted); font-size:12px; font-weight:400; margin-left:auto">428 МБ</span>
+        </div>
+        <div class="upload-meta">
+          <div class="upload-meta-cell">
+            <div class="upload-meta-label">Номер бейджа</div>
+            <div class="upload-meta-val">10196891</div>
+          </div>
+          <div class="upload-meta-cell">
+            <div class="upload-meta-label">Дата записи</div>
+            <div class="upload-meta-val">19.05.2026</div>
+          </div>
+          <div class="upload-meta-cell">
+            <div class="upload-meta-label">Длительность</div>
+            <div class="upload-meta-val" style="color:var(--green)">7.2 ч</div>
+          </div>
+          <div class="upload-meta-cell">
+            <div class="upload-meta-label">Минимум</div>
+            <div class="upload-meta-val" style="color:var(--text-muted)">30 мин</div>
+          </div>
+        </div>
+        <div class="upload-match">
+          <div class="upload-match-label">Найдена регистрация ✓</div>
+          <div style="display:flex; flex-direction:column; gap:3px">
+            <div class="upload-match-row"><span class="upload-match-key">Сотрудник:</span><span class="upload-match-val">&nbsp;Смирнова Е.О.</span></div>
+            <div class="upload-match-row"><span class="upload-match-key">Бейдж:</span><span class="upload-match-val">&nbsp;10196891</span></div>
+            <div class="upload-match-row"><span class="upload-match-key">Дата:</span><span class="upload-match-val">&nbsp;19.05.2026 09:00</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload demo — error -->
+    <div class="section-label">Пример: регистрация не найдена</div>
+    <div class="upload-demo" style="margin-bottom:14px">
+      <div class="upload-head">🎵 Загрузка аудиозаписи</div>
+      <div class="upload-body">
+        <div class="upload-file-row">
+          <span class="upload-check">❌</span>
+          <span>EM_STORE_20260519-090215_10194403.wav</span>
+        </div>
+        <div class="upload-error">
+          ⚠️ Не найдена регистрация для бейджа 10194403 на дату 19.05.2026. Проверь, что выдача была зарегистрирована до загрузки.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Что проверяет система при загрузке</div>
+    <div class="validation-list">
+      <div class="validation-item"><span class="v-icon">📁</span> Имя файла соответствует маске <code style="font-size:12px; background:var(--surface-2); padding:1px 5px; border-radius:3px">EM_STORE_YYYYMMDD-HHMMSS_номербейджа.wav</code></div>
+      <div class="validation-item"><span class="v-icon">🔍</span> Из имени файла извлекается номер бейджа и дата записи</div>
+      <div class="validation-item"><span class="v-icon">📌</span> Найдена регистрация с совпадающим бейджем и датой</div>
+      <div class="validation-item"><span class="v-icon">⏱</span> Длительность записи не менее 30 минут</div>
+      <div class="validation-item"><span class="v-icon">🔁</span> Для этой регистрации аудио ещё не загружено (нет дубликата)</div>
+    </div>
+
+    <div class="callout callout--blue" style="margin-top:14px">
+      <span class="callout-icon">ℹ️</span>
+      Загрузка идёт в фоне — можно закрыть диалог и продолжать работу. Прогресс видно в сворачиваемом блоке
+      «Очередь загрузки» на той же вкладке. После завершения появится кнопка «Синхронизировать с сервером»,
+      которая подтвердит наличие файла.
+    </div>
+  </div>
+
+  <!-- История выдач -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📂</div>
+      История выдач
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Все возвращённые бейджи с информацией о записях и анализе.
+    </p>
+
+    <div style="overflow-x:auto; margin-bottom:12px">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Сотрудник</th>
+            <th>Бейдж</th>
+            <th>Выдан</th>
+            <th>Возвращён</th>
+            <th>Аудио</th>
+            <th>Анализ</th>
+            <th>Заметки</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Смирнова Е.О.</td>
+            <td style="font-weight:400">10196891</td>
+            <td style="font-weight:400; color:var(--text-muted)">18.05 09:00</td>
+            <td style="font-weight:400; color:var(--text-muted)">18.05 19:30</td>
+            <td><button class="action-btn" style="font-size:11px">Прослушать</button></td>
+            <td><span class="chip chip--green">Да →</span></td>
+            <td style="font-weight:400; color:var(--text-muted)">—</td>
+          </tr>
+          <tr>
+            <td>Иванова А.В.</td>
+            <td style="font-weight:400">10196892</td>
+            <td style="font-weight:400; color:var(--text-muted)">18.05 09:15</td>
+            <td style="font-weight:400; color:var(--text-muted)">18.05 19:45</td>
+            <td><span style="color:var(--text-muted);font-size:12px">Нет</span></td>
+            <td><span style="color:var(--text-muted);font-size:12px">Нет</span></td>
+            <td style="font-weight:400; color:var(--red); font-size:12px">Сильный шум, голос не слышен</td>
+          </tr>
+          <tr>
+            <td>Козлов П.В.</td>
+            <td style="font-weight:400">10196891</td>
+            <td style="font-weight:400; color:var(--text-muted)">17.05 09:00</td>
+            <td style="font-weight:400; color:var(--text-muted)">17.05 19:15</td>
+            <td><span class="chip chip--muted">Загружено</span></td>
+            <td><span class="chip chip--yellow">В обработке</span></td>
+            <td style="font-weight:400; color:var(--text-muted)">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Аудио: «Прослушать»</strong> — доступно только РОПу. Остальные видят «Загружено» или «Нет».</div>
+      <div class="bullet-item"><strong>Анализ: «Да →»</strong> — кликабельная ссылка, ведёт прямо в карту врача или консультанта на нужную дату.</div>
+      <div class="bullet-item"><strong>Заметки</strong> — редактируются иконкой карандаша. Используй для причин, почему запись не загружена.</div>
+    </div>
+  </div>
+
+  <!-- Правила для сотрудника -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">📏</div>
+      Правила для сотрудника с бейджем
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Эти правила нужно донести до каждого врача и консультанта. От их соблюдения зависит качество записи.
+    </p>
+
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-num">1</div>
+        <div class="rule-text"><strong>Запись идёт непрерывно весь день</strong> — не включать и не выключать бейдж между клиентами. Один файл = весь рабочий день.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">2</div>
+        <div class="rule-text"><strong>На обед можно снять бейдж, но не выключать</strong> — перед следующим клиентом надеть обратно.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">3</div>
+        <div class="rule-text"><strong>Бейдж на человеке, не на столе</strong> — только тогда он пишет взаимодействие, а не фон.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">4</div>
+        <div class="rule-text"><strong>Микрофон открыт</strong> — не закрывать волосами, шарфом, воротником. Прижатый микрофон даёт шум вместо речи.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Признаки хорошей / плохой записи -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🎚</div>
+      Хорошая и плохая запись
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+      <div style="border:1px solid rgba(22,163,74,0.2); border-radius:var(--radius); padding:14px; background:var(--green-bg)">
+        <div style="font-size:12px; font-weight:700; color:var(--green); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em">✓ Хорошая запись</div>
+        <div class="bullet-list" style="gap:6px">
+          <div class="bullet-item" style="font-size:13px">Нормально слышно сотрудника и клиента</div>
+          <div class="bullet-item" style="font-size:13px">Есть целевое взаимодействие (подбор или консультация)</div>
+          <div class="bullet-item" style="font-size:13px">Время записи совпадает с расписанием</div>
+          <div class="bullet-item" style="font-size:13px">Длительность от 30 минут</div>
+          <div class="bullet-item" style="font-size:13px">Нет сильных помех и шумов</div>
+        </div>
+      </div>
+      <div style="border:1px solid rgba(220,38,38,0.2); border-radius:var(--radius); padding:14px; background:var(--red-bg)">
+        <div style="font-size:12px; font-weight:700; color:var(--red); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em">✗ Плохая запись</div>
+        <div class="bullet-list" style="gap:6px">
+          <div class="bullet-item" style="font-size:13px">Нет целевых взаимодействий</div>
+          <div class="bullet-item" style="font-size:13px">Сильный шум, голос не слышен</div>
+          <div class="bullet-item" style="font-size:13px">Файл не совпадает с расписанием по времени</div>
+          <div class="bullet-item" style="font-size:13px">Слишком короткая (бейдж включили поздно)</div>
+          <div class="bullet-item" style="font-size:13px">Раздроблена на несколько файлов</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout--red" style="margin-top:14px">
+      <span class="callout-icon">🚫</span>
+      Плохую запись не загружать. Добавь причину в заметки к истории выдачи — это помогает РОПу
+      понять, почему данных меньше, чем ожидалось, и предотвратить повторение ошибки.
+    </div>
+  </div>
+
+  <!-- Типовые ошибки -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--red">⚠️</div>
+      Типовые ошибки
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Бейдж не зарегистрирован до загрузки</strong> — система не найдёт регистрацию и выдаст ошибку. Порядок: выдача → работа → возврат → загрузка.</div>
+      <div class="bullet-item"><strong>Бейдж включили в середине смены</strong> — запись будет короткой, пропустит первые приёмы.</div>
+      <div class="bullet-item"><strong>Дробление записи</strong> — несколько файлов за один день вместо одного. Система ожидает один непрерывный файл.</div>
+      <div class="bullet-item"><strong>Бейдж лежал на столе</strong> — запись есть, но взаимодействий почти нет. Не загружать.</div>
+      <div class="bullet-item"><strong>Загрузили плохую запись</strong> — анализ будет некорректным. Если это случилось, добавь заметку с пояснением.</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

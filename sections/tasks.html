@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>План задач на неделю — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--red    { background: var(--red-bg); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Page layout */
+  .layout-diagram { display: flex; flex-direction: column; gap: 6px; }
+  .layout-row {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface-2);
+  }
+  .layout-row--accent {
+    background: var(--accent-light);
+    border-color: rgba(91,94,244,0.2);
+  }
+  .layout-row--red {
+    background: var(--red-bg);
+    border-color: rgba(220,38,38,0.2);
+  }
+  .layout-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .layout-num--red { background: var(--red); }
+  .layout-label { font-size: 13.5px; font-weight: 600; color: var(--text-primary); flex: 1; }
+  .layout-desc { font-size: 12.5px; color: var(--text-muted); }
+
+  /* Week progress demo */
+  .progress-demo {
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, #5b5ef4, #4338ca);
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .progress-stat { text-align: center; }
+  .progress-stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .progress-stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+  }
+
+  /* Task card demo */
+  .task-demo {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .task-demo-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .task-checkbox {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 2px;
+    background: white;
+  }
+  .task-checkbox--done {
+    background: var(--green);
+    border-color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .task-checkbox--done::after {
+    content: '✓';
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .task-body { flex: 1; }
+  .task-employee { font-size: 13.5px; font-weight: 600; margin-bottom: 2px; }
+  .task-plan { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.45; }
+  .task-meta { font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px; }
+  .task-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .task-badge {
+    font-size: 10.5px; font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+  .task-badge--critical { color: var(--red); background: var(--red-bg); border-color: rgba(220,38,38,0.2); }
+  .task-badge--important { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.2); }
+  .task-badge--normal { color: var(--accent); background: var(--accent-light); border-color: rgba(91,94,244,0.2); }
+  .task-badge--metric { color: var(--text-muted); background: var(--surface-2); border-color: var(--border); }
+  .task-time { font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 3px; }
+  .task-result {
+    margin-top: 8px;
+    background: rgba(22,163,74,0.06);
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: 12.5px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* Form fields */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .form-field {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+  }
+  .form-field--wide { grid-column: 1 / -1; }
+  .form-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 3px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .form-required { color: var(--red); }
+  .form-value { font-size: 13px; color: var(--text-primary); font-weight: 500; }
+  .form-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Priority list */
+  .priority-list { display: flex; flex-direction: column; gap: 8px; }
+  .priority-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1px solid;
+  }
+  .priority-item--critical { background: var(--red-bg); border-color: rgba(220,38,38,0.2); }
+  .priority-item--important { background: var(--yellow-bg); border-color: rgba(202,138,4,0.2); }
+  .priority-item--normal { background: var(--accent-light); border-color: rgba(91,94,244,0.2); }
+  .priority-name { font-size: 13.5px; font-weight: 700; flex: 0 0 90px; }
+  .priority-name--critical { color: var(--red); }
+  .priority-name--important { color: var(--yellow); }
+  .priority-name--normal { color: var(--accent); }
+  .priority-desc { font-size: 13px; color: var(--text-secondary); }
+
+  /* Status */
+  .status-list { display: flex; flex-direction: column; gap: 8px; }
+  .status-item {
+    display: grid; grid-template-columns: 26px 1fr;
+    gap: 12px; align-items: start;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  /* Steps */
+  .steps-list { display: flex; flex-direction: column; gap: 10px; }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%; background: var(--accent); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step-item strong { color: var(--text-primary); font-weight: 600; }
+
+  .tip {
+    background: var(--accent-light);
+    border: 1px solid rgba(91,94,244,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  .tip-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 5px;
+  }
+
+  .warn {
+    background: var(--yellow-bg);
+    border: 1px solid rgba(202,138,4,0.25);
+    border-left: 3px solid var(--yellow);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #78350f;
+    line-height: 1.6;
+  }
+  .warn-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>План задач на неделю</h1>
+    <p class="hero-desc">Ежедневный рабочий инструмент РОПа. Здесь фиксируются задачи по работе с конкретными сотрудниками, отслеживается их выполнение и результат.</p>
+  </div>
+
+  <!-- Важный момент -->
+  <div class="warn">
+    <div class="warn-label">Важно</div>
+    Задачи здесь — это <strong>задачи РОПа</strong>: что он сам будет делать с сотрудниками (разобрать, отработать, проверить, обучить). Это не задания самим сотрудникам.
+  </div>
+
+  <!-- Структура -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Устройство страницы
+    </div>
+    <div class="layout-diagram">
+      <div class="layout-row layout-row--red">
+        <div class="layout-num layout-num--red">!</div>
+        <div class="layout-label">Незакрытые задачи</div>
+        <div class="layout-desc">Все просроченные за всё время</div>
+      </div>
+      <div class="layout-row layout-row--accent">
+        <div class="layout-num">2</div>
+        <div class="layout-label">Прогресс недели</div>
+        <div class="layout-desc">Выполнено / всего, критичные, сотрудники</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-num">3</div>
+        <div class="layout-label">Сетка дней</div>
+        <div class="layout-desc">Пн–Пт по отдельной карточке + Выходные</div>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:13px;color:var(--text-muted)">Навигация по неделям — кнопки &lt; &gt; вверху страницы. Дата текущей недели отображается рядом.</p>
+  </div>
+
+  <!-- Прогресс недели -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📊</div>
+      Прогресс недели
+    </div>
+    <div class="progress-demo">
+      <div class="progress-stat">
+        <div class="progress-stat-label">Выполнено</div>
+        <div class="progress-stat-value">25 / 40</div>
+      </div>
+      <div class="progress-stat">
+        <div class="progress-stat-label">Критичных</div>
+        <div class="progress-stat-value">5 / 8</div>
+      </div>
+      <div class="progress-stat">
+        <div class="progress-stat-label">Сотрудников</div>
+        <div class="progress-stat-value">12</div>
+      </div>
+      <div class="progress-stat">
+        <div class="progress-stat-label">Прогресс</div>
+        <div class="progress-stat-value">62%</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted)">Сводка по всей неделе: сколько задач выполнено, сколько критичных закрыто, с какими сотрудниками шла работа.</p>
+  </div>
+
+  <!-- Карточка задачи -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📋</div>
+      Карточка задачи
+    </div>
+
+    <div class="task-demo">
+      <div class="task-demo-row">
+        <div class="task-checkbox"></div>
+        <div class="task-body">
+          <div class="task-employee">Иванова А.В. <span style="font-weight:400;color:var(--text-muted)">(Врач)</span></div>
+          <div class="task-plan">Разобрать запись приёма: почему пациент ушёл без рецепта. Отработать этап «Выявление задач».</div>
+          <div class="task-meta">РОП: Петров И.С.</div>
+          <div class="task-badges">
+            <span class="task-badge task-badge--critical">Критично</span>
+            <span class="task-time">⏰ 09:00</span>
+            <span class="task-badge task-badge--metric">% подбор → рецепт</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="task-demo" style="margin-bottom:0">
+      <div class="task-demo-row">
+        <div class="task-checkbox task-checkbox--done"></div>
+        <div class="task-body">
+          <div class="task-employee" style="text-decoration:line-through;color:var(--text-muted)">Сидоров К.П. <span style="font-weight:400">(Консультант)</span></div>
+          <div class="task-plan" style="text-decoration:line-through">Провести тренинг по презентации ВТЛ-линз.</div>
+          <div class="task-meta">РОП: Петров И.С.</div>
+          <div class="task-badges">
+            <span class="task-badge task-badge--normal">Развитие</span>
+            <span class="task-badge task-badge--metric">% продаж ВТЛ</span>
+          </div>
+          <div class="task-result">Результат: Провели разбор, отработали 3 скрипта. Договорились проверить результат через неделю.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;" class="bullet-list">
+      <div class="bullet-item"><span><strong>Сотрудник и роль</strong> — кто является объектом работы</span></div>
+      <div class="bullet-item"><span><strong>План работы</strong> — что конкретно РОП будет делать</span></div>
+      <div class="bullet-item"><span><strong>Руководитель</strong> — кто ответственный</span></div>
+      <div class="bullet-item"><span><strong>Приоритет</strong>, <strong>время</strong>, <strong>показатель</strong> — контекст задачи</span></div>
+      <div class="bullet-item"><span><strong>Результат</strong> — заполняется после выполнения, обязателен для закрытия задачи</span></div>
+    </div>
+  </div>
+
+  <!-- Создание задачи -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">➕</div>
+      Как создать задачу
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">Задачи создаются двумя способами: автоматически из <strong style="color:var(--text-primary)">Анализа филиала</strong> или <strong style="color:var(--text-primary)">Карты сотрудника</strong> — кнопка «+ Задача» прямо у проблемного показателя, или вручную через кнопку <strong style="color:var(--text-primary)">«Добавить задачу»</strong> на странице.</p>
+
+    <div class="form-grid">
+      <div class="form-field form-field--wide">
+        <div class="form-label">Сотрудник <span class="form-required">*</span></div>
+        <div class="form-value">Врач или консультант из списка</div>
+        <div class="form-hint">Также: Групповое занятие, Организационная задача, Стажёр</div>
+      </div>
+      <div class="form-field form-field--wide">
+        <div class="form-label">Показатель <span class="form-required">*</span></div>
+        <div class="form-value">На какую метрику влияет задача</div>
+        <div class="form-hint">28 метрик: воронка, конверсии, чеки, ВТЛ, балл чек-листа</div>
+      </div>
+      <div class="form-field form-field--wide">
+        <div class="form-label">План работы <span class="form-required">*</span></div>
+        <div class="form-value">Что конкретно делаешь с сотрудником</div>
+      </div>
+      <div class="form-field form-field--wide">
+        <div class="form-label">Результат проведённой работы</div>
+        <div class="form-value">Что получилось — обязательно для закрытия</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Дата <span class="form-required">*</span></div>
+        <div class="form-value">Конкретный день</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Время</div>
+        <div class="form-value">Начало и конец</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Приоритет</div>
+        <div class="form-value">Развитие / Важно / Критично</div>
+      </div>
+      <div class="form-field">
+        <div class="form-label">Тип задачи</div>
+        <div class="form-value">Свободный текст</div>
+        <div class="form-hint">Например: Тренинг, Контроль</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Приоритеты -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🔴</div>
+      Приоритеты
+    </div>
+    <div class="priority-list">
+      <div class="priority-item priority-item--critical">
+        <div class="priority-name priority-name--critical">Критично</div>
+        <div class="priority-desc">Показатель в красной зоне, нужно действовать немедленно. Отслеживается отдельно в прогрессе недели.</div>
+      </div>
+      <div class="priority-item priority-item--important">
+        <div class="priority-name priority-name--important">Важно</div>
+        <div class="priority-desc">Показатель под риском или задача влияет на план текущего месяца.</div>
+      </div>
+      <div class="priority-item priority-item--normal">
+        <div class="priority-name priority-name--normal">Развитие</div>
+        <div class="priority-desc">Плановая работа по улучшению показателей, которые уже в норме или в жёлтой зоне.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Закрытие задачи -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">✅</div>
+      Как закрыть задачу
+    </div>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>Провёл работу с сотрудником — открой задачу (кнопка редактирования)</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>Заполни <strong>Результат</strong> — что именно сделал, о чём договорились</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div>Нажми <strong>«Завершить задачу»</strong> или поставь галочку — задача уйдёт в выполненные</div>
+      </div>
+    </div>
+    <p style="margin-top:14px;font-size:13px;color:var(--text-muted)">Без заполненного результата задачу нельзя закрыть — система откроет форму редактирования.</p>
+  </div>
+
+  <!-- Незакрытые -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">
+      <div class="card-icon card-icon--red">⚠️</div>
+      Блок «Незакрытые задачи»
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6">Показывает <strong style="color:var(--text-primary)">все невыполненные задачи за всё время</strong> — не только текущую неделю. Это индикатор дисциплины: если блок растёт, значит задачи ставятся, но не закрываются. Разворачивается кликом на заголовок.</p>
+  </div>
+
+  <!-- Главный принцип -->
+  <div class="tip" style="margin-bottom:0;">
+    <div class="tip-label">Логика работы</div>
+    Анализ → Задача → Выполнение → Результат. Если открыл Анализ филиала и нашёл проблему — поставил задачу. Провёл работу — закрыл с результатом. Проверил через неделю — видишь в динамике, сработало ли.
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

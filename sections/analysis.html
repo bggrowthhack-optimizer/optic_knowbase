@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анализ филиала — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--red    { background: var(--red-bg); }
+  .card-icon--purple { background: rgba(91,94,244,0.12); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Layout diagram ── */
+  .layout-diagram {
+    display: flex; flex-direction: column; gap: 6px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .layout-row {
+    display: flex; align-items: stretch; gap: 0;
+  }
+  .layout-block {
+    flex: 1; padding: 10px 14px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .layout-block:last-child { border-right: none; }
+  .layout-block--accent { background: var(--accent-light); color: var(--accent); }
+  .layout-block--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .layout-block--green  { background: var(--green-bg);  color: var(--green); }
+  .layout-block--red    { background: var(--red-bg);    color: var(--red); }
+  .layout-block--muted  { background: var(--surface-2); color: var(--text-muted); }
+
+  /* ── Summary block demo ── */
+  .summary-demo {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 12px;
+  }
+  .summary-header {
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(91,94,244,0.06) 0%, rgba(91,94,244,0.02) 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .zone-badge {
+    font-size: 11px; font-weight: 700;
+    padding: 4px 12px; border-radius: 100px; border: 1px solid; letter-spacing: 0.04em;
+  }
+  .zone-badge--yellow { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.25); }
+  .zone-badge--green  { color: var(--green);  background: var(--green-bg);  border-color: rgba(22,163,74,0.25); }
+  .zone-badge--red    { color: var(--red);    background: var(--red-bg);    border-color: rgba(220,38,38,0.25); }
+  .summary-pct {
+    font-size: 22px; font-weight: 800; color: var(--text-primary);
+  }
+  .summary-label { font-size: 12px; color: var(--text-muted); }
+  .summary-forecast {
+    margin-left: auto; text-align: right;
+  }
+  .forecast-value { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .forecast-label { font-size: 11px; color: var(--text-muted); }
+
+  /* ── Metrics grid demo ── */
+  .metrics-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    margin-bottom: 12px;
+  }
+  .metric-card {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 14px;
+    background: var(--surface);
+  }
+  .metric-card--revenue {
+    background: linear-gradient(135deg, rgba(91,94,244,0.06), rgba(91,94,244,0.02));
+    border-color: rgba(91,94,244,0.2);
+  }
+  .metric-card-name { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; }
+  .metric-card-fact { font-size: 18px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+  .metric-card-plan { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .metric-card-pct {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 7px; border-radius: 100px; margin-top: 6px;
+  }
+  .metric-card-pct--green { color: var(--green); background: var(--green-bg); }
+  .metric-card-pct--red   { color: var(--red);   background: var(--red-bg); }
+  .metric-card-pct--yellow { color: var(--yellow); background: var(--yellow-bg); }
+
+  /* ── Problem block demo ── */
+  .problem-item {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 8px;
+  }
+  .problem-header {
+    padding: 10px 14px;
+    background: rgba(220,38,38,0.04);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .problem-name { font-size: 13px; font-weight: 700; color: var(--text-primary); flex: 1; }
+  .problem-stat {
+    font-size: 11.5px; color: var(--text-muted);
+  }
+  .problem-stat strong { color: var(--red); font-weight: 700; }
+  .employee-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .employee-row:last-child { border-bottom: none; }
+  .employee-name { font-size: 13px; color: var(--text-primary); font-weight: 500; flex: 1; }
+  .employee-val { font-size: 12px; color: var(--red); font-weight: 700; }
+  .task-btn {
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    background: var(--accent-light); border: 1px solid rgba(91,94,244,0.2);
+    padding: 4px 10px; border-radius: 5px; cursor: pointer;
+    font-family: inherit; white-space: nowrap;
+  }
+
+  /* ── Top performers demo ── */
+  .performer-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .performer-item:last-child { border-bottom: none; }
+  .performer-rank {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; flex-shrink: 0;
+  }
+  .performer-rank--green { background: var(--green-bg); color: var(--green); }
+  .performer-rank--red   { background: var(--red-bg);   color: var(--red); }
+  .performer-info { flex: 1; }
+  .performer-name { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+  .performer-role { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .performer-text { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
+  .performer-actions { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+
+  /* ── Attention block ── */
+  .attention-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgba(220,38,38,0.15);
+    border-radius: var(--radius);
+    background: rgba(220,38,38,0.03);
+    margin-bottom: 8px;
+  }
+  .attention-name { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+  .attention-role { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+  .attention-metric { font-size: 12.5px; color: var(--text-secondary); }
+  .attention-values { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .att-prev { font-size: 12px; color: var(--text-muted); }
+  .att-arrow { font-size: 12px; color: var(--text-muted); }
+  .att-now  { font-size: 13px; font-weight: 700; color: var(--red); }
+  .att-decline { font-size: 11px; font-weight: 600; color: var(--red); background: var(--red-bg); padding: 1px 6px; border-radius: 4px; }
+
+  /* ── Step list ── */
+  .step-list { display: flex; flex-direction: column; gap: 14px; }
+  .step-item { display: flex; align-items: flex-start; gap: 14px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-body { padding-top: 4px; }
+  .step-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+  .step-desc  { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: var(--radius); padding: 14px 18px;
+    font-size: 13.5px; line-height: 1.6;
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 12px;
+  }
+  .callout--blue   { background: rgba(91,94,244,0.07);  border: 1px solid rgba(91,94,244,0.18); color: #3a3da8; }
+  .callout--yellow { background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.2); color: #7a4f00; }
+  .callout--green  { background: var(--green-bg);  border: 1px solid rgba(22,163,74,0.2);  color: #14532d; }
+  .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Section divider ── */
+  .section-divider { height: 1px; background: var(--border); margin: 8px 0 24px; }
+
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
+  }
+
+  /* ── Meta info demo ── */
+  .meta-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  }
+  .meta-cell {
+    padding: 10px 14px;
+    background: var(--surface-2); border-radius: var(--radius);
+  }
+  .meta-label { font-size: 10.5px; color: var(--text-muted); font-weight: 500; margin-bottom: 3px; }
+  .meta-value { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+
+  /* ── Recommendations list ── */
+  .rec-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .rec-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+  }
+  .rec-num {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 10px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Анализ филиала</h1>
+    <p class="hero-desc">
+      Основной инструмент РОПа для глубокого разбора конкретного салона. Система сама определяет зону, выделяет
+      три показателя, которые тянут результат вниз, называет конкретных сотрудников и предлагает готовые задачи.
+      Открывай минимум раз в неделю по каждому филиалу.
+    </p>
+  </div>
+
+  <!-- Устройство -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Устройство страницы
+    </div>
+
+    <div class="layout-diagram">
+      <div class="layout-row">
+        <div class="layout-block layout-block--muted" style="flex:2">Выбор филиала + дата анализа</div>
+        <div class="layout-block layout-block--muted">Прогресс месяца</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--accent" style="flex:3">Подборы · Рецепты · Заказы</div>
+        <div class="layout-block layout-block--accent" style="flex:3">Рекоменд. ВТЛ · Заказы ВТЛ · Выручка</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--yellow" style="flex:1">Зона · % плана · Прогноз выручки</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--red" style="flex:1">ТОП-3 проблемных показателя + сотрудники + «+ Задача»</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--green">ТОП лучших сотрудников</div>
+        <div class="layout-block layout-block--red">ТОП с худшими результатами</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--muted" style="flex:1">Сотрудники, требующие внимания (если есть просадка)</div>
+      </div>
+    </div>
+
+    <div class="callout callout--blue" style="margin-top:14px">
+      <span class="callout-icon">ℹ️</span>
+      Данные — последний доступный анализ по выбранному филиалу. Период не выбирается вручную.
+      Анализ обновляется автоматически по мере поступления данных.
+    </div>
+  </div>
+
+  <!-- Выбор филиала и мета -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🏢</div>
+      Выбор филиала и данные анализа
+    </div>
+    <p class="bullet-item" style="margin-bottom:14px">
+      В шапке страницы — выпадающий список филиалов. После выбора подгружается последний доступный анализ по этому салону.
+    </p>
+
+    <div class="meta-grid">
+      <div class="meta-cell">
+        <div class="meta-label">Филиал</div>
+        <div class="meta-value">Оптика на Ленина</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Дата анализа</div>
+        <div class="meta-value">18 мая 2026</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Прогресс месяца</div>
+        <div class="meta-value">18 / 31 день</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Метрики -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📊</div>
+      Метрики на дату анализа
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Шесть карточек показывают ключевые показатели: факт, план на дату анализа и % выполнения.
+    </p>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-card-name">Подборы</div>
+        <div class="metric-card-fact">142</div>
+        <div class="metric-card-plan">план на дату: 150</div>
+        <div class="metric-card-pct metric-card-pct--yellow">95%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-name">Рецепты</div>
+        <div class="metric-card-fact">98</div>
+        <div class="metric-card-plan">план на дату: 88</div>
+        <div class="metric-card-pct metric-card-pct--green">111%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-name">Заказы (свои)</div>
+        <div class="metric-card-fact">71</div>
+        <div class="metric-card-plan">план на дату: 82</div>
+        <div class="metric-card-pct metric-card-pct--red">87%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-name">Рекоменд. ВТЛ</div>
+        <div class="metric-card-fact">89</div>
+        <div class="metric-card-plan">план на дату: 102</div>
+        <div class="metric-card-pct metric-card-pct--yellow">87%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-name">Заказы ВТЛ</div>
+        <div class="metric-card-fact">34</div>
+        <div class="metric-card-plan">план на дату: 41</div>
+        <div class="metric-card-pct metric-card-pct--red">83%</div>
+      </div>
+      <div class="metric-card metric-card--revenue">
+        <div class="metric-card-name">Выручка</div>
+        <div class="metric-card-fact">847 т₽</div>
+        <div class="metric-card-plan">план на дату: 960 т₽</div>
+        <div class="metric-card-pct metric-card-pct--red">88%</div>
+      </div>
+    </div>
+
+    <div class="callout callout--blue">
+      <span class="callout-icon">ℹ️</span>
+      % выполнения считается к плану <strong>на дату</strong> анализа, а не к полному месячному плану.
+      Это позволяет корректно оценить ситуацию в середине месяца.
+    </div>
+  </div>
+
+  <!-- AI-анализ / зона -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🤖</div>
+      Зона, прогноз и анализ AI
+    </div>
+
+    <div class="summary-demo" style="margin-bottom:14px">
+      <div class="summary-header">
+        <div>
+          <div class="summary-label" style="margin-bottom:4px">Зона выполнения плана</div>
+          <div style="display:flex; align-items:center; gap:12px">
+            <span class="summary-pct">88%</span>
+            <span class="zone-badge zone-badge--yellow">Жёлтая зона</span>
+          </div>
+        </div>
+        <div class="summary-forecast">
+          <div class="forecast-label">Прогноз выручки к концу месяца</div>
+          <div class="forecast-value">1 456 000 ₽ <span style="color:var(--text-muted);font-weight:400">из 1 680 000 ₽</span></div>
+        </div>
+      </div>
+      <div style="padding:12px 16px">
+        <div class="rec-list">
+          <div class="rec-item"><div class="rec-num">1</div>Усилить работу с ВТЛ-линзами — рекомендационный показатель ниже нормы</div>
+          <div class="rec-item"><div class="rec-num">2</div>Разобрать с Ивановой А. конверсию рецепт → заказ: за последнюю неделю падение на 12%</div>
+          <div class="rec-item"><div class="rec-num">3</div>Проверить загрузку окон — 4 свободных слота в пятницу и субботу</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Зелёная зона</strong> — план идёт в норме, AI перечисляет, что работает хорошо и что можно масштабировать</div>
+      <div class="bullet-item"><strong>Жёлтая зона</strong> — есть риск невыполнения, AI выделяет проблемные метрики и даёт конкретные рекомендации</div>
+      <div class="bullet-item"><strong>Красная зона</strong> — план под угрозой, рекомендации становятся более жёсткими, акцент на срочных действиях</div>
+    </div>
+  </div>
+
+  <!-- ТОП-3 проблем -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--red">🔻</div>
+      ТОП-3 показателя, мешающих плану
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Появляется в жёлтой и красной зонах. Каждый проблемный показатель раскрыт до конкретных сотрудников
+      с персональными рекомендациями и кнопкой быстрого создания задачи.
+    </p>
+
+    <div class="problem-item">
+      <div class="problem-header">
+        <div class="problem-name">Заказы ВТЛ</div>
+        <div class="problem-stat">Факт: <strong>34</strong> &nbsp;|&nbsp; Цель: 41</div>
+      </div>
+      <div class="employee-row">
+        <div class="employee-name">Иванова А.В.</div>
+        <div class="employee-val">6 заказов</div>
+        <button class="task-btn">+ Задача</button>
+      </div>
+      <div class="employee-row">
+        <div class="employee-name">Петров К.Д.</div>
+        <div class="employee-val">8 заказов</div>
+        <button class="task-btn">+ Задача</button>
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-header">
+        <div class="problem-name">% рецепт → заказ</div>
+        <div class="problem-stat">Факт: <strong>72%</strong> &nbsp;|&nbsp; Цель: 82%</div>
+      </div>
+      <div class="employee-row">
+        <div class="employee-name">Сидорова М.П.</div>
+        <div class="employee-val">61%</div>
+        <button class="task-btn">+ Задача</button>
+      </div>
+    </div>
+
+    <div class="callout callout--yellow" style="margin-top:14px">
+      <span class="callout-icon">💡</span>
+      Кнопка «+ Задача» открывает форму с уже заполненным планом работы — текст можно отредактировать
+      перед сохранением. Задача попадает в «План задач на неделю».
+    </div>
+  </div>
+
+  <!-- ТОП лучших -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🏆</div>
+      ТОП-3 лучших сотрудников
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:16px">
+      Список разделён по ролям: врачи и консультанты. Показывает, что именно работает хорошо
+      и что можно передать другим как рабочую практику.
+    </p>
+
+    <div class="section-label">Врачи</div>
+    <div class="performer-item">
+      <div class="performer-rank performer-rank--green">1</div>
+      <div class="performer-info">
+        <div class="performer-name">Смирнова Е.О.</div>
+        <div class="performer-role">Врач-оптометрист</div>
+        <div class="performer-text">Лучший % подбор → заказ среди врачей (94%). Стабильно передаёт клиента консультанту с чётко сформулированной задачей.</div>
+        <div class="performer-actions">
+          <button class="task-btn">+ Задача</button>
+        </div>
+      </div>
+    </div>
+    <div class="performer-item">
+      <div class="performer-rank performer-rank--green">2</div>
+      <div class="performer-info">
+        <div class="performer-name">Козлов П.В.</div>
+        <div class="performer-role">Врач-оптометрист</div>
+        <div class="performer-text">Высокий средний чек линз (4 820 ₽). Активно рекомендует ВТЛ при близорукости выше −3 дптр.</div>
+        <div class="performer-actions">
+          <button class="task-btn">+ Задача</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout--green" style="margin-top:12px">
+      <span class="callout-icon">✅</span>
+      Кнопка «+ Задача» здесь нужна, чтобы зафиксировать хорошую практику как задачу на масштабирование —
+      например, провести мини-разбор с командой на основе работы лидера.
+    </div>
+  </div>
+
+  <!-- ТОП худших -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--red">📉</div>
+      ТОП сотрудников с худшими результатами
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:16px">
+      Аналогичный список, но для отстающих. Здесь система называет конкретную слабую зону и предлагает
+      готовое действие — что именно нужно разобрать или отработать с этим сотрудником.
+    </p>
+
+    <div class="section-label">Консультанты</div>
+    <div class="performer-item">
+      <div class="performer-rank performer-rank--red">1</div>
+      <div class="performer-info">
+        <div class="performer-name">Иванова А.В.</div>
+        <div class="performer-role">Консультант</div>
+        <div class="performer-text">Низкая доля ВТЛ в заказах (18%). Клиентам предлагаются базовые линзы без обсуждения зрительных задач.</div>
+        <div class="performer-actions">
+          <button class="task-btn">+ Задача</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Сотрудники, требующие внимания -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">⚠️</div>
+      Сотрудники, требующие внимания
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Этот блок появляется, если у кого-то из сотрудников есть заметная просадка по сравнению с предыдущей неделей.
+      Система сравнивает среднее за прошлую неделю с последней неделей и выделяет тех, у кого падение значимое.
+    </p>
+
+    <div class="attention-item">
+      <div style="flex:1">
+        <div class="attention-name">Петров К.Д.</div>
+        <div class="attention-role">Консультант</div>
+        <div class="attention-metric">% рецепт → заказ</div>
+        <div class="attention-values">
+          <span class="att-prev">Прошлая неделя: 84%</span>
+          <span class="att-arrow">→</span>
+          <span class="att-now">67%</span>
+          <span class="att-decline">−17%</span>
+        </div>
+      </div>
+      <button class="task-btn" style="align-self:center">+ Задача</button>
+    </div>
+
+    <div class="callout callout--yellow" style="margin-top:4px">
+      <span class="callout-icon">⚠️</span>
+      Это отдельный сигнал от системы — не про абсолютный уровень, а про динамику. Даже если сотрудник
+      в целом «нормальный», резкая просадка за последнюю неделю — повод разобраться.
+    </div>
+  </div>
+
+  <!-- Алгоритм работы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">▶️</div>
+      Алгоритм работы
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Выбери филиал</div>
+          <div class="step-desc">Открой страницу, выбери нужный салон из выпадающего списка.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Смотри зону и % плана</div>
+          <div class="step-desc">Зелёная — всё в порядке, работай с масштабированием лучших практик. Жёлтая или красная — читай рекомендации AI и переходи к ТОП-3 проблем.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Разбери ТОП-3 проблемных показателя</div>
+          <div class="step-desc">По каждому показателю — кто конкретно просаживает и как сильно. Нажми «+ Задача» по каждому сотруднику, у которого есть проблема.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Проверь блок «Требующие внимания»</div>
+          <div class="step-desc">Если блок есть — посмотри, у кого резкая просадка за последнюю неделю. Это приоритет для разбора сегодня.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Используй ТОП лучших для масштабирования</div>
+          <div class="step-desc">Создай задачу на основе хорошей практики лидера — например, провести разбор с командой или поставить наставника отстающему.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout--yellow" style="margin-top:20px">
+      <span class="callout-icon">⚡</span>
+      <strong>Главное правило:</strong> если открыл анализ и не поставил ни одной задачи — не доработал.
+      Минимальный результат сессии — хотя бы одна задача в «Плане задач на неделю».
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

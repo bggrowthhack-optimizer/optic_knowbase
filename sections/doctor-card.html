@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Карта врача — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--red    { background: var(--red-bg); }
+  .card-icon--purple { background: rgba(91,94,244,0.12); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Layout diagram ── */
+  .layout-diagram {
+    display: flex; flex-direction: column; gap: 0;
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  }
+  .layout-row { display: flex; }
+  .layout-block {
+    flex: 1; padding: 9px 14px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center; text-align: center;
+  }
+  .layout-block:last-child { border-right: none; }
+  .layout-block--accent { background: var(--accent-light); color: var(--accent); }
+  .layout-block--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .layout-block--green  { background: var(--green-bg);  color: var(--green); }
+  .layout-block--muted  { background: var(--surface-2); color: var(--text-muted); }
+
+  /* ── Header demo ── */
+  .doctor-header-demo {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 18px; margin-bottom: 12px;
+    background: linear-gradient(135deg, rgba(91,94,244,0.04) 0%, transparent 100%);
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .doctor-name { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+  .doctor-sep { color: var(--text-muted); }
+  .score-chip {
+    font-size: 13px; font-weight: 700;
+    padding: 3px 12px; border-radius: 100px;
+  }
+  .score-chip--green  { background: var(--green-bg);  color: var(--green); }
+  .score-chip--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .score-chip--red    { background: var(--red-bg);    color: var(--red); }
+  .doctor-count { font-size: 13px; color: var(--text-secondary); }
+  .header-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .btn-report {
+    font-size: 12px; font-weight: 600; color: #fff;
+    background: var(--accent); border: none;
+    padding: 6px 14px; border-radius: 5px; cursor: pointer; font-family: inherit;
+  }
+  .selector-mock {
+    font-size: 12px; color: var(--text-secondary);
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 10px; background: var(--surface);
+  }
+
+  /* ── Summary cards ── */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin-bottom: 12px;
+  }
+  .summary-card {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 14px; background: var(--surface);
+  }
+  .summary-card-name { font-size: 10.5px; color: var(--text-muted); font-weight: 500; margin-bottom: 5px; line-height: 1.35; }
+  .summary-card-val  { font-size: 20px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+  .summary-card-plan { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .summary-card-exec {
+    display: inline-flex; align-items: center;
+    font-size: 10.5px; font-weight: 600;
+    padding: 2px 6px; border-radius: 100px; margin-top: 5px;
+  }
+  .exec--green  { background: var(--green-bg);  color: var(--green); }
+  .exec--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .exec--red    { background: var(--red-bg);    color: var(--red); }
+  .exec--info   { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* ── Checklist blocks table ── */
+  .blocks-table {
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .blocks-table-head {
+    display: flex; align-items: center; padding: 10px 14px;
+    background: var(--surface-2); border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 700; color: var(--text-primary); gap: 10px;
+  }
+  .avg-badge {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 100px; margin-left: auto;
+  }
+  .avg-badge--green  { background: var(--green-bg);  color: var(--green); }
+  .avg-badge--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .avg-badge--red    { background: var(--red-bg);    color: var(--red); }
+  .block-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 14px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .block-row:last-child { border-bottom: none; }
+  .block-name { flex: 1; font-size: 13px; color: var(--text-secondary); }
+  .block-bar-wrap { width: 100px; height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .block-bar { height: 100%; border-radius: 3px; }
+  .block-bar--green  { background: var(--green); }
+  .block-bar--yellow { background: #eab308; }
+  .block-bar--red    { background: var(--red); }
+  .block-bar--skip   { background: var(--text-muted); opacity: 0.3; }
+  .block-score {
+    font-size: 11.5px; font-weight: 700; min-width: 38px; text-align: right;
+  }
+  .block-score--green  { color: var(--green); }
+  .block-score--yellow { color: var(--yellow); }
+  .block-score--red    { color: var(--red); }
+  .block-score--muted  { color: var(--text-muted); }
+
+  /* ── Session item ── */
+  .session-tabs {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 12px;
+  }
+  .session-tab {
+    padding: 7px 16px; font-size: 13px; font-weight: 600;
+    color: var(--text-muted); border-bottom: 2px solid transparent;
+    cursor: pointer;
+  }
+  .session-tab--active { color: var(--accent); border-bottom-color: var(--accent); }
+  .session-item {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 8px;
+  }
+  .session-header {
+    padding: 10px 14px; background: var(--surface); display: flex; align-items: flex-start; gap: 12px;
+  }
+  .session-meta { flex: 1; }
+  .session-datetime { font-size: 12px; color: var(--text-muted); margin-bottom: 3px; }
+  .session-num { font-size: 12px; color: var(--text-secondary); }
+  .session-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .s-badge {
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px;
+  }
+  .s-badge--vtl    { background: rgba(91,94,244,0.1); color: var(--accent); }
+  .s-badge--order  { background: var(--surface-2); color: var(--text-secondary); border: 1px solid var(--border); }
+  .s-badge--good   { background: var(--green-bg);  color: var(--green); }
+  .s-badge--ok     { background: var(--yellow-bg); color: var(--yellow); }
+  .s-badge--bad    { background: var(--red-bg);    color: var(--red); }
+  .s-badge--eff    { background: var(--surface-2); color: var(--text-secondary); border: 1px solid var(--border); }
+  .session-expand { color: var(--text-muted); font-size: 11px; cursor: pointer; padding: 4px; }
+
+  /* ── Session expanded ── */
+  .session-body {
+    border-top: 1px solid var(--border);
+    padding: 14px;
+    background: rgba(248,249,252,0.7);
+  }
+  .session-section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+  }
+  .scores-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+  }
+  .score-box {
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 10px 12px; background: var(--surface); text-align: center;
+  }
+  .score-box-label { font-size: 10.5px; color: var(--text-muted); margin-bottom: 3px; }
+  .score-box-val { font-size: 20px; font-weight: 800; color: var(--text-primary); }
+  .resume-grid {
+    display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;
+  }
+  .resume-row {
+    display: flex; gap: 8px; font-size: 13px; line-height: 1.5;
+  }
+  .resume-key { color: var(--text-muted); font-weight: 600; white-space: nowrap; min-width: 130px; }
+  .resume-val { color: var(--text-secondary); }
+  .skills-grid {
+    display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;
+  }
+  .skill-item { display: flex; align-items: center; gap: 10px; }
+  .skill-name { font-size: 12.5px; color: var(--text-secondary); flex: 1; }
+  .skill-bar-wrap { width: 80px; height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .skill-bar { height: 100%; border-radius: 3px; }
+  .skill-score {
+    font-size: 11.5px; font-weight: 700; min-width: 34px; text-align: right;
+  }
+
+  /* ── Correction callout ── */
+  .correction-demo {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: var(--text-secondary);
+    padding: 8px 12px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 5px; margin-top: 6px;
+  }
+  .correction-icon { font-size: 14px; cursor: pointer; }
+  .correction-orig { text-decoration: line-through; color: var(--text-muted); }
+
+  /* ── Report sections ── */
+  .report-section-list {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .report-section-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13.5px; color: var(--text-secondary); line-height: 1.5;
+  }
+  .report-section-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ── Step list ── */
+  .step-list { display: flex; flex-direction: column; gap: 14px; }
+  .step-item { display: flex; align-items: flex-start; gap: 14px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .step-body { padding-top: 4px; }
+  .step-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+  .step-desc  { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: var(--radius); padding: 14px 18px;
+    font-size: 13.5px; line-height: 1.6;
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 12px;
+  }
+  .callout--blue   { background: rgba(91,94,244,0.07);  border: 1px solid rgba(91,94,244,0.18); color: #3a3da8; }
+  .callout--yellow { background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.2);   color: #7a4f00; }
+  .callout--green  { background: var(--green-bg);  border: 1px solid rgba(22,163,74,0.2);   color: #14532d; }
+  .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Карта врача</h1>
+    <p class="hero-desc">
+      Инструмент для глубокого разбора конкретного врача-оптометриста. Показывает ключевые метрики,
+      динамику за период, блоки чек-листа с баллами и детальный разбор каждого приёма на основе аудиобейджа.
+    </p>
+  </div>
+
+  <!-- Устройство -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Устройство страницы
+    </div>
+
+    <div class="layout-diagram">
+      <div class="layout-row">
+        <div class="layout-block layout-block--muted" style="flex:2">Имя врача · Балл · Количество приёмов</div>
+        <div class="layout-block layout-block--muted" style="flex:1">Выбор врача · Период · «Отчёт»</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--accent" style="flex:1">% подбор→заказ</div>
+        <div class="layout-block layout-block--accent" style="flex:1">Итого ср. чек</div>
+        <div class="layout-block layout-block--accent" style="flex:1">Ср. чек линз</div>
+        <div class="layout-block layout-block--accent" style="flex:1">% продаж ВТЛ</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--muted" style="flex:1">Динамика за период (линейный график)</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--yellow" style="flex:1">Блоки чек-листа (сворачиваемая таблица)</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--muted" style="flex:1">Задачи на врача</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--green" style="flex:1">Приёмы: Худшие · Лучшие · Все</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Шапка -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">👤</div>
+      Шапка страницы
+    </div>
+
+    <div class="doctor-header-demo">
+      <span class="doctor-name">Смирнова Е.О.</span>
+      <span class="doctor-sep">·</span>
+      <span class="score-chip score-chip--green">Балл 84%</span>
+      <span class="doctor-sep">·</span>
+      <span class="doctor-count">Приёмов: 47</span>
+      <div class="header-actions">
+        <span class="selector-mock">Смирнова Е.О. ▾</span>
+        <span class="selector-mock">01.05 — 18.05 ▾</span>
+        <button class="btn-report">Отчёт</button>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Балл</strong> — средний балл чек-листа за выбранный период. Зелёный ≥ 80%, жёлтый ≥ 55%, красный &lt; 55%.</div>
+      <div class="bullet-item"><strong>Приёмов</strong> — количество приёмов, по которым есть запись и анализ.</div>
+      <div class="bullet-item"><strong>Выбор врача</strong> — переключение между врачами без ухода со страницы.</div>
+      <div class="bullet-item"><strong>Период</strong> — по умолчанию текущий месяц, можно задать произвольный диапазон.</div>
+      <div class="bullet-item"><strong>Отчёт</strong> — генерирует еженедельный отчёт по выбранному врачу.</div>
+    </div>
+  </div>
+
+  <!-- Метрики -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📊</div>
+      Четыре ключевые метрики
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-card-name">% подбор → заказ (наш)</div>
+        <div class="summary-card-val">76%</div>
+        <div class="summary-card-plan">план 82%</div>
+        <div class="summary-card-exec exec--yellow">93% от плана</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-name">Итого ср. чек</div>
+        <div class="summary-card-val">4 820 ₽</div>
+        <div class="summary-card-plan">план 5 200 ₽</div>
+        <div class="summary-card-exec exec--yellow">93% от плана</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-name">Итого ср. чек линз</div>
+        <div class="summary-card-val">3 140 ₽</div>
+        <div class="summary-card-plan" style="color:var(--text-muted)">Без плана</div>
+        <div class="summary-card-exec exec--info">Информационно</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-name">% продаж ВТЛ</div>
+        <div class="summary-card-val">31%</div>
+        <div class="summary-card-plan">план 38%</div>
+        <div class="summary-card-exec exec--red">82% от плана</div>
+      </div>
+    </div>
+
+    <div class="callout callout--blue">
+      <span class="callout-icon">ℹ️</span>
+      Ср. чек линз — информационная метрика, план по ней не ставится. Остальные три карточки показывают
+      % выполнения плана с цветовой индикацией.
+    </div>
+  </div>
+
+  <!-- Динамика -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📈</div>
+      Динамика за период
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Линейный график с переключением между пятью метриками. Показывает, как менялся показатель
+      понедельно за выбранный период.
+    </p>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Балл чек-листа</strong> — общий балл качества приёма</div>
+      <div class="bullet-item"><strong>% подбор → заказ (наш)</strong> — конверсия в заказ</div>
+      <div class="bullet-item"><strong>Итого ср. чек</strong> — средний чек заказа в рублях</div>
+      <div class="bullet-item"><strong>Итого ср. чек линз</strong> — средний чек по линзам</div>
+      <div class="bullet-item"><strong>% продаж ВТЛ</strong> — доля высокотехнологичных линз</div>
+    </div>
+
+    <div class="callout callout--blue" style="margin-top:14px">
+      <span class="callout-icon">ℹ️</span>
+      На графике пунктиром показана целевая линия (план или среднее). Смотри по ней,
+      в какие недели был провал и совпадает ли это с конкретными приёмами внизу страницы.
+    </div>
+  </div>
+
+  <!-- Блоки чек-листа -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">✅</div>
+      Блоки чек-листа
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Сворачиваемая таблица со средним баллом по каждому блоку за выбранный период.
+      Блоки — это ключевые этапы качественного приёма: от диагностики до передачи консультанту.
+    </p>
+
+    <div class="blocks-table">
+      <div class="blocks-table-head">
+        Блоки чек-листа
+        <span class="avg-badge avg-badge--yellow">Средний балл: 71%</span>
+      </div>
+      <div class="block-row">
+        <div class="block-name">Приветствие и установление контакта</div>
+        <div class="block-bar-wrap"><div class="block-bar block-bar--green" style="width:88%"></div></div>
+        <div class="block-score block-score--green">88%</div>
+      </div>
+      <div class="block-row">
+        <div class="block-name">Сбор анамнеза и зрительных задач</div>
+        <div class="block-bar-wrap"><div class="block-bar block-bar--yellow" style="width:67%"></div></div>
+        <div class="block-score block-score--yellow">67%</div>
+      </div>
+      <div class="block-row">
+        <div class="block-name">Проведение диагностики</div>
+        <div class="block-bar-wrap"><div class="block-bar block-bar--green" style="width:91%"></div></div>
+        <div class="block-score block-score--green">91%</div>
+      </div>
+      <div class="block-row">
+        <div class="block-name">Рекомендация ВТЛ</div>
+        <div class="block-bar-wrap"><div class="block-bar block-bar--red" style="width:48%"></div></div>
+        <div class="block-score block-score--red">48%</div>
+      </div>
+      <div class="block-row">
+        <div class="block-name">Объяснение рецепта и назначений</div>
+        <div class="block-bar-wrap"><div class="block-bar block-bar--yellow" style="width:74%"></div></div>
+        <div class="block-score block-score--yellow">74%</div>
+      </div>
+      <div class="block-row">
+        <div class="block-name">Передача консультанту</div>
+        <div class="block-bar-wrap"><div class="block-bar block-bar--yellow" style="width:62%"></div></div>
+        <div class="block-score block-score--yellow">62%</div>
+      </div>
+      <div class="block-row">
+        <div class="block-name">Завершение приёма</div>
+        <div class="block-bar-wrap"><div class="block-bar block-bar--skip" style="width:100%"></div></div>
+        <div class="block-score block-score--muted">Н/П</div>
+      </div>
+    </div>
+
+    <div class="callout callout--blue" style="margin-top:12px">
+      <span class="callout-icon">ℹ️</span>
+      <strong>Н/П</strong> (не применимо) — блок не был нужен в данных приёмах. Например, «Завершение приёма»
+      не оценивается, если запись закончилась раньше. Это не ошибка — просто блок не требовался.
+    </div>
+  </div>
+
+  <!-- Приёмы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🎙</div>
+      Приёмы
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Список всех проанализированных приёмов врача. Три вкладки: <strong>Худшие</strong> (балл &lt; 55%),
+      <strong>Лучшие</strong> (≥ 80%), <strong>Все</strong>. Начинай с «Худших» — там приоритет для разбора.
+    </p>
+
+    <div class="session-tabs">
+      <div class="session-tab session-tab--active">Худшие &nbsp;<span style="background:var(--red-bg);color:var(--red);border-radius:100px;padding:1px 7px;font-size:10.5px">4</span></div>
+      <div class="session-tab">Лучшие &nbsp;<span style="background:var(--green-bg);color:var(--green);border-radius:100px;padding:1px 7px;font-size:10.5px">12</span></div>
+      <div class="session-tab">Все &nbsp;<span style="background:var(--surface-2);color:var(--text-muted);border-radius:100px;padding:1px 7px;font-size:10.5px;border:1px solid var(--border)">47</span></div>
+    </div>
+
+    <!-- Свёрнутая карточка -->
+    <div class="session-item" style="margin-bottom:16px">
+      <div class="session-header">
+        <div class="session-meta">
+          <div class="session-datetime">14.05.2026 · 10:22 · 18 мин &nbsp;&nbsp;Приём № 1048</div>
+          <div class="session-badges">
+            <span class="s-badge s-badge--vtl">ВТЛ: Да</span>
+            <span class="s-badge s-badge--order">Заказ: 7 400 ₽</span>
+            <span class="s-badge s-badge--bad">Неудовлетворительно</span>
+            <span class="s-badge s-badge--eff">Эфф. 38%</span>
+            <span class="s-badge s-badge--eff">Станд. 61%</span>
+          </div>
+        </div>
+        <div class="session-expand">▼</div>
+      </div>
+    </div>
+
+    <!-- Развёрнутая карточка -->
+    <div class="section-label" style="margin-bottom:8px">Развёрнутый приём (пример)</div>
+    <div class="session-item">
+      <div class="session-header">
+        <div class="session-meta">
+          <div class="session-datetime">12.05.2026 · 14:05 · 22 мин &nbsp;&nbsp;Приём № 1041</div>
+          <div class="session-badges">
+            <span class="s-badge s-badge--vtl">ВТЛ: Да</span>
+            <span class="s-badge s-badge--order">Заказ: 12 800 ₽</span>
+            <span class="s-badge s-badge--good">Отлично</span>
+            <span class="s-badge s-badge--eff">Эфф. 91%</span>
+            <span class="s-badge s-badge--eff">Станд. 87%</span>
+          </div>
+        </div>
+        <div class="session-expand">▲</div>
+      </div>
+      <div class="session-body">
+        <div class="section-label">Оценки приёма</div>
+        <div class="scores-row">
+          <div class="score-box">
+            <div class="score-box-label">Соблюдение стандарта</div>
+            <div class="score-box-val" style="color:var(--green)">87%</div>
+          </div>
+          <div class="score-box">
+            <div class="score-box-label">Эффективность</div>
+            <div class="score-box-val" style="color:var(--green)">91%</div>
+          </div>
+        </div>
+
+        <div class="section-label">Резюме приёма</div>
+        <div class="resume-grid">
+          <div class="resume-row"><span class="resume-key">Кейс:</span><span class="resume-val">Пациент с миопией −4,5 дптр, носит однофокальные линзы 3 года, жалоба на усталость при работе за компьютером.</span></div>
+          <div class="resume-row"><span class="resume-key">Сильные стороны:</span><span class="resume-val">Чёткий сбор анамнеза, грамотное обоснование необходимости офисных линз, уверенная передача консультанту с задачей.</span></div>
+          <div class="resume-row"><span class="resume-key">Пробелы:</span><span class="resume-val">Не уточнил режим вождения — важно для рекомендации прогрессивных линз в перспективе.</span></div>
+          <div class="resume-row"><span class="resume-key">Возможности роста:</span><span class="resume-val">Добавить вопрос о хобби и вождении для более точного подбора и повышения ср. чека.</span></div>
+          <div class="resume-row"><span class="resume-key">Итог:</span><span class="resume-val">Приём на высоком уровне, пациент ушёл с рецептом и чётким пониманием задачи для консультанта.</span></div>
+        </div>
+
+        <div class="section-label">Навыки эффективности</div>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <div class="skill-name">Проблема выявлена</div>
+            <div class="skill-bar-wrap"><div class="skill-bar block-bar--green" style="width:95%"></div></div>
+            <div class="skill-score" style="color:var(--green)">95%</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">Решение связано с проблемой</div>
+            <div class="skill-bar-wrap"><div class="skill-bar block-bar--green" style="width:88%"></div></div>
+            <div class="skill-score" style="color:var(--green)">88%</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">Риски озвучены</div>
+            <div class="skill-bar-wrap"><div class="skill-bar block-bar--yellow" style="width:72%"></div></div>
+            <div class="skill-score" style="color:var(--yellow)">72%</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">Пациент понял</div>
+            <div class="skill-bar-wrap"><div class="skill-bar block-bar--green" style="width:91%"></div></div>
+            <div class="skill-score" style="color:var(--green)">91%</div>
+          </div>
+        </div>
+
+        <div class="section-label">Блоки чек-листа</div>
+        <p style="font-size:13px; color:var(--text-secondary)">Те же блоки, что в сводной таблице, но для этого конкретного приёма. Каждый блок раскрывается до отдельных критериев со статусом: <strong>Выполнено / Частично / Не применимо / Не выполнено</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Корректировка балла -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">✏️</div>
+      Корректировка балла
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Рядом с любым баллом — блока чек-листа или навыка эффективности — появляется иконка карандаша.
+      Нажми на неё, чтобы исправить оценку, которую выставил AI.
+    </p>
+
+    <div class="correction-demo">
+      <span>Рекомендация ВТЛ</span>
+      <span style="font-weight:700; color:var(--red)">48%</span>
+      <span class="correction-orig">62%</span>
+      <span style="margin-left:4px; font-size:11px; color:var(--text-muted)">(исходный балл AI)</span>
+      <span class="correction-icon" style="margin-left:auto">✏️</span>
+    </div>
+
+    <div class="callout callout--yellow" style="margin-top:14px">
+      <span class="callout-icon">⚠️</span>
+      Корректируй балл <strong>только если AI ошибся</strong>: плохое качество записи, нераспознанная речь,
+      технический шум. Обязательно указывай причину — она сохраняется в истории изменений. Не корректируй
+      «для красивой картинки».
+    </div>
+  </div>
+
+  <!-- Отчёт -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">📄</div>
+      Кнопка «Отчёт»
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Генерирует готовый еженедельный отчёт по врачу за выбранный период. Можно распечатать или сохранить в PDF.
+    </p>
+
+    <div class="report-section-list">
+      <div class="report-section-item"><div class="report-section-num">1</div>Ключевые показатели — таблица с фактом, средним по сети и статусом (Норма / Внимание / Критично)</div>
+      <div class="report-section-item"><div class="report-section-num">2</div>Динамика — 4 недели: % подбор→рецепт, % рецепт→заказ, ВТЛ, ср. чек</div>
+      <div class="report-section-item"><div class="report-section-num">3</div>Воронка продаж — визуальная схема с конверсиями между этапами</div>
+      <div class="report-section-item"><div class="report-section-num">4</div>Анализ приёмов — количество, средний балл, выявленные паттерны и проблемы</div>
+      <div class="report-section-item"><div class="report-section-num">5</div>Разбор с врачом — кейсы для обучения: ситуация, задача, типичные ошибки, правильный ответ</div>
+      <div class="report-section-item"><div class="report-section-num">6</div>План на неделю — фокусная метрика, задачи для РОПа и врача, дата контроля, прогноз выручки</div>
+    </div>
+  </div>
+
+  <!-- Алгоритм работы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">▶️</div>
+      Алгоритм работы
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Выбери врача и период</div>
+          <div class="step-desc">Открой карту, выбери нужного врача. Период — текущий месяц по умолчанию.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Смотри верхние метрики и балл</div>
+          <div class="step-desc">Где красные карточки — там фокус. Балл чек-листа в шапке показывает общий уровень.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Открой динамику</div>
+          <div class="step-desc">Переключи на просевшую метрику — найди недели провала. Сопоставь с датами приёмов ниже.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Разбери блоки чек-листа</div>
+          <div class="step-desc">Найди красные блоки — они дают понимание, на каком этапе приёма есть системная проблема.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Открой худшие приёмы</div>
+          <div class="step-desc">По 2–3 приёма: читай резюме, пробелы, навыки эффективности. Ищи повторяющийся паттерн.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Поставь задачу и при необходимости — дай обратную связь</div>
+          <div class="step-desc">В блоке задач создай задачу на работу с выявленной проблемой. Лучшие приёмы используй как пример для разбора.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout--green" style="margin-top:20px">
+      <span class="callout-icon">✅</span>
+      Сеанс работы с картой врача должен заканчиваться как минимум одной задачей и пониманием,
+      что именно разбирать на следующей встрече с сотрудником.
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

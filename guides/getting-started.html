@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Начало работы — Optimizer</title>
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #22c55e;
+    --green-bg: #f0fdf4;
+    --green-border: #bbf7d0;
+    --yellow: #f59e0b;
+    --yellow-bg: #fffbeb;
+    --yellow-border: #fde68a;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Hero */
+  .hero { margin-bottom: 40px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* Card base */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .card-icon--purple { background: var(--accent-light); }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--green  { background: var(--green-bg); }
+
+  /* Roles table */
+  .roles-list { display: flex; flex-direction: column; gap: 8px; }
+  .role-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+  }
+  .role-name {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .role-who {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .role-desc { color: var(--text-secondary); line-height: 1.55; }
+
+  /* Steps */
+  .step-list { display: flex; flex-direction: column; gap: 0; }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    min-height: 18px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+  .step-body { padding-bottom: 20px; flex: 1; }
+  .step-item:last-child .step-body { padding-bottom: 0; }
+  .step-item:last-child .step-line { display: none; }
+  .step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    padding-top: 5px;
+  }
+  .step-detail {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* Quick links */
+  .links-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 540px) { .links-grid { grid-template-columns: 1fr; } }
+  .link-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .link-card:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  .link-card svg { flex-shrink: 0; }
+  .link-card-label { line-height: 1.3; }
+  .link-card-sub {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  /* Tip */
+  .tip {
+    padding: 14px 18px;
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Workflow pills */
+  .workflow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .wf-pill {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .wf-arr {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Инструкция
+    </div>
+    <h1>Начало работы в Optimizer</h1>
+    <p class="hero-desc">
+      Что такое система, кто с ней работает и с чего начать. Если ты только открыл Optimizer первый раз — эта страница для тебя.
+    </p>
+  </div>
+
+  <!-- Что такое Optimizer -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">🔍</div>
+      Что такое Optimizer
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);line-height:1.75;margin-bottom:14px;">
+      Optimizer — аналитическая платформа для управления сетью оптик. Она собирает данные о продажах, сотрудниках и взаимодействиях с клиентами и превращает их в понятные отчёты и рекомендации.
+    </p>
+    <p style="font-size:15px;color:var(--text-secondary);line-height:1.75;margin-bottom:14px;">
+      Система строится вокруг воронки продаж оптики: <strong>окна → подборы → рецепты → заказы</strong>. На каждом шаге видно, где теряются клиенты и что с этим делать.
+    </p>
+    <p style="font-size:15px;color:var(--text-secondary);line-height:1.75;">
+      Ключевая особенность — <strong>речевая аналитика</strong>: бейджи записывают взаимодействия с клиентами, система расшифровывает и оценивает их, РОП видит конкретные пробелы и может давать обратную связь напрямую из системы.
+    </p>
+  </div>
+
+  <!-- Роли -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">👤</div>
+      Кто работает в системе
+    </div>
+    <div class="roles-list">
+      <div class="role-row">
+        <div>
+          <div class="role-name">Сотрудник</div>
+          <div class="role-who">Врач, консультант</div>
+        </div>
+        <div class="role-desc">Видит базовые разделы. Обычно не работает с системой напрямую — носит бейдж и взаимодействует с клиентами.</div>
+      </div>
+      <div class="role-row">
+        <div>
+          <div class="role-name">РОП</div>
+          <div class="role-who">Руководитель отдела продаж</div>
+        </div>
+        <div class="role-desc">Основной пользователь. Анализирует результаты филиалов, смотрит карты сотрудников, ставит задачи, работает с бейджами. Плюс доступ к разделам «Активность» и «Пользователи».</div>
+      </div>
+      <div class="role-row">
+        <div>
+          <div class="role-name">КД</div>
+          <div class="role-who">Коммерческий директор</div>
+        </div>
+        <div class="role-desc">Видит всё, что видит РОП, плюс разделы «Мотивация» и «Планёрка КД». Работает со стратегическими показателями и контролирует РОПов.</div>
+      </div>
+      <div class="role-row">
+        <div>
+          <div class="role-name">Администратор</div>
+          <div class="role-who">Администратор / ROOT</div>
+        </div>
+        <div class="role-desc">Полный доступ ко всем разделам. Управляет справочниками, пользователями и настройками системы.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- С чего начать -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🚀</div>
+      С чего начать — для РОПа
+    </div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Открой главную страницу</div>
+          <div class="step-detail">
+            Фиолетовый блок вверху — прогресс месяца. Смотришь сразу: сколько % месяца прошло и сколько % плана выполнено. Если разрыв большой — переходишь к деталям.
+          </div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Зайди в «Результаты по филиалам»</div>
+          <div class="step-detail">
+            Раскрой каждый филиал — видишь воронку, конверсии, ВТЛ. Красные показатели — точки для работы.
+          </div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Открой «Анализ филиала» для проблемного салона</div>
+          <div class="step-detail">
+            Здесь система сама показывает ТОП-3 показателей, которые мешают плану, и предлагает конкретные действия. Ставь задачи прямо из блока.
+          </div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Зайди в карту конкретного сотрудника</div>
+          <div class="step-detail">
+            «Карта врача» или «Карта консультанта» — видишь показатели, динамику, блоки речевой аналитики и каждый приём с резюме. Там же ставишь задачу конкретному человеку.
+          </div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num">5</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Контролируй задачи в «Плане задач на неделю»</div>
+          <div class="step-detail">
+            Все задачи, поставленные из анализа и карт сотрудников, попадают сюда. Отмечай выполненные, добавляй результаты, смотри незакрытые.
+          </div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num">6</div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Организуй работу с бейджами</div>
+          <div class="step-detail">
+            Без загруженных записей карты сотрудников будут пустыми. Убедись, что администратор выдаёт, регистрирует и загружает записи каждый день.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:20px;">
+      Главный цикл работы: Анализ → Задача → Проверка результата → Следующий анализ. Всё остальное — инструменты для этого цикла.
+    </div>
+  </div>
+
+  <!-- Типичный рабочий день -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">📅</div>
+      Типичный рабочий день РОПа в системе
+    </div>
+
+    <p style="font-size:13.5px;color:var(--text-secondary);margin-bottom:14px;">Система не требует часами сидеть в отчётах. Стандартный ежедневный маршрут занимает 20–30 минут.</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:6px;">Утро</div>
+        <div class="workflow">
+          <span class="wf-pill">Главная</span>
+          <span class="wf-arr">→</span>
+          <span class="wf-pill">Фиолетовый блок</span>
+          <span class="wf-arr">→</span>
+          <span class="wf-pill">Красные карточки</span>
+          <span class="wf-arr">→</span>
+          <span class="wf-pill">Результаты по филиалам</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:6px;">Работа с проблемой</div>
+        <div class="workflow">
+          <span class="wf-pill">Анализ филиала</span>
+          <span class="wf-arr">→</span>
+          <span class="wf-pill">ТОП-3 проблем</span>
+          <span class="wf-arr">→</span>
+          <span class="wf-pill">Карта сотрудника</span>
+          <span class="wf-arr">→</span>
+          <span class="wf-pill">+ Задача</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:6px;">Контроль</div>
+        <div class="workflow">
+          <span class="wf-pill">План задач на неделю</span>
+          <span class="wf-arr">→</span>
+          <span class="wf-pill">Отметить выполненные</span>
+          <span class="wf-arr">→</span>
+          <span class="wf-pill">Незакрытые задачи</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Быстрые ссылки -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🔗</div>
+      Полезные статьи для старта
+    </div>
+    <div class="links-grid">
+      <a class="link-card" href="../sections/main.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <div class="link-card-label">
+          Главная страница
+          <span class="link-card-sub">Как читать стартовый экран</span>
+        </div>
+      </a>
+      <a class="link-card" href="../sections/analysis.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <div class="link-card-label">
+          Анализ филиала
+          <span class="link-card-sub">Основной рабочий инструмент РОПа</span>
+        </div>
+      </a>
+      <a class="link-card" href="../sections/doctor-card.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+        <div class="link-card-label">
+          Карта врача
+          <span class="link-card-sub">Как работать с показателями и чек-листами</span>
+        </div>
+      </a>
+      <a class="link-card" href="../sections/tasks.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        <div class="link-card-label">
+          План задач на неделю
+          <span class="link-card-sub">Как вести и закрывать задачи</span>
+        </div>
+      </a>
+      <a class="link-card" href="badges-workflow.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        <div class="link-card-label">
+          Работа с бейджами
+          <span class="link-card-sub">Ежедневный процесс выдачи и загрузки</span>
+        </div>
+      </a>
+      <a class="link-card" href="../reference/metrics.html">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <div class="link-card-label">
+          Справочник метрик
+          <span class="link-card-sub">Что означает каждый показатель</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

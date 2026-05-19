@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Справочник метрик — Optimizer</title>
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --accent-soft: #7b7ef6;
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --yellow-bg: #fffbeb;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08),0 2px 4px -2px rgba(0,0,0,0.06);
+    --radius: 6px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+
+  /* Main */
+  .main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Hero */
+  .hero {
+    margin-bottom: 32px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
+
+  /* Search */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 32px;
+    animation: fadeUp 0.4s 0.05s ease both;
+  }
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 14px 16px 14px 44px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-shadow: var(--shadow-sm);
+  }
+  .search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(91,94,244,0.1);
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-clear {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 3px 8px;
+    cursor: pointer;
+    display: none;
+    font-family: inherit;
+  }
+  .search-clear.visible { display: block; }
+
+  /* No results */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+  .no-results.visible { display: block; }
+
+  /* Section */
+  .section {
+    margin-bottom: 20px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: var(--shadow-sm);
+  }
+  .section-header:hover { background: var(--surface-2); box-shadow: var(--shadow-md); }
+  .section.open .section-header {
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    border-bottom-color: transparent;
+  }
+  .section-num {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: ui-monospace, monospace;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .section-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-family: ui-monospace, monospace;
+  }
+  .section-chevron {
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+    font-size: 16px;
+  }
+  .section.open .section-chevron { transform: rotate(180deg); }
+
+  /* Section body */
+  .section-body {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    overflow: hidden;
+  }
+  .section.open .section-body { display: block; }
+
+  /* Metric card */
+  .metric-card {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .metric-card:last-child { border-bottom: none; }
+  .metric-card:hover { background: var(--surface-2); }
+
+  .metric-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .metric-names { flex: 1; }
+  .metric-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .metric-fullname {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .metric-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tag-absolute { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+  .tag-percent { background: var(--accent-light); color: var(--accent); border: 1px solid #c7d2fe; }
+  .tag-check { background: var(--surface-2); color: var(--text-secondary); border: 1px solid var(--border); }
+  .tag-money { background: var(--yellow-bg); color: #b45309; border: 1px solid #fde68a; }
+  .tag-vtl { background: #fdf2f8; color: #a21caf; border: 1px solid #f5d0fe; }
+  .tag-forecast { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; }
+
+  .metric-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+
+  .metric-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .metric-meta-item {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 5px 10px;
+  }
+  .meta-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .meta-value {
+    font-family: ui-monospace, monospace;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .meta-value.formula { color: var(--accent); }
+
+  .metric-synonyms {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .metric-synonyms span { color: var(--text-secondary); }
+
+  /* Search highlight */
+  mark {
+    background: rgba(91,94,244,0.15);
+    color: var(--accent);
+    border-radius: 3px;
+    padding: 0 2px;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section:nth-child(1) { animation-delay: 0.08s; }
+  .section:nth-child(2) { animation-delay: 0.11s; }
+  .section:nth-child(3) { animation-delay: 0.14s; }
+  .section:nth-child(4) { animation-delay: 0.17s; }
+  .section:nth-child(5) { animation-delay: 0.20s; }
+  .section:nth-child(6) { animation-delay: 0.23s; }
+  .section:nth-child(7) { animation-delay: 0.26s; }
+  .section:nth-child(8) { animation-delay: 0.29s; }
+  .section:nth-child(9) { animation-delay: 0.32s; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 22px; }
+    .main { padding: 24px 16px 60px; }
+    .metric-top { flex-direction: column; gap: 6px; }
+    .header-link span { display: none; }
+  }
+</style>
+</head>
+<body>
+
+
+<main class="main">
+
+  <div class="hero">
+    <div class="hero-badge">📖 Справочник</div>
+    <h1>Метрики Оптимайзера</h1>
+    <p class="hero-desc">Описание всех показателей системы: что означает каждая метрика, как рассчитывается и где используется.</p>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-icon">🔍</div>
+    <input class="search-input" type="text" placeholder="Найти метрику..." id="searchInput" autocomplete="off">
+    <button class="search-clear" id="searchClear">Сбросить</button>
+  </div>
+
+  <div id="sectionsContainer">
+
+  <!-- 01 Воронка продаж -->
+  <div class="section" data-section="1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">Воронка продаж</div>
+      <div class="section-count">5 метрик</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="окна количество окон временные слоты врач расписание">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Окна</div>
+            <div class="metric-fullname">Количество окон</div>
+          </div>
+          <div class="metric-tag tag-absolute">Абсолютный</div>
+        </div>
+        <div class="metric-desc">Временные слоты, в которые врач находится на рабочем месте и может принять клиента. Это плановая ёмкость, а не фактический трафик.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Пример</span><span class="meta-value">9-часовой день, приём 1,5 ч → 6 окон</span></div>
+          <div class="metric-meta-item"><span class="meta-label">Источник</span><span class="meta-value">Расписание врача. Длина дня ÷ Длительность приёма</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="подборы количество подборов приём диагностика трафик клиенты">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Подборы</div>
+            <div class="metric-fullname">Количество подборов</div>
+          </div>
+          <div class="metric-tag tag-absolute">Абсолютный</div>
+        </div>
+        <div class="metric-desc">Фактическое количество приёмов, на которых врач провёл диагностику зрения и подбор оптики. Реальный трафик клиентов — в отличие от окон.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Источник</span><span class="meta-value">Кол-во завершённых приёмов с подбором за период</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="рецепты количество рецептов врач выписан промежуточный">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Рецепты</div>
+            <div class="metric-fullname">Количество рецептов</div>
+          </div>
+          <div class="metric-tag tag-absolute">Абсолютный</div>
+        </div>
+        <div class="metric-desc">Количество клиентов, которым был выписан хотя бы 1 рецепт нашим врачом по итогам подбора. Промежуточный шаг между подбором и заказом.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Источник</span><span class="meta-value">Кол-во клиентов, которым выписан рецепт за период</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="заказы наши наш рецепт конвертация собственный поток">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Заказы (наши)</div>
+            <div class="metric-fullname">Количество заказов по нашему рецепту</div>
+          </div>
+          <div class="metric-tag tag-absolute">Абсолютный</div>
+        </div>
+        <div class="metric-desc">Заказы, оформленные по рецепту нашего врача. Показывает эффективность конвертации собственного рецептурного потока.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Источник</span><span class="meta-value">Кол-во заказов, привязанных к рецепту нашего врача</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="заказы чужие чужой рецепт сторонний старше 6 месяцев">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Заказы (чужие)</div>
+            <div class="metric-fullname">Количество заказов по чужому рецепту</div>
+          </div>
+          <div class="metric-tag tag-absolute">Абсолютный</div>
+        </div>
+        <div class="metric-desc">Заказы по рецепту стороннего врача или оптики, либо по нашему рецепту старше 6 месяцев. Клиент пришёл с готовым рецептом, не проходя диагностику у нас.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Источник</span><span class="meta-value">Кол-во заказов, привязанных к чужому рецепту</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 02 Конверсии воронки -->
+  <div class="section" data-section="2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">Конверсии воронки</div>
+      <div class="section-count">6 метрик</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="загрузка процент загрузки врач окна приём">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% загрузки</div>
+            <div class="metric-fullname">Процент загрузки врача</div>
+          </div>
+          <div class="metric-tag tag-percent">Конверсия</div>
+        </div>
+        <div class="metric-desc">Доля окон врача, в которых состоялся фактический приём. Показывает насколько плановая ёмкость врача используется.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Подборы ÷ Окна × 100%</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="подбор рецепт конверсия врач диагностика качество">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% подбор → рецепт</div>
+            <div class="metric-fullname">Конверсия из подбора в рецепт</div>
+          </div>
+          <div class="metric-tag tag-percent">Конверсия</div>
+        </div>
+        <div class="metric-desc">Доля подборов, завершившихся выпиской рецепта. Отражает качество диагностической работы врача.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Рецепты ÷ Подборы × 100%</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="рецепт заказ конверсия консультант продажа ключевой">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% рецепт → заказ</div>
+            <div class="metric-fullname">Конверсия из рецепта в заказ</div>
+          </div>
+          <div class="metric-tag tag-percent">Конверсия</div>
+        </div>
+        <div class="metric-desc">Доля рецептов, по которым оформлен заказ. Ключевой показатель работы консультанта — насколько он конвертирует рецепт врача в продажу.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Заказы (наш) ÷ Рецепты × 100%</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="подбор заказ наш сквозная конверсия два шага воронка">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% подбор → заказ (наш)</div>
+            <div class="metric-fullname">Сквозная конверсия подбора в заказ по нашему рецепту</div>
+          </div>
+          <div class="metric-tag tag-percent">Конверсия</div>
+        </div>
+        <div class="metric-desc">Сквозная конверсия от подбора до оформления заказа по нашему рецепту. Объединяет два шага воронки.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Заказы (наш) ÷ Подборы × 100%</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="подбор заказ итого сквозная конверсия любой чужой">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% подбор → заказ (итого)</div>
+            <div class="metric-fullname">Сквозная конверсия подбора в любой заказ</div>
+          </div>
+          <div class="metric-tag tag-percent">Конверсия</div>
+        </div>
+        <div class="metric-desc">Сквозная конверсия от подбора до любого заказа — включая оформленные по чужому рецепту.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Итого заказов ÷ Подборы × 100%</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="чужие заказы доля сторонний рецепт диагностика сигнал">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% чужих заказов</div>
+            <div class="metric-fullname">Доля заказов по чужому рецепту</div>
+          </div>
+          <div class="metric-tag tag-percent">Конверсия</div>
+        </div>
+        <div class="metric-desc">Доля заказов по стороннему рецепту (или по нашему старше 6 мес) от всех заказов. Высокое значение — сигнал перевести поток на собственную диагностику.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Заказы (чужой) ÷ Итого заказов × 100%</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 03 Средние чеки — наш рецепт -->
+  <div class="section" data-section="3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">Средние чеки — наш рецепт</div>
+      <div class="section-count">4 метрики</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="средний чек наш рецепт заказ линзы оправа мастер">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек (наш)</div>
+            <div class="metric-fullname">Средний чек заказа по нашему рецепту</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя сумма одного заказа по нашему рецепту. Включает линзы, оправу и работу мастера.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма заказов (наш) ÷ Кол-во заказов (наш)</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="средний чек линзы наш рецепт стоимость линз">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек линз (наш)</div>
+            <div class="metric-fullname">Средний чек линз по нашему рецепту</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя стоимость линз в заказах по нашему рецепту.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Линзы» (наш) ÷ Кол-во заказов (наш)</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="средний чек оправа наш рецепт сегмент консультант">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек оправы (наш)</div>
+            <div class="metric-fullname">Средний чек оправы по нашему рецепту</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя стоимость оправы в заказах по нашему рецепту. Отражает сегмент оправ, которые предлагает консультант.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Оправа» (наш) ÷ Кол-во заказов (наш)</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="средний чек мастер наш рецепт работа изготовление">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек мастера (наш)</div>
+            <div class="metric-fullname">Средний чек работы мастера по нашему рецепту</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя стоимость работ мастера в заказах по нашему рецепту.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Работа мастера» (наш) ÷ Кол-во заказов (наш)</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 04 Средние чеки — чужой рецепт -->
+  <div class="section" data-section="4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title">Средние чеки — чужой рецепт</div>
+      <div class="section-count">4 метрики</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="средний чек чужой рецепт заказ ниже допродажи">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек (чужой)</div>
+            <div class="metric-fullname">Средний чек заказа по чужому рецепту</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя сумма заказа по стороннему рецепту. Как правило, ниже — клиент уже знает, что хочет, и меньше вовлечён в допродажи.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма заказов (чужой) ÷ Кол-во заказов (чужой)</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="средний чек линзы чужой рецепт стоимость">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек линз (чужой)</div>
+            <div class="metric-fullname">Средний чек линз по чужому рецепту</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя стоимость линз в заказах по чужому рецепту.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Линзы» (чужой) ÷ Кол-во заказов (чужой)</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="средний чек оправа чужой рецепт стоимость">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек оправы (чужой)</div>
+            <div class="metric-fullname">Средний чек оправы по чужому рецепту</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя стоимость оправы в заказах по чужому рецепту.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Оправа» (чужой) ÷ Кол-во заказов (чужой)</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="средний чек мастер чужой рецепт работа изготовление">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек мастера (чужой)</div>
+            <div class="metric-fullname">Средний чек работы мастера по чужому рецепту</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя стоимость работ мастера в заказах по чужому рецепту.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Работа мастера» (чужой) ÷ Кол-во заказов (чужой)</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 05 Итоговые показатели -->
+  <div class="section" data-section="5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title">Итоговые показатели</div>
+      <div class="section-count">6 метрик</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="итого заказов всего общее количество наш чужой">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Итого заказов</div>
+            <div class="metric-fullname">Общее количество заказов</div>
+          </div>
+          <div class="metric-tag tag-absolute">Абсолютный</div>
+        </div>
+        <div class="metric-desc">Суммарное количество всех оформленных заказов — наш + чужой рецепт.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Заказы (наш) + Заказы (чужой)</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="итого сумма заказов выручка финансовая метрика филиал">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Итого сумма заказов</div>
+            <div class="metric-fullname">Общая сумма заказов / Выручка</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Суммарная выручка по всем заказам за период. Основная финансовая метрика филиала. Также встречается как «Выручка».</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма (наш) + Сумма (чужой)</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="итого средний чек все заказы доход клиент ключевой">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Итого ср. чек</div>
+            <div class="metric-fullname">Средний чек по всем заказам</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя сумма одного заказа. Ключевой показатель среднего дохода с клиента.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Итого сумма заказов ÷ Итого заказов</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="итого средний чек линзы все заказы">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Итого ср. чек линз</div>
+            <div class="metric-fullname">Средний чек по линзам (все заказы)</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Линзы» (итого) ÷ Итого заказов</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="итого средний чек оправа все заказы">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Итого ср. чек оправ</div>
+            <div class="metric-fullname">Средний чек по оправам (все заказы)</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Оправа» (итого) ÷ Итого заказов</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="итого средний чек мастер работа все заказы">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Итого ср. чек мастера</div>
+            <div class="metric-fullname">Средний чек работы мастера (все заказы)</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Работа мастера» (итого) ÷ Итого заказов</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 06 ВТЛ -->
+  <div class="section" data-section="6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-title">ВТЛ — высокотехнологичные линзы</div>
+      <div class="section-count">8 метрик</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="втл рекомендации процент врач стандарт прогрессивные офисные фриформ">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% рекомендаций ВТЛ</div>
+            <div class="metric-fullname">Процент рекомендаций высокотехнологичных линз</div>
+          </div>
+          <div class="metric-tag tag-vtl">ВТЛ</div>
+        </div>
+        <div class="metric-desc">Доля приёмов, на которых наш врач хотя бы в 1 рецепте рекомендовал ВТЛ. Отражает соблюдение стандарта работы с клиентом.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Рекомендации ВТЛ ÷ Рецепты × 100%</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="втл продажи процент доля заказов консультант довести">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% продаж ВТЛ</div>
+            <div class="metric-fullname">Процент продаж высокотехнологичных линз</div>
+          </div>
+          <div class="metric-tag tag-vtl">ВТЛ</div>
+        </div>
+        <div class="metric-desc">Доля заказов с ВТЛ от общего числа заказов. Насколько консультант доводит рекомендацию врача до продажи.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Заказы ВТЛ ÷ Итого заказов × 100%</span></div>
+        </div>
+        <div class="metric-synonyms">Синонимы: <span>«Доля ВТЛ», «% заказов ВТЛ»</span></div>
+      </div>
+
+      <div class="metric-card" data-search="втл количество рекомендаций абсолютное врач приём">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Кол-во рекомендаций ВТЛ</div>
+            <div class="metric-fullname">Количество рекомендаций ВТЛ</div>
+          </div>
+          <div class="metric-tag tag-vtl">ВТЛ</div>
+        </div>
+        <div class="metric-desc">Абсолютное количество приёмов, на которых врач порекомендовал хотя бы в 1 рецепте ВТЛ. Фиксируется независимо от факта покупки.</div>
+      </div>
+
+      <div class="metric-card" data-search="втл количество заказов наш чужой рецепт">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Кол-во заказов ВТЛ</div>
+            <div class="metric-fullname">Количество заказов с ВТЛ</div>
+          </div>
+          <div class="metric-tag tag-vtl">ВТЛ</div>
+        </div>
+        <div class="metric-desc">Количество заказов, в которых клиент выбрал высокотехнологичные линзы. Включает заказы и по нашему, и по чужому рецепту.</div>
+      </div>
+
+      <div class="metric-card" data-search="втл сумма выручка заказы">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Сумма заказов ВТЛ</div>
+            <div class="metric-fullname">Сумма выручки по заказам с ВТЛ</div>
+          </div>
+          <div class="metric-tag tag-vtl">ВТЛ</div>
+        </div>
+        <div class="metric-desc">Суммарная выручка по заказам, содержащим ВТЛ.</div>
+        <div class="metric-synonyms">Также встречается как: <span>«Сумма выручки за заказы с ВТЛ»</span></div>
+      </div>
+
+      <div class="metric-card" data-search="втл средний чек заказ">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек заказа ВТЛ</div>
+            <div class="metric-fullname">Средний чек заказа с ВТЛ</div>
+          </div>
+          <div class="metric-tag tag-vtl">ВТЛ</div>
+        </div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма заказов ВТЛ ÷ Кол-во заказов ВТЛ</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="втл средний чек линзы стоимость">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек линз ВТЛ</div>
+            <div class="metric-fullname">Средний чек линз ВТЛ</div>
+          </div>
+          <div class="metric-tag tag-vtl">ВТЛ</div>
+        </div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «ВТЛ линзы» ÷ Кол-во заказов ВТЛ</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="втл средний чек мастер работа сложность изготовление выше">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек мастера ВТЛ</div>
+            <div class="metric-fullname">Средний чек работы мастера по заказам ВТЛ</div>
+          </div>
+          <div class="metric-tag tag-vtl">ВТЛ</div>
+        </div>
+        <div class="metric-desc">Обычно выше стандартного — из-за сложности изготовления ВТЛ.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Работа мастера» (ВТЛ) ÷ Кол-во заказов ВТЛ</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 07 Работа мастера -->
+  <div class="section" data-section="7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div class="section-title">Работа мастера</div>
+      <div class="section-count">2 метрики</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="мастер средний чек работа изготовление обработка">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Ср. чек работы мастера</div>
+            <div class="metric-fullname">Средний чек работы мастера</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Средняя стоимость работ мастера по заказам, включающим эту позицию.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Сумма «Работа мастера» ÷ Кол-во заказов с работой мастера</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="мастер сумма итого работа выручка период">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Сумма за работы мастера</div>
+            <div class="metric-fullname">Общая сумма за работы мастера</div>
+          </div>
+          <div class="metric-tag tag-money">Чек</div>
+        </div>
+        <div class="metric-desc">Суммарная выручка от работ мастера за период.</div>
+        <div class="metric-synonyms">Также встречается как: <span>«Итого за работу мастера»</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 08 Прогноз и план -->
+  <div class="section" data-section="8">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div class="section-title">Прогноз и план</div>
+      <div class="section-count">3 метрики</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="выполнение плана процент зона красная желтая зеленая факт">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">% выполнения плана</div>
+            <div class="metric-fullname">Процент выполнения плана продаж</div>
+          </div>
+          <div class="metric-tag tag-forecast">Прогноз</div>
+        </div>
+        <div class="metric-desc">Доля фактически выполненного плана продаж. Определяет зону филиала: красная / жёлтая / зелёная.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Факт (сумма заказов) ÷ План (сумма заказов) × 100%</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="прогноз закрытие месяца расчётный объём темп рубли">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Прогноз закрытия месяца</div>
+            <div class="metric-fullname">Прогнозный объём продаж к концу месяца</div>
+          </div>
+          <div class="metric-tag tag-forecast">Прогноз</div>
+        </div>
+        <div class="metric-desc">Расчётный объём продаж к концу месяца при сохранении текущего темпа. Показывается в рублях и в % от плана.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Факт ÷ Прошедшие р. дни × Всего р. дней в месяце</span></div>
+        </div>
+      </div>
+
+      <div class="metric-card" data-search="прогресс месяца рабочие дни доля ориентир 45%">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Прогресс месяца</div>
+            <div class="metric-fullname">Доля прошедших рабочих дней</div>
+          </div>
+          <div class="metric-tag tag-forecast">Прогноз</div>
+        </div>
+        <div class="metric-desc">Доля прошедших рабочих дней. Ориентир: при 45% прогрессе план должен быть выполнен примерно на 45%.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Формула</span><span class="meta-value formula">Прошедшие р. дни ÷ Всего р. дней в месяце × 100%</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 09 Качество работы -->
+  <div class="section" data-section="9">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <div class="section-title">Качество работы</div>
+      <div class="section-count">1 метрика</div>
+      <div class="section-chevron">⌄</div>
+    </div>
+    <div class="section-body">
+
+      <div class="metric-card" data-search="балл чек-лист речевая аналитика качество стандарт приветствие возражения презентация">
+        <div class="metric-top">
+          <div class="metric-names">
+            <div class="metric-name">Балл чек-листа</div>
+            <div class="metric-fullname">Балл по чек-листу речевой аналитики</div>
+          </div>
+          <div class="metric-tag tag-check">Качество</div>
+        </div>
+        <div class="metric-desc">Оценка качества работы сотрудника по чек-листу, сформированному на основе записи и анализа приёмов. Отражает соблюдение стандарта: приветствие, выявление потребности, презентация, работа с возражениями.</div>
+        <div class="metric-meta">
+          <div class="metric-meta-item"><span class="meta-label">Источник</span><span class="meta-value">Автоматическая оценка по транскрипту записи приёма или звонка</span></div>
+        </div>
+        <div class="metric-synonyms">Синонимы: <span>«Балл речевой аналитики»</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  </div><!-- /sectionsContainer -->
+
+  <div class="no-results" id="noResults">Метрика не найдена. Попробуйте другой запрос.</div>
+
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle section accordion
+    document.querySelectorAll('.section-header').forEach(function(header) {
+      header.addEventListener('click', function() {
+        const section = header.parentElement;
+        const isOpen = section.classList.contains('open');
+        document.querySelectorAll('.section').forEach(function(s) {
+          s.classList.remove('open');
+        });
+        if (!isOpen) {
+          section.classList.add('open');
+          setTimeout(function() {
+            const top = section.getBoundingClientRect().top + window.scrollY - 20;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          }, 50);
+        }
+      });
+    });
+
+    // Search
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    const noResults = document.getElementById('noResults');
+    const sections = document.querySelectorAll('.section');
+
+    searchInput.addEventListener('input', function() {
+      const query = this.value.trim().toLowerCase();
+      searchClear.classList.toggle('visible', query.length > 0);
+
+      if (!query) {
+        sections.forEach(function(s) {
+          s.style.display = '';
+          s.classList.remove('open');
+          s.querySelectorAll('.metric-card').forEach(function(c) { c.style.display = ''; });
+          s.querySelectorAll('[data-original]').forEach(function(el) {
+            el.innerHTML = el.getAttribute('data-original');
+            el.removeAttribute('data-original');
+          });
+        });
+        noResults.classList.remove('visible');
+        return;
+      }
+
+      var totalVisible = 0;
+
+      sections.forEach(function(section) {
+        var cards = section.querySelectorAll('.metric-card');
+        var visibleCount = 0;
+
+        cards.forEach(function(card) {
+          var searchText = (card.getAttribute('data-search') || '') + ' ' + card.innerText.toLowerCase();
+          var matches = searchText.toLowerCase().includes(query);
+          card.style.display = matches ? '' : 'none';
+          if (matches) {
+            visibleCount++;
+            highlightCard(card, query);
+          } else {
+            restoreCard(card);
+          }
+        });
+
+        if (visibleCount > 0) {
+          section.style.display = '';
+          section.classList.add('open');
+          totalVisible++;
+        } else {
+          section.style.display = 'none';
+          section.classList.remove('open');
+        }
+      });
+
+      noResults.classList.toggle('visible', totalVisible === 0);
+    });
+
+    function highlightCard(card, query) {
+      var targets = card.querySelectorAll('.metric-name, .metric-fullname, .metric-desc');
+      targets.forEach(function(el) {
+        if (!el.getAttribute('data-original')) {
+          el.setAttribute('data-original', el.innerHTML);
+        }
+        var original = el.getAttribute('data-original');
+        var regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        el.innerHTML = original.replace(regex, '<mark>$1</mark>');
+      });
+    }
+
+    function restoreCard(card) {
+      card.querySelectorAll('[data-original]').forEach(function(el) {
+        el.innerHTML = el.getAttribute('data-original');
+        el.removeAttribute('data-original');
+      });
+    }
+
+    searchClear.addEventListener('click', function() {
+      searchInput.value = '';
+      searchInput.dispatchEvent(new Event('input'));
+      searchInput.focus();
+    });
+  });
+</script>
+
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

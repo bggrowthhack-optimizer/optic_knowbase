@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Планёрка КД — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--red    { background: var(--red-bg); }
+  .card-icon--purple { background: rgba(91,94,244,0.12); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Week navigator demo ── */
+  .week-nav {
+    display: flex; align-items: center; gap: 10px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px 14px; background: var(--surface-2); margin-bottom: 12px;
+  }
+  .week-btn {
+    width: 28px; height: 28px; border-radius: 5px;
+    border: 1px solid var(--border); background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; cursor: pointer; color: var(--text-secondary);
+  }
+  .week-label { font-size: 14px; font-weight: 700; color: var(--text-primary); flex: 1; text-align: center; }
+  .gen-btn {
+    font-size: 12px; font-weight: 600; color: #fff;
+    background: var(--accent); border: none;
+    padding: 6px 14px; border-radius: 5px; cursor: pointer; font-family: inherit;
+  }
+  .refresh-btn {
+    font-size: 12px; font-weight: 600; color: var(--accent);
+    background: var(--accent-light); border: 1px solid rgba(91,94,244,0.2);
+    padding: 6px 14px; border-radius: 5px; cursor: pointer; font-family: inherit;
+  }
+
+  /* ── ROP card demo ── */
+  .rop-card {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 10px;
+  }
+  .rop-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px; cursor: pointer;
+    background: var(--surface);
+  }
+  .rop-header:hover { background: var(--surface-2); }
+  .rop-name { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+  .rop-branches { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .rop-pct {
+    font-size: 28px; font-weight: 800; margin-left: auto;
+  }
+  .rop-forecast { font-size: 11.5px; color: var(--text-muted); text-align: right; }
+  .rop-chevron { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
+
+  /* ── Section inside ROP card ── */
+  .rop-section {
+    border-top: 1px solid var(--border);
+    padding: 16px 18px;
+  }
+  .section-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
+  }
+
+  /* ── Branch card ── */
+  .branch-item {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 14px; margin-bottom: 8px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .branch-pct-block { text-align: center; flex-shrink: 0; }
+  .branch-pct { font-size: 20px; font-weight: 800; }
+  .branch-zone {
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px;
+    text-transform: uppercase; letter-spacing: 0.04em; margin-top: 3px;
+    display: inline-block;
+  }
+  .zone--green  { background: var(--green-bg);  color: var(--green); }
+  .zone--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .zone--red    { background: var(--red-bg);    color: var(--red); }
+  .branch-info { flex: 1; }
+  .branch-name-demo { font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .branch-summary { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── Task result rows ── */
+  .employee-block { margin-bottom: 14px; }
+  .emp-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .emp-name-demo { font-size: 13.5px; font-weight: 700; color: var(--text-primary); }
+  .emp-branch-demo { font-size: 11px; color: var(--text-muted); }
+  .task-count-badge {
+    font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+    background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
+    margin-left: auto;
+  }
+  .task-result-item {
+    border-left: 3px solid var(--border); padding: 8px 12px; margin-bottom: 6px;
+    border-radius: 0 5px 5px 0; background: var(--surface);
+  }
+  .task-result-item--up   { border-left-color: var(--green); background: rgba(22,163,74,0.04); }
+  .task-result-item--down { border-left-color: var(--red);   background: rgba(220,38,38,0.04); }
+  .task-result-item--flat { border-left-color: var(--text-muted); }
+  .task-title-demo { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .task-detail-demo { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 4px; }
+  .task-result-row { display: flex; align-items: center; gap: 8px; }
+  .task-metric { font-size: 11px; color: var(--text-muted); font-style: italic; }
+  .result-chip {
+    font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+  }
+  .result-chip--up   { background: var(--green-bg);  color: var(--green); }
+  .result-chip--down { background: var(--red-bg);    color: var(--red); }
+  .result-chip--flat { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+  .result-chip--miss { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); font-style: italic; }
+  .result-text { font-size: 12.5px; color: var(--text-secondary); }
+
+  /* ── This week tasks ── */
+  .this-week-item {
+    border-left: 3px solid var(--accent); padding: 8px 12px; margin-bottom: 6px;
+    border-radius: 0 5px 5px 0; background: var(--accent-light);
+  }
+  .task-time { font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
+
+  /* ── Attention employees ── */
+  .attention-item {
+    border: 1px solid rgba(220,38,38,0.2); border-radius: var(--radius);
+    padding: 10px 14px; margin-bottom: 8px;
+    background: rgba(220,38,38,0.03);
+  }
+  .attention-emp-name { font-size: 13.5px; font-weight: 700; color: var(--red); margin-bottom: 2px; }
+  .attention-emp-branch { font-size: 11.5px; color: var(--text-muted); margin-bottom: 4px; }
+  .attention-reason { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .attention-metric { font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 3px; }
+
+  /* ── Footer bar ── */
+  .footer-bar {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    border-top: 1px solid var(--border);
+  }
+  .footer-cell {
+    padding: 12px 14px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .footer-cell:last-child { border-right: none; }
+  .footer-label { font-size: 10.5px; color: var(--text-muted); margin-bottom: 3px; font-weight: 500; }
+  .footer-val { font-size: 18px; font-weight: 800; }
+  .footer-den { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+
+  /* ── Step list ── */
+  .step-list { display: flex; flex-direction: column; gap: 14px; }
+  .step-item { display: flex; align-items: flex-start; gap: 14px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .step-body { padding-top: 4px; }
+  .step-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+  .step-desc  { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: var(--radius); padding: 14px 18px;
+    font-size: 13.5px; line-height: 1.6;
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 12px;
+  }
+  .callout--blue   { background: rgba(91,94,244,0.07);  border: 1px solid rgba(91,94,244,0.18); color: #3a3da8; }
+  .callout--yellow { background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.2);   color: #7a4f00; }
+  .callout--green  { background: var(--green-bg);  border: 1px solid rgba(22,163,74,0.2);   color: #14532d; }
+  .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы · Только для КД</div>
+    <h1>Планёрка КД</h1>
+    <p class="hero-desc">
+      Еженедельный AI-дайджест для коммерческого директора. Система сама собирает данные по всем РОПам,
+      оценивает результаты задач прошлой недели и формирует повестку для управленческого разбора.
+      Не нужно смотреть несколько разделов — вся картина на одном экране.
+    </p>
+  </div>
+
+  <!-- Зачем -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🎯</div>
+      Зачем нужна планёрка
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Готовая повестка</strong> — AI компилирует данные по всем РОПам и их филиалам в единый структурированный план. Не надо собирать цифры вручную.</div>
+      <div class="bullet-item"><strong>Контроль задач</strong> — видно, какие задачи из прошлой недели дали результат, а какие нет. Это фактическая основа для разговора с каждым РОПом.</div>
+      <div class="bullet-item"><strong>Кто без задач</strong> — система сама указывает сотрудников, на которых в календаре нет задач на эту неделю, с объяснением причины.</div>
+      <div class="bullet-item"><strong>Структура на встречу</strong> — план идёт по РОПам, внутри каждого — по блокам. Можно вести планёрку прямо по этому экрану.</div>
+    </div>
+  </div>
+
+  <!-- Навигация по неделям -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📅</div>
+      Навигация по неделям и генерация плана
+    </div>
+
+    <div class="week-nav">
+      <div class="week-btn">‹</div>
+      <div class="week-label">12–18 мая 2026</div>
+      <div class="week-btn">›</div>
+      <button class="refresh-btn">↻ Обновить</button>
+    </div>
+
+    <div class="week-nav" style="margin-bottom:12px">
+      <div class="week-btn">‹</div>
+      <div class="week-label">19–25 мая 2026</div>
+      <div class="week-btn">›</div>
+      <button class="gen-btn">Сгенерировать план</button>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Стрелки влево/вправо</strong> — переход между неделями. Данные подгружаются автоматически.</div>
+      <div class="bullet-item"><strong>«Сгенерировать план»</strong> — появляется, если план на эту неделю ещё не создан. Нажми — AI соберёт данные и создаст повестку. Это занимает несколько секунд.</div>
+      <div class="bullet-item"><strong>«Обновить»</strong> — перегенерировать план для уже созданной недели, если данные изменились.</div>
+    </div>
+
+    <div class="callout callout--yellow">
+      <span class="callout-icon">⚠️</span>
+      Генерация доступна только для прошедших недель — система должна иметь полные данные за период.
+      Для текущей или будущей недели кнопка неактивна.
+    </div>
+  </div>
+
+  <!-- Карточка РОПа -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">👔</div>
+      Карточка РОПа
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Для каждого РОПа — отдельная карточка. Нажми на шапку, чтобы раскрыть детали.
+      В заголовке сразу видна главная цифра: % выполнения плана и прогноз выручки.
+    </p>
+
+    <!-- ROP card demo expanded -->
+    <div class="rop-card">
+      <div class="rop-header">
+        <div>
+          <div class="rop-name">Петров А.С.</div>
+          <div class="rop-branches">Оптика на Ленина · Оптика Центральная · Оптика Южная</div>
+        </div>
+        <div style="text-align:right; margin-left:auto">
+          <div class="rop-pct" style="color:var(--yellow)">84%</div>
+          <div class="rop-forecast">прогноз 4 820 000 / 5 740 000 ₽</div>
+        </div>
+        <div class="rop-chevron">▲</div>
+      </div>
+
+      <!-- Анализ филиалов -->
+      <div class="rop-section">
+        <div class="section-title">Анализ филиалов</div>
+        <div class="branch-item">
+          <div class="branch-pct-block">
+            <div class="branch-pct" style="color:var(--green)">96%</div>
+            <div class="branch-zone zone--green">Зелёная</div>
+          </div>
+          <div class="branch-info">
+            <div class="branch-name-demo">Оптика Центральная</div>
+            <div class="branch-summary">Филиал идёт в плане по всем ключевым показателям. Конверсия рецепт → заказ выросла на 8% по сравнению с прошлой неделей — результат работы с Козловым П.В. по скрипту передачи клиента.</div>
+          </div>
+        </div>
+        <div class="branch-item">
+          <div class="branch-pct-block">
+            <div class="branch-pct" style="color:var(--yellow)">78%</div>
+            <div class="branch-zone zone--yellow">Жёлтая</div>
+          </div>
+          <div class="branch-info">
+            <div class="branch-name-demo">Оптика на Ленина</div>
+            <div class="branch-summary">Основная просадка — доля ВТЛ: 21% при плане 35%. Консультант Иванова А.В. даёт 14% ВТЛ. РОП ставил задачу на прошлой неделе, но результата не видно.</div>
+          </div>
+        </div>
+        <div class="branch-item">
+          <div class="branch-pct-block">
+            <div class="branch-pct" style="color:var(--red)">61%</div>
+            <div class="branch-zone zone--red">Красная</div>
+          </div>
+          <div class="branch-info">
+            <div class="branch-name-demo">Оптика Южная</div>
+            <div class="branch-summary">Критическое отставание по выручке. Загрузка окон 43% — врачи работают неполный день. Требуется разбор расписания и причин низкой явки клиентов.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Результаты задач прошлой недели -->
+      <div class="rop-section" style="background:rgba(248,249,252,0.6)">
+        <div class="section-title">Результаты задач — прошлая неделя</div>
+        <div class="employee-block">
+          <div class="emp-header">
+            <div>
+              <div class="emp-name-demo">Смирнова Е.О.</div>
+              <div class="emp-branch-demo">Оптика Центральная</div>
+            </div>
+            <div class="task-count-badge">2 задачи</div>
+          </div>
+          <div class="task-result-item task-result-item--up">
+            <div class="task-title-demo">Внедрить скрипт передачи клиента консультанту</div>
+            <div class="task-detail-demo">Разобрать алгоритм с врачом, провести тренировочный приём</div>
+            <div class="task-result-row">
+              <span class="task-metric">% рецепт → заказ</span>
+              <span class="result-chip result-chip--up">↑ Растёт</span>
+              <span class="result-text">конверсия выросла с 68% до 76% за неделю</span>
+            </div>
+          </div>
+          <div class="task-result-item task-result-item--flat">
+            <div class="task-title-demo">Увеличить долю рекомендаций ВТЛ при миопии &gt;−3</div>
+            <div class="task-detail-demo">Использовать фразу «У вас как раз тот случай, когда прогрессивные линзы дадут заметный эффект»</div>
+            <div class="task-result-row">
+              <span class="task-metric">% рекомендаций ВТЛ</span>
+              <span class="result-chip result-chip--flat">→ Без изменений</span>
+              <span class="result-text">показатель стабилен, роста нет</span>
+            </div>
+          </div>
+        </div>
+        <div class="employee-block">
+          <div class="emp-header">
+            <div>
+              <div class="emp-name-demo">Иванова А.В.</div>
+              <div class="emp-branch-demo">Оптика на Ленина</div>
+            </div>
+            <div class="task-count-badge">1 задача</div>
+          </div>
+          <div class="task-result-item task-result-item--down">
+            <div class="task-title-demo">Отработать аргументацию ВТЛ на приёмах</div>
+            <div class="task-detail-demo">Разобрать 3 худших взаимодействия по речевой аналитике</div>
+            <div class="task-result-row">
+              <span class="task-metric">% продаж ВТЛ</span>
+              <span class="result-chip result-chip--down">↓ Падает</span>
+              <span class="result-text">снизилась с 18% до 14% — ситуация ухудшилась</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Задачи на эту неделю -->
+      <div class="rop-section">
+        <div class="section-title">Задачи на эту неделю — в календаре</div>
+        <div class="employee-block">
+          <div class="emp-header">
+            <div>
+              <div class="emp-name-demo">Смирнова Е.О.</div>
+              <div class="emp-branch-demo">Оптика Центральная</div>
+            </div>
+          </div>
+          <div class="this-week-item">
+            <div class="task-time">Пн 10:00</div>
+            <div class="task-title-demo">Разобрать рекомендацию ВТЛ при пресбиопии</div>
+            <div class="task-detail-demo" style="color:var(--text-secondary)">Провести мини-сессию: как говорить о прогрессивных линзах клиентам после 40</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Без задачи -->
+      <div class="rop-section" style="background:rgba(220,38,38,0.02)">
+        <div class="section-title" style="color:var(--red)">Без задачи в календаре — требуют внимания</div>
+        <div class="attention-item">
+          <div class="attention-emp-name">Петров К.Д.</div>
+          <div class="attention-emp-branch">Оптика Южная</div>
+          <div class="attention-reason">На прошлой неделе показал резкое падение конверсии (−17%). Задача на разбор поставлена не была — ситуация не проработана.</div>
+          <div class="attention-metric">% рецепт → заказ</div>
+        </div>
+      </div>
+
+      <!-- Итого -->
+      <div class="footer-bar">
+        <div class="footer-cell">
+          <div class="footer-label">Задач выполнено</div>
+          <div class="footer-val" style="color:var(--yellow)">3 <span class="footer-den">/ 5</span></div>
+        </div>
+        <div class="footer-cell">
+          <div class="footer-label">Дали результат</div>
+          <div class="footer-val" style="color:var(--yellow)">1 <span class="footer-den">/ 3</span></div>
+        </div>
+        <div class="footer-cell">
+          <div class="footer-label">Сотрудников охвачено</div>
+          <div class="footer-val" style="color:var(--green)">6 <span class="footer-den">/ 7</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout--blue">
+      <span class="callout-icon">ℹ️</span>
+      Если у РОПа несколько филиалов — все они перечислены в шапке карточки. Клик по шапке раскрывает
+      или сворачивает всю карточку.
+    </div>
+  </div>
+
+  <!-- Блоки внутри карточки -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">📑</div>
+      Что внутри каждой карточки РОПа
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item">
+        <strong>Анализ филиалов</strong> — по каждому салону: % выполнения плана, зона (зелёная / жёлтая / красная) и AI-объяснение — что именно происходит и почему.
+      </div>
+      <div class="bullet-item">
+        <strong>Результаты задач — прошлая неделя</strong> — что РОП делал с каждым сотрудником, и дало ли это результат. Четыре статуса: <strong style="color:var(--green)">↑ Растёт</strong>, <strong style="color:var(--red)">↓ Падает</strong>, <strong style="color:var(--text-muted)">→ Без изменений</strong>, <em style="color:var(--text-muted)">∅ Нет данных</em>.
+      </div>
+      <div class="bullet-item">
+        <strong>Задачи на эту неделю</strong> — что уже стоит в календаре у РОПа. Для каждого сотрудника: задача, описание и время в расписании (например, «Пн 10:00»).
+      </div>
+      <div class="bullet-item">
+        <strong>Без задачи — требуют внимания</strong> — сотрудники, на которых задач нет, с AI-объяснением почему это проблема. Это повестка для разговора с РОПом прямо сейчас.
+      </div>
+      <div class="bullet-item">
+        <strong>Итоговая строка</strong> — три цифры: задач выполнено / дали результат / сотрудников охвачено. Быстрая оценка качества работы РОПа за неделю.
+      </div>
+    </div>
+  </div>
+
+  <!-- История задач -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📊</div>
+      История задач по сотруднику
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      В блоке «Результаты задач» у каждой задачи есть кнопка «Показать историю».
+      Она раскрывает помесячную разбивку: сколько задач ставилось по этому сотруднику и каков был
+      результат. AI добавляет короткий комментарий — объясняет, почему динамика именно такая.
+    </p>
+    <div class="callout callout--blue">
+      <span class="callout-icon">ℹ️</span>
+      История помогает понять, не разовая ли это просадка или системная проблема, которую уже несколько
+      недель не удаётся закрыть.
+    </div>
+  </div>
+
+  <!-- Алгоритм работы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">▶️</div>
+      Как использовать на планёрке
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Перед встречей — сгенерируй план</div>
+          <div class="step-desc">Открой страницу, выбери прошедшую неделю, нажми «Сгенерировать план». Это займёт несколько секунд. Лучше делать с утра в день планёрки.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Начни с итоговой строки каждого РОПа</div>
+          <div class="step-desc">% плана и прогноз выручки видны прямо в шапке карточки. Это даёт первичную расстановку приоритетов — кому уделить больше времени.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Разбери красные и жёлтые филиалы</div>
+          <div class="step-desc">В блоке «Анализ филиалов» AI объясняет причину просадки. Это основа для разговора: что конкретно происходит и почему.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Проверь результаты задач прошлой недели</div>
+          <div class="step-desc">Задачи со статусом ↓ или «Без изменений» — повод для прямого вопроса РОПу: что пошло не так и что будет делать иначе.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Разбери блок «Без задачи»</div>
+          <div class="step-desc">Каждый сотрудник без задачи — это пробел в управленческой работе РОПа. Зафиксируй, кому нужно поставить задачу до конца дня.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Проверь задачи на эту неделю</div>
+          <div class="step-desc">Убедись, что у каждого проблемного сотрудника есть конкретная задача с временем в календаре — не просто намерение, а зафиксированное действие.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout--green" style="margin-top:20px">
+      <span class="callout-icon">✅</span>
+      Хорошая планёрка КД длится 30–45 минут и заканчивается тем, что у каждого РОПа есть
+      конкретные задачи на неделю с датами и ответственными.
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

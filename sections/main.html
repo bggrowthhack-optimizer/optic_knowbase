@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Главная страница — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text-primary);
+    line-height: 1.6; min-height: 100vh;
+  }
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--green  { background: var(--green-bg); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Layout diagram */
+  .layout-diagram { display: flex; flex-direction: column; gap: 6px; }
+  .layout-row {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+    background: var(--surface-2);
+  }
+  .layout-row--purple { background: rgba(124,58,237,0.08); border-color: rgba(124,58,237,0.2); }
+  .layout-row--accent { background: var(--accent-light); border-color: rgba(91,94,244,0.2); }
+  .layout-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .layout-num--purple { background: #7c3aed; }
+  .layout-label { font-size: 13.5px; font-weight: 600; color: var(--text-primary); flex: 1; }
+  .layout-desc { font-size: 12.5px; color: var(--text-muted); }
+
+  /* Purple progress block demo */
+  .progress-demo {
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .progress-demo-inner {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 24px; align-items: center;
+  }
+  .progress-bars { display: flex; flex-direction: column; gap: 12px; }
+  .progress-bar-row {}
+  .progress-bar-label {
+    font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.7);
+    margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .progress-bar-label span { font-size: 13px; font-weight: 700; color: white; }
+  .progress-track {
+    height: 8px; background: rgba(255,255,255,0.2); border-radius: 100px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 100px;
+  }
+  .progress-fill--time   { background: rgba(255,255,255,0.8); width: 62%; }
+  .progress-fill--plan-g { background: #86efac; width: 78%; }
+  .progress-fill--plan-y { background: #fde047; width: 55%; }
+  .progress-fill--plan-r { background: #fca5a5; width: 38%; }
+  .forecast-block { text-align: right; }
+  .forecast-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.65); margin-bottom: 2px; }
+  .forecast-value { font-size: 28px; font-weight: 800; color: white; line-height: 1.1; }
+  .forecast-delta { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+
+  /* KPI card demo */
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .kpi-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    display: flex; flex-direction: row;
+    box-shadow: var(--shadow-sm);
+  }
+  .kpi-bar { width: 3px; flex-shrink: 0; }
+  .kpi-bar--green  { background: var(--green); }
+  .kpi-bar--red    { background: var(--red); }
+  .kpi-bar--gray   { background: var(--text-muted); }
+  .kpi-body { flex: 1; padding: 14px 14px 12px; }
+  .kpi-name { font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+  .kpi-value { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .kpi-plan { font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px; }
+  .kpi-track {
+    height: 4px; background: var(--surface-2);
+    border-radius: 100px; overflow: hidden; margin-bottom: 6px;
+  }
+  .kpi-fill { height: 100%; border-radius: 100px; }
+  .kpi-fill--green  { background: var(--green); width: 103%; }
+  .kpi-fill--red    { background: var(--red); width: 48%; }
+  .kpi-fill--gray   { background: var(--text-muted); width: 100%; }
+  .kpi-status {
+    font-size: 10.5px; font-weight: 600; padding: 1px 6px;
+    border-radius: 100px; display: inline-block;
+  }
+  .kpi-status--green { color: var(--green); background: var(--green-bg); }
+  .kpi-status--red   { color: var(--red); background: var(--red-bg); }
+  .kpi-status--gray  { color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border); }
+
+  /* Steps */
+  .steps-list { display: flex; flex-direction: column; gap: 10px; }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step-item strong { color: var(--text-primary); font-weight: 600; }
+
+  .tip {
+    background: var(--accent-light);
+    border: 1px solid rgba(91,94,244,0.2); border-left: 3px solid var(--accent);
+    border-radius: var(--radius); padding: 16px 18px; margin-bottom: 16px;
+    font-size: 14px; color: var(--text-primary); line-height: 1.6;
+  }
+  .tip-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Главная страница</h1>
+    <p class="hero-desc">Стартовый экран — быстрая оценка текущей ситуации по компании. Открывай каждый день: блок прогресса покажет где ты находишься, карточки — где горит.</p>
+  </div>
+
+  <!-- Устройство -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Устройство страницы
+    </div>
+    <div class="layout-diagram">
+      <div class="layout-row">
+        <div class="layout-num">1</div>
+        <div class="layout-label">Заголовок</div>
+        <div class="layout-desc">Период · дата обновления · фильтры</div>
+      </div>
+      <div class="layout-row layout-row--purple">
+        <div class="layout-num layout-num--purple">2</div>
+        <div class="layout-label">Фиолетовый блок прогресса</div>
+        <div class="layout-desc">% месяца · % плана · прогноз</div>
+      </div>
+      <div class="layout-row layout-row--accent">
+        <div class="layout-num">3</div>
+        <div class="layout-label">KPI-карточки</div>
+        <div class="layout-desc">Настраиваемые метрики с цветом и планом</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-num">4</div>
+        <div class="layout-label">Результаты по филиалам</div>
+        <div class="layout-desc">Раскрывающиеся карточки по каждому салону</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Фиолетовый блок -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon" style="background:rgba(124,58,237,0.1)">🟣</div>
+      Блок прогресса месяца
+    </div>
+
+    <div class="progress-demo">
+      <div class="progress-demo-inner">
+        <div class="progress-bars">
+          <div class="progress-bar-row">
+            <div class="progress-bar-label">Прошло с начала месяца <span>62%</span></div>
+            <div class="progress-track"><div class="progress-fill progress-fill--time"></div></div>
+          </div>
+          <div class="progress-bar-row">
+            <div class="progress-bar-label">План выполнен на <span>78%</span></div>
+            <div class="progress-track"><div class="progress-fill progress-fill--plan-g"></div></div>
+          </div>
+        </div>
+        <div class="forecast-block">
+          <div class="forecast-label">Прогноз</div>
+          <div class="forecast-value">126%</div>
+          <div class="forecast-delta">+3.2М ₽ сверх плана</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Прошло месяца</strong> — сколько % дней уже прошло</span></div>
+      <div class="bullet-item"><span><strong>План выполнен на</strong> — % выполнения плана по выручке. Зелёный ≥95%, жёлтый 75–94%, красный &lt;75%</span></div>
+      <div class="bullet-item"><span><strong>Прогноз</strong> — экстраполяция текущего темпа на конец месяца</span></div>
+      <div class="bullet-item"><span><strong>Дельта</strong> — потенциальное перевыполнение или недостача в рублях</span></div>
+    </div>
+
+    <div class="tip" style="margin-top:16px;margin-bottom:0">
+      <div class="tip-label">Как читать блок</div>
+      Смотри на соотношение двух цифр. Если прошло 60% месяца, а план выполнен на 40% — есть серьёзный риск. Если прошло 60%, а выполнено 70% — ты опережаешь.
+    </div>
+  </div>
+
+  <!-- KPI-карточки -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📊</div>
+      KPI-карточки
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-bar kpi-bar--green"></div>
+        <div class="kpi-body">
+          <div class="kpi-name">Итого ср. чек</div>
+          <div class="kpi-value">18 450 ₽</div>
+          <div class="kpi-plan">План: 18 000 ₽</div>
+          <div class="kpi-track"><div class="kpi-fill kpi-fill--green"></div></div>
+          <div class="kpi-status kpi-status--green">103% выполнения</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-bar kpi-bar--red"></div>
+        <div class="kpi-body">
+          <div class="kpi-name">% продаж ВТЛ</div>
+          <div class="kpi-value">24%</div>
+          <div class="kpi-plan">План: 50%</div>
+          <div class="kpi-track"><div class="kpi-fill kpi-fill--red"></div></div>
+          <div class="kpi-status kpi-status--red">48% выполнения</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-bar kpi-bar--gray"></div>
+        <div class="kpi-body">
+          <div class="kpi-name">Подборы</div>
+          <div class="kpi-value">312</div>
+          <div class="kpi-plan">Без плана</div>
+          <div class="kpi-track"><div class="kpi-fill kpi-fill--gray"></div></div>
+          <div class="kpi-status kpi-status--gray">Без плана</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-bar kpi-bar--red"></div>
+        <div class="kpi-body">
+          <div class="kpi-name">% рецепт → заказ</div>
+          <div class="kpi-value">61%</div>
+          <div class="kpi-plan">План: 80%</div>
+          <div class="kpi-track"><div class="kpi-fill kpi-fill--red" style="width:76%"></div></div>
+          <div class="kpi-status kpi-status--red">76% выполнения</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Цветная полоса слева</strong> — зелёная (норма) / красная (проблема) / серая (метрика без плана)</span></div>
+      <div class="bullet-item"><span><strong>Прогресс-бар</strong> — визуальный % выполнения плана</span></div>
+      <div class="bullet-item"><span><strong>Клик на карточку</strong> — открывает график динамики по неделям за месяц</span></div>
+      <div class="bullet-item"><span><strong>Кнопка «Детализация»</strong> (появляется при наведении у некоторых метрик) — разбивка по типам</span></div>
+      <div class="bullet-item"><span><strong>Настроить метрики</strong> — кнопка в шапке страницы. Убери лишние, оставь только важные. Настройки сохраняются.</span></div>
+    </div>
+  </div>
+
+  <!-- Блок филиалов -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🏢</div>
+      Блок результатов по филиалам
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6">Список всех салонов с раскрывающимися карточками. Каждая карточка — зона, ср. чек, выручка и детальная таблица по пяти блокам (воронка, конверсии, ВТЛ, наши/чужие, итого). Подробно описан в статье <a href="branches.html" style="color:var(--accent);font-weight:600">Результаты по филиалам →</a></p>
+  </div>
+
+  <!-- Фильтры -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">⚙️</div>
+      Фильтры и управление
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Период</strong> — выбор месяца. Влияет на все блоки страницы</span></div>
+      <div class="bullet-item"><span><strong>РОП</strong> — только для КД. Позволяет смотреть данные по конкретному руководителю отдела продаж и его филиалам</span></div>
+      <div class="bullet-item"><span><strong>Настроить метрики</strong> — управление набором KPI-карточек</span></div>
+    </div>
+  </div>
+
+  <!-- Актуальность данных -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🕐</div>
+      Актуальность данных
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6">В заголовке страницы отображается дата последнего обновления: <strong style="color:var(--text-primary)">«Обновлено 15.05.25»</strong>. Данные обновляются раз в 1–2 дня и включают последние 30 дней — возвраты и отмены заказов тоже учитываются.</p>
+  </div>
+
+  <!-- Алгоритм -->
+  <div class="card" style="margin-bottom:0;">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">▶️</div>
+      Алгоритм работы
+    </div>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>Выбери нужный <strong>период</strong> (и РОП, если КД)</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>Прочитай <strong>фиолетовый блок</strong> — сравни % месяца с % плана. Есть ли отставание?</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div>Найди <strong>красные карточки</strong> — где самые проблемные метрики</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div><strong>Кликни на карточку</strong> — посмотри динамику по неделям, найди когда началась просадка</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div>Перейди в <strong>блок филиалов</strong> — раскрой проблемный салон, найди конкретный показатель</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

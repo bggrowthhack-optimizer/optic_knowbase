@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Как декомпозировать план продаж — Optimizer</title>
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --accent-soft: #7b7ef6;
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #22c55e;
+    --green-bg: #f0fdf4;
+    --yellow: #f59e0b;
+    --yellow-bg: #fffbeb;
+    --red: #ef4444;
+    --red-bg: #fef2f2;
+    --number-bg: #5b5ef4;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08),0 2px 4px -2px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08),0 4px 6px -4px rgba(0,0,0,0.06);
+    --radius: 6px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Main */
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Hero */
+  .hero {
+    margin-bottom: 40px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* Why block */
+  .why-block {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+  .why-block h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .why-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--yellow-bg);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .why-text {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+  }
+  .why-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .why-result {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: var(--accent-light);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    border-left: 3px solid var(--accent);
+  }
+
+  /* Flow diagram */
+  .flow-block {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.5s 0.15s ease both;
+  }
+  .flow-block h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .flow-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .flow-chain {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .flow-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .flow-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .flow-dot {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .flow-line {
+    width: 2px;
+    flex: 1;
+    min-height: 24px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    margin: 4px 0;
+    opacity: 0.3;
+  }
+  .flow-content {
+    padding-bottom: 24px;
+    flex: 1;
+  }
+  .flow-content h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .flow-content p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .flow-item:last-child .flow-content {
+    padding-bottom: 0;
+  }
+
+  /* Principle block */
+  .principle-block {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.5s 0.2s ease both;
+  }
+  .principle-block h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .principle-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 560px) {
+    .principle-items { grid-template-columns: 1fr; }
+  }
+  .principle-item {
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .principle-item strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+  }
+
+  /* Steps section */
+  .steps-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    animation: fadeUp 0.5s 0.25s ease both;
+  }
+
+  /* Step card */
+  .step-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    animation: fadeUp 0.5s ease both;
+  }
+  .step-card:hover { box-shadow: var(--shadow-md); }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .step-header:hover { background: var(--surface-2); }
+
+  .step-num {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: ui-monospace, monospace;
+  }
+  .step-header-text { flex: 1; }
+  .step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .step-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .step-chevron {
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+  .step-card.open .step-chevron { transform: rotate(180deg); }
+
+  .step-body {
+    display: none;
+    padding: 0 24px 24px;
+    border-top: 1px solid var(--border);
+    animation: fadeIn 0.2s ease;
+  }
+  .step-card.open .step-body { display: block; }
+
+  .step-section {
+    margin-top: 20px;
+  }
+  .step-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .step-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+  }
+  .step-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .step-text p { margin-bottom: 10px; }
+  .step-text p:last-child { margin-bottom: 0; }
+
+  /* Fields grid */
+  .fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .field-chip {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+  .field-chip-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .field-chip-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 13px;
+  }
+  .field-chip.auto {
+    background: var(--accent-light);
+    border-color: rgba(91,94,244,0.15);
+  }
+  .field-chip.auto .field-chip-label { color: var(--accent-soft); }
+  .field-chip.auto .field-chip-name { color: var(--accent); }
+
+  /* Example block */
+  .example-block {
+    margin-top: 16px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .example-header {
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .example-body {
+    padding: 16px;
+  }
+  .example-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13px;
+  }
+  .example-row:last-child { border-bottom: none; }
+  .example-key { color: var(--text-secondary); }
+  .example-val {
+    font-family: ui-monospace, monospace;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 13px;
+  }
+  .example-val.auto {
+    color: var(--accent);
+  }
+  .example-val.auto::before {
+    content: '→ ';
+    opacity: 0.5;
+  }
+
+  /* Check list */
+  .check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .check-item::before {
+    content: '✓';
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Loading indicator */
+  .loading-bar {
+    margin-top: 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .loading-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 12px 4px;
+    background: var(--surface);
+  }
+  .loading-track {
+    height: 8px;
+    background: var(--surface-2);
+    position: relative;
+  }
+  .loading-fill {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 0;
+    transition: width 0.8s ease;
+  }
+  .loading-fill.green { background: var(--green); width: 50%; }
+  .loading-fill.yellow { background: var(--yellow); width: 70%; }
+  .loading-fill.red { background: var(--red); width: 90%; }
+  .loading-zones {
+    display: flex;
+    font-size: 11px;
+    padding: 6px 12px 8px;
+    background: var(--surface);
+    gap: 16px;
+  }
+  .zone { display: flex; align-items: center; gap: 4px; color: var(--text-secondary); }
+  .zone-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .zone-dot.green { background: var(--green); }
+  .zone-dot.yellow { background: var(--yellow); }
+  .zone-dot.red { background: var(--red); }
+
+  /* Optional section */
+  .optional-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+    padding: 24px;
+    margin-top: 12px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .optional-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+  }
+  .optional-card h2 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .optional-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .optional-cases {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .optional-case {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .optional-case-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  /* Final check */
+  .final-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-top: 32px;
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.5s ease both;
+  }
+  .final-card h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .final-card > p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .final-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .final-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+  .final-step-num {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: ui-monospace, monospace;
+  }
+  .final-step-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .final-step-content p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .final-question {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background: var(--accent-light);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Delay steps */
+  .step-card:nth-child(1) { animation-delay: 0.28s; }
+  .step-card:nth-child(2) { animation-delay: 0.33s; }
+  .step-card:nth-child(3) { animation-delay: 0.38s; }
+  .step-card:nth-child(4) { animation-delay: 0.43s; }
+  .step-card:nth-child(5) { animation-delay: 0.48s; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 24px; }
+    .main { padding: 24px 16px 60px; }
+    .step-header { padding: 16px 18px; }
+    .step-body { padding: 0 18px 20px; }
+    .why-block, .flow-block, .principle-block { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+
+<main class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">📋 Планирование</div>
+    <h1>Как декомпозировать план продаж</h1>
+    <p class="hero-desc">Пошаговая инструкция для руководителя филиала. Заполняется в начале каждого месяца — занимает 10–15 минут.</p>
+  </div>
+
+  <!-- Why -->
+  <div class="why-block">
+    <h2>
+      <div class="why-icon">💡</div>
+      Зачем это нужно
+    </h2>
+    <div class="why-text">
+      <p>Филиал получает план на месяц — допустим, <strong>3 000 000 ₽</strong>. Сама по себе эта цифра не отвечает на вопрос: что именно нужно делать каждый день, чтобы план был выполнен?</p>
+      <p style="margin-top:10px;">Декомпозиция решает эту задачу. Сумма плана раскладывается на конкретные показатели: сколько нужно заказов, с каким средним чеком, сколько клиентов должен принять врач. Результат — <strong>не просто цифра, а набор ориентиров для управления филиалом в течение месяца.</strong></p>
+    </div>
+    <div class="why-result">
+      После заполнения становится понятно: сколько заказов нужно в день, какой чек должен быть у каждого заказа и хватает ли доступных окон врача, чтобы принять нужное количество клиентов.
+    </div>
+  </div>
+
+  <!-- Flow -->
+  <div class="flow-block">
+    <h2>
+      <div class="flow-icon">🔗</div>
+      Как всё связано
+    </h2>
+    <div class="flow-chain">
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot">1</div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <h3>Общий план → план по очкам</h3>
+          <p>Из суммы плана выделяется та часть, которая приходится на очки — основной продукт.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot">2</div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <h3>Средний чек → количество заказов</h3>
+          <p>План по очкам делится на средний чек одного заказа — результат показывает сколько заказов нужно сделать.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot">3</div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <h3>ВТЛ → усиление чека</h3>
+          <p>Высокотехнологичные линзы дают клиенту лучший продукт и сильнее всего поднимают средний чек.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot">4</div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <h3>Конверсии → количество рецептов и подборов</h3>
+          <p>Через конверсии рассчитывается сколько рецептов и подборов нужно, чтобы получить нужное количество заказов.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot">5</div>
+        </div>
+        <div class="flow-content">
+          <h3>Окна врача → проверка реалистичности</h3>
+          <p>Нужное количество подборов сверяется с реальным расписанием врача. Становится видно, выполним ли план.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Principle -->
+  <div class="principle-block">
+    <h2>📐 Как определить плановое значение</h2>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;line-height:1.7;">Плановое значение — не желаемая цифра и не механически перенесённый факт. Это обоснованный ориентир, который строится в два шага.</p>
+    <div class="principle-items">
+      <div class="principle-item">
+        <strong>Шаг 1 — основной ориентир</strong>
+        Среднее за последние 3 месяца. Это база для любого показателя: чека, конверсии, доли ВТЛ.
+      </div>
+      <div class="principle-item">
+        <strong>Шаг 2 — проверка сезонности</strong>
+        Аналогичный месяц прошлого года. Если тогда показатель был заметно выше или ниже — это сигнал не ставить значение механически по последним трём месяцам.
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:16px 18px;background:var(--accent-light);border-radius:var(--radius-sm);border-left:3px solid var(--accent);font-size:14px;color:var(--text-primary);line-height:1.7;">
+      <strong>Важно:</strong> задача декомпозиции — не зафиксировать прошлое, а найти такую комбинацию чеков и конверсий, при которой амбициозный план становится выполнимым. Если при текущих значениях окон врача не хватает — это сигнал вернуться и пересмотреть чек или конверсии. Именно в поиске этой комбинации и есть смысл инструмента.
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps-label">Шаги заполнения</div>
+
+  <!-- Step 1 -->
+  <div class="step-card" id="step1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-header-text">
+        <div class="step-title">Общий план от собственника</div>
+        <div class="step-subtitle">Стартовая точка всех расчётов</div>
+      </div>
+      <div class="step-chevron">⌄</div>
+    </div>
+    <div class="step-body">
+      <div class="step-section">
+        <div class="step-section-label">Заполняется вручную</div>
+        <div class="fields-grid">
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Общий план продаж</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">% продаж очков</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что считает система</div>
+        <div class="fields-grid">
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">План по очкам</div>
+          </div>
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Прочее</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Как заполнить</div>
+        <div class="step-text">
+          <p><strong>Общий план продаж</strong> — берётся из утверждённого плана, доведённого от собственника или коммерческого директора. Эта цифра не рассчитывается самостоятельно.</p>
+          <p style="margin-top:10px;"><strong>% продаж очков</strong> — зависит от того, как поставлен план:</p>
+        </div>
+
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px;">
+
+          <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
+            <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;">
+              Сценарий А — план по очкам уже задан
+            </div>
+            <div style="padding:14px 16px;font-size:13px;color:var(--text-secondary);line-height:1.7;">
+              Если известны и общий план, и сумма по очкам — просто считаем долю:
+              <div style="margin-top:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+                <div style="padding:8px 14px;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;font-size:13px;">
+                  <span style="color:var(--text-secondary);">Общий план</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:600;">3 000 000 ₽</span>
+                </div>
+                <div style="padding:8px 14px;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;font-size:13px;">
+                  <span style="color:var(--text-secondary);">План по очкам</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:600;">2 100 000 ₽</span>
+                </div>
+                <div style="padding:8px 14px;display:flex;justify-content:space-between;font-size:13px;">
+                  <span style="color:var(--text-secondary);">2 100 000 ÷ 3 000 000 × 100%</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);">= 70%</span>
+                </div>
+              </div>
+              <div style="margin-top:10px;color:var(--text-secondary);">Полученное значение и вводится в поле <strong style="color:var(--text-primary);">% продаж очков</strong>.</div>
+            </div>
+          </div>
+
+          <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;">
+            <div style="padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:0.06em;">
+              Сценарий Б — только общий план, долю определяем сами
+            </div>
+            <div style="padding:14px 16px;font-size:13px;color:var(--text-secondary);line-height:1.7;">
+              Смотрим на фактическую долю очков за последние 3 месяца в Оптимайзере и считаем среднее:
+              <div style="margin-top:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+                <div style="padding:8px 14px;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;font-size:13px;">
+                  <span style="color:var(--text-secondary);">Январь</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:600;">68%</span>
+                </div>
+                <div style="padding:8px 14px;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;font-size:13px;">
+                  <span style="color:var(--text-secondary);">Февраль</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:600;">71%</span>
+                </div>
+                <div style="padding:8px 14px;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;font-size:13px;">
+                  <span style="color:var(--text-secondary);">Март</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:600;">70%</span>
+                </div>
+                <div style="padding:8px 14px;display:flex;justify-content:space-between;font-size:13px;">
+                  <span style="color:var(--text-secondary);">Среднее за 3 месяца</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);">≈ 70%</span>
+                </div>
+              </div>
+              <div style="margin-top:10px;">Дополнительно — сверить с аналогичным месяцем прошлого года: если тогда доля была заметно другой, это нужно учесть.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Пример</div>
+        <div class="example-block">
+          <div class="example-header">Пример расчёта</div>
+          <div class="example-body">
+            <div class="example-row">
+              <span class="example-key">Общий план продаж</span>
+              <span class="example-val">3 628 800 ₽</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">% продаж очков</span>
+              <span class="example-val">70%</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">План по очкам</span>
+              <span class="example-val auto">2 540 160 ₽</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Прочее</span>
+              <span class="example-val auto">1 088 640 ₽</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что проверить</div>
+        <div class="check-list">
+          <div class="check-item">% очков не взят произвольно — значение опирается на рекомендацию системы</div>
+          <div class="check-item">Доля очков не занижена ради уменьшения количества заказов на бумаге</div>
+          <div class="check-item">Доля очков не завышена настолько, что дальше расчёт потребует нереалистичный чек</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step-card" id="step2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-header-text">
+        <div class="step-title">Средний чек заказа</div>
+        <div class="step-subtitle">Из чего складывается один заказ</div>
+      </div>
+      <div class="step-chevron">⌄</div>
+    </div>
+    <div class="step-body">
+      <div class="step-section">
+        <div class="step-section-label">Заполняется вручную</div>
+        <div class="fields-grid">
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Ср. чек линз</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Ср. чек оправ</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Ср. чек работы мастера</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что считает система</div>
+        <div class="fields-grid">
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Ср. чек заказа (итого)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Как заполнить</div>
+        <div class="step-text">
+          <p>Каждый заказ на очки состоит из трёх частей: линзы, оправа и работа мастера. Плановый чек задаётся по каждой части отдельно.</p>
+          <p><strong>Ср. чек линз</strong> — главная составляющая. Именно здесь сильнее всего влияет доля ВТЛ (шаг 3). За основу берётся рекомендация системы с проверкой динамики последних месяцев.</p>
+          <p><strong>Ср. чек оправ</strong> — значение ниже рекомендации делает план по заказам тяжелее. Стоит убедиться, что чек не занижен.</p>
+          <p><strong>Ср. чек работы мастера</strong> — обычно стабильная часть. Опора на рекомендацию и сезонный аналог прошлого года.</p>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Пример</div>
+        <div class="example-block">
+          <div class="example-header">Пример расчёта</div>
+          <div class="example-body">
+            <div class="example-row">
+              <span class="example-key">Ср. чек линз</span>
+              <span class="example-val">10 000 ₽</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Ср. чек оправ</span>
+              <span class="example-val">5 000 ₽</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Ср. чек работы мастера</span>
+              <span class="example-val">2 000 ₽</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Ср. чек заказа (итого)</span>
+              <span class="example-val auto">17 000 ₽</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что проверить</div>
+        <div class="check-list">
+          <div class="check-item">Ни одна из частей не занижена без основания</div>
+          <div class="check-item">Ни одна из частей не завышена — особенно линзы, если нет реального роста</div>
+          <div class="check-item">Итоговый чек выглядит реалистично для этого филиала в этом месяце</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step-card" id="step3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-header-text">
+        <div class="step-title">ВТЛ — параметры</div>
+        <div class="step-subtitle">Высокотехнологичные линзы — главный рычаг чека</div>
+      </div>
+      <div class="step-chevron">⌄</div>
+    </div>
+    <div class="step-body">
+      <div class="step-section">
+        <div class="step-section-label">Что такое ВТЛ</div>
+        <div class="step-text">
+          <p>ВТЛ — высокотехнологичные линзы: прогрессивные, офисные, фриформ и другие. Это линзы с лучшим качеством для клиента и более высокой стоимостью. Чем больше доля ВТЛ в заказах — тем выше средний чек линз и тем лучше продукт получает клиент.</p>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Заполняется вручную</div>
+        <div class="fields-grid">
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">% рекомендаций ВТЛ</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">% продаж ВТЛ</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Ср. чек линз ВТЛ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что считает система</div>
+        <div class="fields-grid">
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Кол-во рекомендаций ВТЛ</div>
+          </div>
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Кол-во заказов ВТЛ</div>
+          </div>
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Сумма ВТЛ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Как заполнить</div>
+        <div class="step-text">
+          <p><strong>% рекомендаций ВТЛ</strong> — доля подборов, в которых врач хотя бы в одном рецепте рекомендовал линзу ВТЛ. Отражает дисциплину врача по стандарту. Значение не завышается, если последние месяцы показатель не дотягивал.</p>
+          <p><strong>% продаж ВТЛ</strong> — доля заказов, в которых клиент в итоге купил ВТЛ. Отражает результат совместной работы врача и консультанта: врач рекомендовал, консультант отработал возражения и довёл до продажи. Значение ставится по реальной способности команды, не по желаемому результату.</p>
+          <p><strong>Ср. чек линз ВТЛ</strong> — это не обычный чек линз, а только чек в ВТЛ-заказах. Эти два поля не нужно путать между собой.</p>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Пример</div>
+        <div class="example-block">
+          <div class="example-header">Пример расчёта</div>
+          <div class="example-body">
+            <div class="example-row">
+              <span class="example-key">% рекомендаций ВТЛ</span>
+              <span class="example-val">80%</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">% продаж ВТЛ</span>
+              <span class="example-val">77%</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Ср. чек линз ВТЛ</span>
+              <span class="example-val">35 000 ₽</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что проверить</div>
+        <div class="check-list">
+          <div class="check-item">% продаж ВТЛ не завышен без опоры на реальный факт</div>
+          <div class="check-item">Чек линз ВТЛ не перепутан с обычным чеком линз из шага 2</div>
+          <div class="check-item">Сумма ВТЛ выглядит реалистично для этого филиала</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step-card" id="step4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-header-text">
+        <div class="step-title">Конверсии и состав заказов</div>
+        <div class="step-subtitle">Сколько нужно заказов, рецептов и подборов</div>
+      </div>
+      <div class="step-chevron">⌄</div>
+    </div>
+    <div class="step-body">
+      <div class="step-section">
+        <div class="step-section-label">Заполняется вручную</div>
+        <div class="fields-grid">
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">% рецепт → заказ</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">% подбор → рецепт</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">% чужих заказов</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что считает система</div>
+        <div class="fields-grid">
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Заказов всего</div>
+          </div>
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Наших заказов</div>
+          </div>
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Чужих заказов</div>
+          </div>
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Нужно рецептов</div>
+          </div>
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Нужно подборов</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Как заполнить</div>
+        <div class="step-text">
+          <p><strong>% рецепт → заказ</strong> — доля рецептов, по которым оформлен заказ. Конверсия консультанта. Значение ставится по реальной способности команды, не по желаемому результату.</p>
+          <p><strong>% подбор → рецепт</strong> — доля подборов, завершившихся выпиской рецепта. Конверсия врача. Сверяется с аналогичным месяцем прошлого года.</p>
+          <p><strong>% чужих заказов</strong> — доля заказов по стороннему рецепту. Важно не завышать этот показатель: высокая доля чужих означает, что клиенты приходят мимо собственной диагностики, и это сигнал для работы с трафиком.</p>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Пример</div>
+        <div class="example-block">
+          <div class="example-header">Пример расчёта</div>
+          <div class="example-body">
+            <div class="example-row">
+              <span class="example-key">% рецепт → заказ</span>
+              <span class="example-val">90%</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">% подбор → рецепт</span>
+              <span class="example-val">90%</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">% чужих заказов</span>
+              <span class="example-val">3%</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Заказов всего</span>
+              <span class="example-val auto">~155</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Нужно рецептов</span>
+              <span class="example-val auto">~150</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Нужно подборов</span>
+              <span class="example-val auto">~168</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что проверить</div>
+        <div class="check-list">
+          <div class="check-item">Конверсия рецепт → заказ не завышена относительно факта</div>
+          <div class="check-item">Конверсия подбор → рецепт не завышена относительно факта</div>
+          <div class="check-item">Доля чужих заказов не завышена — за этим показателем важно следить отдельно</div>
+          <div class="check-item">Итоговое количество рецептов и подборов достижимо для филиала</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step-card" id="step5">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div class="step-header-text">
+        <div class="step-title">Трафик — окна и загрузка</div>
+        <div class="step-subtitle">Хватает ли врача под план</div>
+      </div>
+      <div class="step-chevron">⌄</div>
+    </div>
+    <div class="step-body">
+      <div class="step-section">
+        <div class="step-section-label">Заполняется вручную</div>
+        <div class="fields-grid">
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Количество окон</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что считает система</div>
+        <div class="fields-grid">
+          <div class="field-chip auto">
+            <div class="field-chip-label">Автоматически</div>
+            <div class="field-chip-name">Нужен % загрузки</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Как заполнить</div>
+        <div class="step-text">
+          <p><strong>Количество окон</strong> — плановая ёмкость врача: сколько слотов в расписании доступно для приёма клиентов в этом месяце. Указывается по реальному расписанию, а не приблизительно.</p>
+          <p>Система возьмёт нужное количество подборов из шага 4 и сопоставит с количеством окон — результатом будет % загрузки врача.</p>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Как читать результат</div>
+        <div class="loading-bar">
+          <div class="loading-labels">
+            <span style="color:var(--green)">до 60% — достаточно</span>
+            <span style="color:var(--yellow)">60–80% — нормально</span>
+            <span style="color:var(--red)">80%+ — перегруз</span>
+          </div>
+          <div class="loading-track">
+            <div class="loading-fill green"></div>
+          </div>
+          <div class="loading-zones">
+            <div class="zone"><div class="zone-dot green"></div>Трафика достаточно</div>
+            <div class="zone"><div class="zone-dot yellow"></div>Нормальная загрузка</div>
+            <div class="zone"><div class="zone-dot red"></div>План нереалистичен</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Пример</div>
+        <div class="example-block">
+          <div class="example-header">Пример расчёта</div>
+          <div class="example-body">
+            <div class="example-row">
+              <span class="example-key">Количество окон</span>
+              <span class="example-val">320</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">Нужно подборов</span>
+              <span class="example-val">168</span>
+            </div>
+            <div class="example-row">
+              <span class="example-key">% загрузки</span>
+              <span class="example-val auto" style="color:var(--green)">53% ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что проверить</div>
+        <div class="check-list">
+          <div class="check-item">Загрузка не превышает 80% — если превышает, стоит пересмотреть план или чек</div>
+          <div class="check-item">Количество окон соответствует реальному расписанию врача, а не взято приблизительно</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional -->
+  <div class="steps-label" style="margin-top:32px;">Дополнительно</div>
+  <div class="optional-card">
+    <div class="optional-badge">⚙ Необязательно</div>
+    <h2>Детализация чеков</h2>
+    <p>Этот блок не требуется для базовой декомпозиции. Заполняется по желанию — когда нужна более глубокая детализация структуры продаж филиала.</p>
+    <p>Блок разделён на два раздела: <strong>наши заказы</strong> (после собственной диагностики) и <strong>чужие заказы</strong> (по стороннему рецепту). По каждому — отдельные чеки линз, оправ и работы мастера.</p>
+    <div class="optional-cases">
+      <div class="optional-case">
+        <div class="optional-case-icon">📊</div>
+        <div>Нужно видеть структуру своих и чужих заказов раздельно</div>
+      </div>
+      <div class="optional-case">
+        <div class="optional-case-icon">🔍</div>
+        <div>Требуется точнее разбирать план-факт по итогам месяца</div>
+      </div>
+      <div class="optional-case">
+        <div class="optional-case-icon">📉</div>
+        <div>Важно понять, где именно теряется чек — на своих или на чужих заказах</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final check -->
+  <div class="final-card">
+    <h2>
+      <div class="why-icon">✅</div>
+      Итоговая проверка плана
+    </h2>
+    <p>После заполнения всех шагов план проверяется в строгой последовательности — каждый следующий шаг зависит от предыдущего.</p>
+    <div class="final-steps">
+      <div class="final-step">
+        <div class="final-step-num">1</div>
+        <div class="final-step-content">
+          <h4>Средний чек заказа</h4>
+          <p>Проверяется корректность линз, оправы и работы мастера. Ошибка на этом уровне распространяется на весь дальнейший расчёт.</p>
+        </div>
+      </div>
+      <div class="final-step">
+        <div class="final-step-num">2</div>
+        <div class="final-step-content">
+          <h4>ВТЛ — параметры</h4>
+          <p>Реалистичность % продаж ВТЛ. Корректность чека линз ВТЛ — не перепутан ли с обычным чеком линз.</p>
+        </div>
+      </div>
+      <div class="final-step">
+        <div class="final-step-num">3</div>
+        <div class="final-step-content">
+          <h4>Конверсии</h4>
+          <p>Конверсии не завышены. Доля чужих заказов не занижена.</p>
+        </div>
+      </div>
+      <div class="final-step">
+        <div class="final-step-num">4</div>
+        <div class="final-step-content">
+          <h4>% продаж очков</h4>
+          <p>Доля не занижена ради упрощения картины по заказам. Доля не завышена без обоснования.</p>
+        </div>
+      </div>
+    </div>
+    <div class="final-question">
+      Итоговый вопрос: какой из введённых вручную показателей делает расчёт нереалистичным для этого филиала в этом месяце — чек, ВТЛ, конверсии или доля очков?
+    </div>
+  </div>
+
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const stepIds = ['step1','step2','step3','step4','step5'];
+
+    stepIds.forEach(function(id) {
+      const card = document.getElementById(id);
+      if (!card) return;
+      const header = card.querySelector('.step-header');
+      if (!header) return;
+
+      header.addEventListener('click', function() {
+        const isOpen = card.classList.contains('open');
+        stepIds.forEach(function(sid) {
+          const c = document.getElementById(sid);
+          if (c) c.classList.remove('open');
+        });
+        if (!isOpen) {
+          card.classList.add('open');
+          setTimeout(function() {
+            const top = card.getBoundingClientRect().top + window.scrollY - 20;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          }, 50);
+        }
+      });
+    });
+  });
+</script>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

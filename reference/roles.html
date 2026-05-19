@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Роли и доступы — Optimizer</title>
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #22c55e;
+    --green-bg: #f0fdf4;
+    --green-border: #bbf7d0;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Hero */
+  .hero { margin-bottom: 40px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+    background: var(--accent-light);
+  }
+
+  /* Role cards */
+  .role-cards { display: flex; flex-direction: column; gap: 12px; }
+
+  .role-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .role-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .role-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .role-badge--employee { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+  .role-badge--rop      { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .role-badge--kd       { background: #fdf4ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+  .role-badge--admin    { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+
+  .role-who {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+  }
+  .role-code {
+    font-size: 11px;
+    font-family: ui-monospace, monospace;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .role-body { padding: 14px 18px; background: var(--surface); }
+  .role-desc {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+  .role-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .section-pill {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .section-pill--new {
+    background: var(--accent-light);
+    border-color: rgba(91,94,244,0.25);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Access matrix table */
+  .matrix-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  thead th:first-child { border-radius: var(--radius) 0 0 0; }
+  thead th:last-child  { border-radius: 0 var(--radius) 0 0; }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td {
+    padding: 10px 12px;
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+  tbody td:first-child {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .check { color: var(--green); font-size: 15px; }
+  .dash  { color: var(--border); font-size: 15px; }
+  .check-plus { color: var(--accent); font-size: 13px; font-weight: 700; }
+
+  /* Tip */
+  .tip {
+    padding: 14px 18px;
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Справочник
+    </div>
+    <h1>Роли и доступы</h1>
+    <p class="hero-desc">
+      Четыре роли в системе с разными уровнями доступа. Каждая роль видит только те разделы, которые нужны для её работы.
+    </p>
+  </div>
+
+  <!-- Роли -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon">👤</div>
+      Роли в системе
+    </div>
+    <div class="role-cards">
+
+      <!-- Сотрудник -->
+      <div class="role-card">
+        <div class="role-head">
+          <span class="role-badge role-badge--employee">Сотрудник</span>
+          <span class="role-who">Врач-оптометрист, консультант</span>
+          <span class="role-code">EMPLOYEE</span>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">
+            Базовая роль. Как правило, сотрудники не работают с системой напрямую — носят бейджи и взаимодействуют с клиентами. Доступ к основным разделам аналитики есть, но используется редко.
+          </div>
+          <div class="role-sections">
+            <span class="section-pill">Главная страница</span>
+            <span class="section-pill">Динамика продаж</span>
+            <span class="section-pill">Результаты сотрудников</span>
+            <span class="section-pill">Карта врача / консультанта</span>
+            <span class="section-pill">Анализ филиала</span>
+            <span class="section-pill">Аудиобейджи</span>
+            <span class="section-pill">План задач на неделю</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- РОП -->
+      <div class="role-card">
+        <div class="role-head">
+          <span class="role-badge role-badge--rop">РОП</span>
+          <span class="role-who">Руководитель отдела продаж</span>
+          <span class="role-code">SALES_HEAD</span>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">
+            Основной пользователь системы. Работает с аналитикой ежедневно: разбирает результаты филиалов, смотрит карты сотрудников, ставит задачи, контролирует бейджи. Дополнительно видит активность и управляет пользователями.
+          </div>
+          <div class="role-sections">
+            <span class="section-pill">Все разделы сотрудника</span>
+            <span class="section-pill section-pill--new">+ Активность</span>
+            <span class="section-pill section-pill--new">+ Пользователи</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- КД -->
+      <div class="role-card">
+        <div class="role-head">
+          <span class="role-badge role-badge--kd">КД</span>
+          <span class="role-who">Коммерческий директор</span>
+          <span class="role-code">COMMERCIAL_DIRECTOR</span>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">
+            Стратегический уровень. Видит всё, что видит РОП, плюс разделы для управления мотивацией и еженедельного контроля РОПов через Планёрку КД.
+          </div>
+          <div class="role-sections">
+            <span class="section-pill">Все разделы РОПа</span>
+            <span class="section-pill section-pill--new">+ Мотивация</span>
+            <span class="section-pill section-pill--new">+ Планёрка КД</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Администратор -->
+      <div class="role-card">
+        <div class="role-head">
+          <span class="role-badge role-badge--admin">Администратор</span>
+          <span class="role-who">Администратор системы</span>
+          <span class="role-code">ADMINISTRATOR / ROOT</span>
+        </div>
+        <div class="role-body">
+          <div class="role-desc">
+            Полный доступ ко всем разделам без ограничений. Управляет справочниками, настройками и учётными записями пользователей.
+          </div>
+          <div class="role-sections">
+            <span class="section-pill">Все разделы системы</span>
+            <span class="section-pill section-pill--new">+ Настройки</span>
+            <span class="section-pill section-pill--new">+ Управление справочниками</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Матрица доступа -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon">📋</div>
+      Матрица доступа по разделам
+    </div>
+    <div class="matrix-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Раздел</th>
+            <th>Сотрудник</th>
+            <th>РОП</th>
+            <th>КД</th>
+            <th>Администратор</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Главная страница</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Результаты по филиалам</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Анализ филиала</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Карта врача / консультанта</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Динамика продаж</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Результаты сотрудников</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>План задач на неделю</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Аудиобейджи</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Речевая аналитика — колл-центр</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Чат с AI</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Активность</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Пользователи</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Мотивация</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Планёрка КД</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tip">
+      Доступ к «Чат с AI» и некоторым разделам может настраиваться индивидуально — уточни у администратора системы.
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

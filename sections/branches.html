@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Результаты по филиалам — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--green  { background: var(--green-bg); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Branch card demo */
+  .branch-demo {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .branch-header {
+    display: flex; align-items: center; gap: 0;
+    background: var(--surface); padding: 0;
+  }
+  .branch-zone-bar {
+    width: 4px; align-self: stretch; flex-shrink: 0;
+  }
+  .branch-zone-bar--green  { background: var(--green); }
+  .branch-zone-bar--yellow { background: #eab308; }
+  .branch-zone-bar--red    { background: var(--red); }
+  .branch-header-inner {
+    flex: 1; display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px;
+  }
+  .branch-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .branch-zone-badge {
+    font-size: 10.5px; font-weight: 600;
+    padding: 2px 8px; border-radius: 100px; border: 1px solid;
+  }
+  .branch-zone-badge--green  { color: var(--green); background: var(--green-bg); border-color: rgba(22,163,74,0.2); }
+  .branch-zone-badge--yellow { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.2); }
+  .branch-zone-badge--red    { color: var(--red); background: var(--red-bg); border-color: rgba(220,38,38,0.2); }
+  .branch-quick-stats {
+    display: flex; align-items: center; gap: 16px; margin-left: auto;
+  }
+  .branch-quick-stat { text-align: right; }
+  .branch-quick-label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+  .branch-quick-value { font-size: 13.5px; font-weight: 700; color: var(--text-primary); }
+  .branch-btns { display: flex; gap: 4px; padding-right: 12px; }
+  .branch-btn {
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    background: var(--accent-light); border: 1px solid rgba(91,94,244,0.2);
+    padding: 4px 10px; border-radius: 5px; cursor: pointer;
+  }
+  .branch-btn--warn {
+    color: var(--yellow); background: var(--yellow-bg);
+    border-color: rgba(202,138,4,0.2);
+  }
+
+  /* Metric row demo */
+  .metric-row {
+    display: flex; align-items: center;
+    padding: 9px 16px; border-top: 1px solid var(--border);
+    gap: 8px; background: var(--surface);
+  }
+  .metric-row:hover { background: var(--surface-2); }
+  .metric-name { flex: 1; font-size: 13px; color: var(--text-secondary); }
+  .metric-fact { font-size: 13px; font-weight: 600; color: var(--text-primary); min-width: 52px; text-align: right; }
+  .metric-plan { font-size: 11.5px; color: var(--text-muted); min-width: 52px; text-align: right; }
+  .metric-pct {
+    font-size: 11.5px; font-weight: 600;
+    padding: 2px 7px; border-radius: 100px;
+    min-width: 46px; text-align: center;
+  }
+  .metric-pct--green  { color: var(--green); background: var(--green-bg); }
+  .metric-pct--yellow { color: var(--yellow); background: var(--yellow-bg); }
+  .metric-pct--red    { color: var(--red); background: var(--red-bg); }
+  .metric-trend {
+    font-size: 11px; font-weight: 600;
+    padding: 2px 7px; border-radius: 100px;
+    min-width: 72px; text-align: center;
+  }
+  .metric-trend--up   { color: var(--green); background: var(--green-bg); }
+  .metric-trend--down { color: var(--red); background: var(--red-bg); }
+  .metric-trend--flat { color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border); }
+
+  /* Block sections */
+  .block-section {
+    border-top: 1px solid var(--border);
+    padding: 8px 16px 4px;
+    background: var(--surface-2);
+  }
+  .block-section-title {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  /* Five blocks list */
+  .blocks-list { display: flex; flex-direction: column; gap: 10px; }
+  .block-item {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+  }
+  .block-item-title { font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .block-item-metrics { font-size: 12.5px; color: var(--text-muted); line-height: 1.7; }
+
+  /* Steps */
+  .steps-list { display: flex; flex-direction: column; gap: 10px; }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step-item strong { color: var(--text-primary); font-weight: 600; }
+
+  .tip {
+    background: var(--accent-light);
+    border: 1px solid rgba(91,94,244,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px; margin-bottom: 16px;
+    font-size: 14px; color: var(--text-primary); line-height: 1.6;
+  }
+  .tip-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 5px;
+  }
+
+  .warn {
+    background: var(--yellow-bg);
+    border: 1px solid rgba(202,138,4,0.25);
+    border-left: 3px solid #eab308;
+    border-radius: var(--radius);
+    padding: 14px 18px; margin-bottom: 16px;
+    font-size: 14px; color: #78350f; line-height: 1.6;
+  }
+  .warn-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Результаты по филиалам</h1>
+    <p class="hero-desc">Блок на главной странице. Показывает текущую ситуацию по каждому салону — зона, ключевые показатели, воронка. Главный инструмент РОПа для ежедневного контроля.</p>
+  </div>
+
+  <!-- Строка филиала -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🏢</div>
+      Строка филиала (свёрнутый вид)
+    </div>
+
+    <div class="branch-demo">
+      <div class="branch-header">
+        <div class="branch-zone-bar branch-zone-bar--yellow"></div>
+        <div class="branch-header-inner">
+          <div class="branch-name">Оптика Центр</div>
+          <span class="branch-zone-badge branch-zone-badge--yellow">Жёлтая зона</span>
+          <div class="branch-quick-stats">
+            <div class="branch-quick-stat">
+              <div class="branch-quick-label">Ср. чек</div>
+              <div class="branch-quick-value">46К ₽</div>
+            </div>
+            <div class="branch-quick-stat">
+              <div class="branch-quick-label">Выручка</div>
+              <div class="branch-quick-value">1.2М ₽</div>
+            </div>
+          </div>
+        </div>
+        <div class="branch-btns">
+          <div class="branch-btn branch-btn--warn">⚠ Дополнить план</div>
+          <div class="branch-btn">✦ Анализ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Цветная полоса слева</strong> — зона филиала: зелёная / жёлтая / красная</span></div>
+      <div class="bullet-item"><span><strong>Зона badge</strong> — текстовое обозначение рядом с названием</span></div>
+      <div class="bullet-item"><span><strong>Ср. чек и выручка</strong> — быстрые итоговые показатели</span></div>
+      <div class="bullet-item"><span><strong>Кнопка «План»</strong> — переходит на страницу декомпозиции плана для этого филиала. Жёлтая — если план не загружен или неполный</span></div>
+      <div class="bullet-item"><span><strong>Кнопка «Анализ»</strong> — открывает AI-анализ филиала: топ проблем, лучшие/худшие сотрудники, рекомендации</span></div>
+    </div>
+  </div>
+
+  <!-- Раскрытый филиал -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📊</div>
+      Раскрытый филиал — пять блоков данных
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px">Клик на строку филиала раскрывает детальную таблицу. Блоки идут сверху вниз:</p>
+
+    <div class="blocks-list">
+      <div class="block-item">
+        <div class="block-item-title">1 · Воронка продаж</div>
+        <div class="block-item-metrics">Окна → Подборы → Рецепты → Заказы (наши)</div>
+      </div>
+      <div class="block-item">
+        <div class="block-item-title">2 · Показатели эффективности воронки</div>
+        <div class="block-item-metrics">% загрузки · % подбор→рецепт · % рецепт→заказ · % подбор→заказ (наш)</div>
+      </div>
+      <div class="block-item">
+        <div class="block-item-title">3 · Анализ ВТЛ</div>
+        <div class="block-item-metrics">% рекомендаций · % продаж · Кол-во рекомендаций · Кол-во заказов · Ср. чек ВТЛ</div>
+      </div>
+      <div class="block-item">
+        <div class="block-item-title">4 · Наши и чужие заказы</div>
+        <div class="block-item-metrics">% чужих · Заказы (чужие) · Ср. чек чужой · Заказы (наши) · Ср. чек наш</div>
+      </div>
+      <div class="block-item">
+        <div class="block-item-title">5 · Итого по всем заказам</div>
+        <div class="block-item-metrics">Итого заказов · Итого сумма · Итого ср. чек</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Строка метрики -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📋</div>
+      Строка метрики
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;line-height:1.6">Каждый показатель в раскрытом блоке — отдельная строка с четырьмя элементами:</p>
+
+    <div class="branch-demo">
+      <div class="block-section">
+        <div class="block-section-title">Показатели эффективности воронки</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">% подбор → рецепт</div>
+        <div class="metric-fact">61%</div>
+        <div class="metric-plan">план 70%</div>
+        <div class="metric-pct metric-pct--red">87%</div>
+        <div class="metric-trend metric-trend--up">↗ Растёт</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">% рецепт → заказ</div>
+        <div class="metric-fact">82%</div>
+        <div class="metric-plan">план 80%</div>
+        <div class="metric-pct metric-pct--green">103%</div>
+        <div class="metric-trend metric-trend--flat">→ Стабильно</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">% подбор → заказ (наш)</div>
+        <div class="metric-fact">50%</div>
+        <div class="metric-plan">план 60%</div>
+        <div class="metric-pct metric-pct--yellow">83%</div>
+        <div class="metric-trend metric-trend--down">↘ Падает</div>
+      </div>
+    </div>
+
+    <div class="bullet-list" style="margin-top:14px">
+      <div class="bullet-item"><span><strong>Факт</strong> — текущее значение за выбранный период</span></div>
+      <div class="bullet-item"><span><strong>План</strong> — плановое значение</span></div>
+      <div class="bullet-item"><span><strong>% выполнения</strong> — красный / жёлтый / зелёный</span></div>
+      <div class="bullet-item"><span><strong>Динамика</strong> — тренд по последним 3 неделям: Растёт / Падает / Стабильно</span></div>
+    </div>
+  </div>
+
+  <!-- Важное различие -->
+  <div class="warn">
+    <div class="warn-label">Не путай % выполнения и динамику</div>
+    Показатель может быть <strong>красным, но расти</strong> — значит, работа уже ведётся, но результата ещё нет. Или <strong>зелёным, но падать</strong> — формально выполняет план, но уже в минус. Всегда смотри оба столбца вместе.
+  </div>
+
+  <!-- Переходы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🔗</div>
+      Переходы из блока
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Кнопка «Анализ»</strong> на строке филиала — AI-разбор: зона, топ-3 проблемы, кнопки постановки задач прямо из анализа</span></div>
+      <div class="bullet-item"><span><strong>Кнопка «Детализация»</strong> у некоторых метрик — разбивка по типам (например, подборы по видам, ВТЛ по типам линз)</span></div>
+      <div class="bullet-item"><span><strong>Кнопка «План»</strong> — переход на страницу декомпозиции плана этого филиала за текущий период</span></div>
+    </div>
+  </div>
+
+  <!-- Алгоритм -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">▶️</div>
+      Алгоритм работы с блоком
+    </div>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>Посмотри <strong>зоны</strong> — найди красные и жёлтые филиалы</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>Сравни <strong>ср. чек и выручку</strong> — быстрая оценка без раскрытия</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div><strong>Раскрой проблемный филиал</strong> — просмотри блоки сверху вниз</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div>Найди <strong>красный показатель</strong> — посмотри динамику рядом</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div>Открой <strong>«Анализ»</strong> — узнай причину и поставь задачу прямо оттуда, или перейди в Анализ филиала за деталями</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-bottom:0;">
+    <div class="tip-label">Фильтры</div>
+    Данные в блоке меняются вместе с фильтрами главной страницы: <strong>период</strong> (месяц) и <strong>РОП</strong> (для КД — фильтр по конкретному руководителю отдела продаж).
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

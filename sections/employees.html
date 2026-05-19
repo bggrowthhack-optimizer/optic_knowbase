@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Результаты сотрудников — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Hero */
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--green  { background: var(--green-bg); }
+
+  /* Bullet list */
+  .bullet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Department header demo */
+  .dept-demo {
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #5b5ef4, #7c3aed);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .dept-demo-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dept-demo-name span { opacity: 0.7; font-size: 13px; font-weight: 400; }
+  .dept-stats {
+    display: flex;
+    gap: 24px;
+  }
+  .dept-stat {
+    text-align: right;
+  }
+  .dept-stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+  .dept-stat-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+  }
+  .dept-demo-hint {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  /* Columns comparison */
+  .cols-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .cols-block {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .cols-block-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-item {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.4;
+  }
+  .col-item::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  /* Color indicators */
+  .color-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .color-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .color-badge {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .color-badge--green  { background: var(--green); }
+  .color-badge--yellow { background: #eab308; }
+  .color-badge--red    { background: var(--red); }
+  .color-text {
+    font-size: 13.5px;
+    font-weight: 600;
+    flex: 0 0 100px;
+  }
+  .color-text--green  { color: var(--green); }
+  .color-text--yellow { color: #ca8a04; }
+  .color-text--red    { color: var(--red); }
+  .color-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* Steps */
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Tip */
+  .tip {
+    background: var(--accent-light);
+    border: 1px solid rgba(91,94,244,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  .tip-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+
+  /* Tag */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 100px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+  .tag--blue { background: var(--accent-light); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Результаты сотрудников</h1>
+    <p class="hero-desc">Сравнительная таблица всех врачей и консультантов за выбранный месяц. Позволяет быстро найти лидеров и отстающих, а затем перейти в детальную карту нужного сотрудника.</p>
+  </div>
+
+  <!-- Зачем -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🎯</div>
+      Зачем открывать эту страницу
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Сравнить сотрудников между собой</strong> — кто в зелёной зоне, кто в красной, по каждому показателю</span></div>
+      <div class="bullet-item"><span><strong>Найти отстающих</strong> — отсортировать по нужной метрике и сразу видеть, кто внизу</span></div>
+      <div class="bullet-item"><span><strong>Найти лучших</strong> — понять, чей опыт можно масштабировать на команду</span></div>
+      <div class="bullet-item"><span><strong>Перейти к детальному разбору</strong> — кликнуть на ФИО и попасть в карту сотрудника</span></div>
+    </div>
+  </div>
+
+  <!-- Устройство -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Устройство страницы
+    </div>
+    <div class="bullet-list" style="margin-bottom: 16px;">
+      <div class="bullet-item"><span><strong>Выбор месяца</strong> — список периодов в правом верхнем углу</span></div>
+      <div class="bullet-item"><span><strong>Два раскрывающихся блока</strong> — «Врачи» и «Консультанты». Клик на заголовок — разворачивает таблицу</span></div>
+      <div class="bullet-item"><span><strong>Показываются только активные</strong> — сотрудники без подборов и заказов за период скрываются</span></div>
+    </div>
+
+    <!-- Dept header demo -->
+    <div class="dept-demo">
+      <div class="dept-demo-name">
+        Врачи
+        <span>↓ нажми чтобы открыть</span>
+      </div>
+      <div class="dept-stats">
+        <div class="dept-stat">
+          <div class="dept-stat-label">Сотрудников</div>
+          <div class="dept-stat-value">8</div>
+        </div>
+        <div class="dept-stat">
+          <div class="dept-stat-label">Ср. конверсия</div>
+          <div class="dept-stat-value">61.4%</div>
+        </div>
+        <div class="dept-stat">
+          <div class="dept-stat-label">Ср. чек</div>
+          <div class="dept-stat-value">14 320 ₽</div>
+        </div>
+      </div>
+    </div>
+    <p class="dept-demo-hint">Заголовок блока всегда показывает сводку по отделу — количество сотрудников, среднюю конверсию и средний чек.</p>
+  </div>
+
+  <!-- Таблица -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📋</div>
+      Таблица сотрудников
+    </div>
+    <div class="bullet-list" style="margin-bottom: 20px;">
+      <div class="bullet-item"><span><strong>Левая колонка с ФИО</strong> зафиксирована — видна всегда при горизонтальном скролле</span></div>
+      <div class="bullet-item"><span><strong>Горизонтальный скролл</strong> — таблица шире экрана, листай вправо чтобы увидеть все колонки</span></div>
+      <div class="bullet-item"><span>Можно тянуть таблицу мышью (drag-scroll)</span></div>
+    </div>
+
+    <div class="cols-grid">
+      <div class="cols-block">
+        <div class="cols-block-title">Врачи</div>
+        <div class="col-item">Подборы</div>
+        <div class="col-item">Рецепты</div>
+        <div class="col-item">Заказы (наши)</div>
+        <div class="col-item">% подбор → рецепт</div>
+        <div class="col-item">% рецепт → заказ</div>
+        <div class="col-item">% подбор → заказ</div>
+        <div class="col-item">% рекомендаций ВТЛ</div>
+        <div class="col-item">% продаж ВТЛ</div>
+        <div class="col-item">Кол-во заказов ВТЛ</div>
+        <div class="col-item">Ср. чек заказа ВТЛ</div>
+        <div class="col-item">Итого заказов</div>
+        <div class="col-item">Итого сумма</div>
+        <div class="col-item">Ср. чек</div>
+        <div class="col-item">Ср. чек линз</div>
+        <div class="col-item">Ср. чек оправы</div>
+        <div class="col-item">Ср. чек мастера</div>
+        <div class="col-item">Балл чек-листа</div>
+      </div>
+      <div class="cols-block">
+        <div class="cols-block-title">Консультанты</div>
+        <div class="col-item">Подборы</div>
+        <div class="col-item">Заказы (наши)</div>
+        <div class="col-item">% чужих заказов</div>
+        <div class="col-item">% подбор → заказ</div>
+        <div class="col-item">Итого заказов</div>
+        <div class="col-item">Итого сумма</div>
+        <div class="col-item">Ср. чек</div>
+        <div class="col-item">Ср. чек линз</div>
+        <div class="col-item">Ср. чек оправы</div>
+        <div class="col-item">Ср. чек мастера</div>
+        <div class="col-item">Балл чек-листа</div>
+      </div>
+    </div>
+
+    <p style="font-size:13px;color:var(--text-muted);margin-top:12px">Набор видимых колонок настраивается кнопкой <strong style="color:var(--text-secondary)">«Настроить колонки»</strong> — убери лишние, оставь только нужные. Настройки сохраняются.</p>
+  </div>
+
+  <!-- Цвета -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🎨</div>
+      Цветовая индикация
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;line-height:1.6">Колонки с плановым значением окрашиваются по % выполнения плана:</p>
+    <div class="color-list">
+      <div class="color-item">
+        <div class="color-badge color-badge--green"></div>
+        <div class="color-text color-text--green">Зелёный</div>
+        <div class="color-desc">≥ 80% плана — норма</div>
+      </div>
+      <div class="color-item">
+        <div class="color-badge color-badge--yellow"></div>
+        <div class="color-text color-text--yellow">Жёлтый</div>
+        <div class="color-desc">55–80% плана — риск, нужно внимание</div>
+      </div>
+      <div class="color-item">
+        <div class="color-badge color-badge--red"></div>
+        <div class="color-text color-text--red">Красный</div>
+        <div class="color-desc">менее 55% плана — требует работы</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:12px">Для <strong style="color:var(--text-secondary)">% чужих заказов</strong> логика обратная: меньше — лучше. Если показатель ниже нормы — зелёный.</p>
+  </div>
+
+  <!-- Сортировка -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">↕️</div>
+      Сортировка
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><span>Клик на <strong>заголовок любой колонки</strong> (кроме ФИО) — включает сортировку</span></div>
+      <div class="bullet-item"><span>Повторный клик меняет направление: по возрастанию → по убыванию → сброс</span></div>
+      <div class="bullet-item"><span>Активная колонка выделена, рядом с заголовком стрелка-индикатор</span></div>
+    </div>
+  </div>
+
+  <!-- Алгоритм работы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">▶️</div>
+      Алгоритм работы
+    </div>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>Выбери нужный <strong>месяц</strong> в правом верхнем углу</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div><strong>Настрой колонки</strong> — оставь только те метрики, которые сейчас важны</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div>Раскрой блок <strong>Врачи</strong> или <strong>Консультанты</strong>, отсортируй по нужной колонке</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div>Найди <strong>лучших</strong> (что масштабировать) и <strong>отстающих</strong> (с кем работать)</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div>Кликни на <strong>ФИО</strong> — перейди в карту сотрудника, разбери детали и поставь задачу</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Нюансы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">💡</div>
+      Нюансы
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Балл чек-листа = 0</strong> — означает «Нет анализа приёмов»: бейджи не загружены или записи не обработаны, а не то что сотрудник получил ноль баллов</span></div>
+      <div class="bullet-item"><span>Сотрудники без подборов и заказов за период <strong>не отображаются</strong> в таблице</span></div>
+    </div>
+  </div>
+
+  <!-- Не путать -->
+  <div class="tip" style="margin-bottom: 16px;">
+    <div class="tip-label">Не путать с Анализом филиала</div>
+    Анализ филиала идёт <strong>от показателя к сотруднику</strong>: система сама находит проблемный показатель и показывает, кто его просаживает. Результаты сотрудников идут <strong>от сотрудника к показателям</strong>: ты сам выбираешь, кого сравнивать. Используй эту страницу когда уже знаешь, на кого смотреть.
+  </div>
+
+  <!-- Переход к карте -->
+  <div class="tip" style="margin-bottom:0;">
+    <div class="tip-label">Переход к детальному разбору</div>
+    Клик на <strong>ФИО сотрудника</strong> открывает его карту — для врача это страница с чек-листом приёмов, для консультанта — с речевой аналитикой взаимодействий. Именно туда нужно идти, чтобы понять причину плохих показателей и поставить задачу.
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

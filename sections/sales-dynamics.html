@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Динамика продаж — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #22c55e;
+    --green-bg: #f0fdf4;
+    --yellow: #f59e0b;
+    --yellow-bg: #fffbeb;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Hero */
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--purple { background: var(--accent-light); }
+
+  /* Bullet list */
+  .bullet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Page layout diagram */
+  .layout-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .layout-row {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface-2);
+  }
+  .layout-row--accent {
+    background: var(--accent-light);
+    border-color: rgba(91,94,244,0.2);
+  }
+  .layout-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .layout-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+  }
+  .layout-desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  /* Filters grid */
+  .filters-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .filter-item {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+  }
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 3px;
+  }
+  .filter-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .filter-item--wide {
+    grid-column: 1 / -1;
+  }
+  .filter-item--accent {
+    background: var(--accent-light);
+    border-color: rgba(91,94,244,0.2);
+  }
+  .filter-item--accent .filter-label { color: var(--accent); }
+  .filter-item--accent .filter-value { color: var(--accent); font-weight: 600; }
+
+  /* Grouping table */
+  .grouping-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .grouping-item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 11px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .grouping-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .grouping-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .grouping-item--primary {
+    border-color: rgba(91,94,244,0.25);
+    background: var(--accent-light);
+  }
+  .grouping-item--primary .grouping-name { color: var(--accent); }
+  .grouping-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(91,94,244,0.12);
+    padding: 2px 7px;
+    border-radius: 100px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Metric card demo */
+  .metric-card-demo {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .metric-card-demo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .metric-card-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .metric-card-detail-btn {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: none;
+    border-radius: 4px;
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+  .metric-card-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .metric-card-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .metric-card-trend--up   { color: #16a34a; background: #dcfce7; }
+  .metric-card-trend--down { color: #dc2626; background: #fee2e2; }
+  .metric-card-trend--flat { color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border); }
+  .metric-card-mini {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 36px;
+    margin-top: 12px;
+  }
+  .mini-bar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    background: var(--accent);
+    opacity: 0.3;
+    cursor: pointer;
+    transition: opacity 0.1s;
+  }
+  .mini-bar:hover, .mini-bar--active { opacity: 1; }
+  .metric-note {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* YoY callout */
+  .yoy-block {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .yoy-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .yoy-content {}
+  .yoy-title { font-size: 13.5px; font-weight: 700; color: #92400e; margin-bottom: 4px; }
+  .yoy-desc { font-size: 13px; color: #78350f; line-height: 1.55; }
+
+  /* Principle callout */
+  .principle {
+    background: var(--accent-light);
+    border: 1px solid rgba(91,94,244,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .principle-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .principle-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Динамика продаж</h1>
+    <p class="hero-desc">Инструмент точечного анализа: строишь график по любому показателю за нужный период и видишь, где началась просадка или как сработало изменение в работе сотрудника.</p>
+  </div>
+
+  <!-- Когда использовать -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🎯</div>
+      Когда использовать
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Найти причину просадки</strong> — показатель упал, нужно понять с какой даты и насколько резко</span></div>
+      <div class="bullet-item"><span><strong>Проверить результат работы с сотрудником</strong> — видно ли улучшение после разбора или поставленной задачи</span></div>
+      <div class="bullet-item"><span><strong>Сравнить с прошлым годом</strong> — тот же период год назад, чтобы учесть сезонность</span></div>
+      <div class="bullet-item"><span><strong>Сверить данные</strong> — уточнить конкретное значение за неделю или день</span></div>
+    </div>
+  </div>
+
+  <!-- Устройство страницы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Устройство страницы
+    </div>
+    <div class="layout-diagram">
+      <div class="layout-row">
+        <div class="layout-num">1</div>
+        <div class="layout-label">Вкладки филиалов</div>
+        <div class="layout-desc">Все / конкретный салон</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-num">2</div>
+        <div class="layout-label">Панель фильтров</div>
+        <div class="layout-desc">Показатель, период, группировка, сотрудник, год к году</div>
+      </div>
+      <div class="layout-row layout-row--accent">
+        <div class="layout-num">3</div>
+        <div class="layout-label">Главный график</div>
+        <div class="layout-desc">Бар-чарт с тултипами и скроллом</div>
+      </div>
+      <div class="layout-row layout-row--accent">
+        <div class="layout-num">4</div>
+        <div class="layout-label">Карточки метрик</div>
+        <div class="layout-desc">Значение + тренд + мини-график по неделям</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Фильтры -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">⚙️</div>
+      Параметры фильтра
+    </div>
+    <div class="filters-grid">
+      <div class="filter-item">
+        <div class="filter-label">Показатель</div>
+        <div class="filter-value">Любая метрика из справочника</div>
+      </div>
+      <div class="filter-item">
+        <div class="filter-label">Период</div>
+        <div class="filter-value">Произвольный диапазон дат</div>
+      </div>
+      <div class="filter-item">
+        <div class="filter-label">Группировка</div>
+        <div class="filter-value">Без группировки / Дни / Недели / Месяцы / Кварталы</div>
+      </div>
+      <div class="filter-item">
+        <div class="filter-label">Сотрудник</div>
+        <div class="filter-value">Врач или консультант (опционально)</div>
+      </div>
+      <div class="filter-item filter-item--wide filter-item--accent">
+        <div class="filter-label">Год к году</div>
+        <div class="filter-value">Чекбокс — показывает данные того же периода прошлого года рядом на графике</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:12px">После выбора параметров нажать <strong style="color:var(--text-secondary)">«Применить»</strong>. Кнопка неактивна, если фильтры не изменились.</p>
+  </div>
+
+  <!-- Группировка -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📅</div>
+      Как выбрать группировку
+    </div>
+    <div class="grouping-list">
+      <div class="grouping-item">
+        <div class="grouping-name">Без группировки</div>
+        <div class="grouping-desc">Каждая точка данных отдельно — для очень детального разбора.</div>
+      </div>
+      <div class="grouping-item">
+        <div class="grouping-name">По дням</div>
+        <div class="grouping-desc">Когда нужно найти точечную ошибку: конкретную дату, день без записей, сравнить дни работы сотрудника.</div>
+      </div>
+      <div class="grouping-item grouping-item--primary">
+        <div class="grouping-name">По неделям <span class="grouping-tag">Основной</span></div>
+        <div class="grouping-desc">Рабочий вариант по умолчанию. Сглаживает случайные колебания, показывает устойчивую тенденцию.</div>
+      </div>
+      <div class="grouping-item">
+        <div class="grouping-name">По месяцам</div>
+        <div class="grouping-desc">Для долгосрочной динамики и сезонных сравнений — например, апрель этого года vs апрель прошлого.</div>
+      </div>
+      <div class="grouping-item">
+        <div class="grouping-name">По кварталам</div>
+        <div class="grouping-desc">Для стратегического обзора за полгода–год. Используется редко.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Год к году -->
+  <div class="yoy-block">
+    <div class="yoy-icon">📆</div>
+    <div class="yoy-content">
+      <div class="yoy-title">Год к году</div>
+      <div class="yoy-desc">При включённом чекбоксе на графике появляются два столбца на каждый период — синий (текущий год) и оранжевый (прошлый год). В тултипе видна дельта в процентах. Используй, чтобы отделить реальный рост от сезонного.</div>
+    </div>
+  </div>
+
+  <!-- Карточки метрик -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">📊</div>
+      Карточки метрик под графиком
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">Под главным графиком — сетка карточек по всем включённым метрикам. Каждая карточка показывает:</p>
+
+    <!-- Demo card -->
+    <div class="metric-card-demo">
+      <div class="metric-card-demo-header">
+        <div class="metric-card-name">Ср. чек заказа</div>
+        <button class="metric-card-detail-btn">Детализация</button>
+      </div>
+      <div class="metric-card-value">14 320 ₽</div>
+      <span class="metric-card-trend metric-card-trend--up">↗ Рост</span>
+      <div class="metric-card-mini">
+        <div class="mini-bar" style="height:40%"></div>
+        <div class="mini-bar" style="height:55%"></div>
+        <div class="mini-bar" style="height:50%"></div>
+        <div class="mini-bar" style="height:70%"></div>
+        <div class="mini-bar mini-bar--active" style="height:85%"></div>
+        <div class="mini-bar" style="height:75%"></div>
+        <div class="mini-bar" style="height:90%"></div>
+        <div class="mini-bar" style="height:100%"></div>
+      </div>
+      <p class="metric-note">Кликни на столбец в мини-графике — карточка покажет значение за выбранную неделю</p>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>Тренд</strong> — Рост / Снижение / Стабильно (или % к прошлому году при включённом «год к году»)</span></div>
+      <div class="bullet-item"><span><strong>Мини-график</strong> — недельные столбцы за период. Кликни на любой — увидишь значение за ту неделю</span></div>
+      <div class="bullet-item"><span><strong>Кнопка «Детализация»</strong> — появляется для отдельных метрик (подборы, ВТЛ, конверсии). Открывает разбивку по типам с числами и процентами</span></div>
+    </div>
+  </div>
+
+  <!-- Настройка метрик -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">🎛</div>
+      Настройка отображаемых метрик
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6">Кнопка <strong style="color:var(--text-primary)">«Настроить метрики»</strong> под карточками открывает список всех доступных показателей. Включай только те, которые нужны тебе для анализа — настройки сохраняются в системе. Доступны все 34 метрики, сгруппированные по категориям: воронка, конверсии, средние чеки, ВТЛ, итоговые.</p>
+  </div>
+
+  <!-- Главный принцип -->
+  <div class="principle">
+    <div class="principle-label">Главный принцип</div>
+    <div class="principle-text">Заходи с конкретной гипотезой, не «просто посмотреть». Если не знаешь что ищешь — сначала открой Анализ филиала, найди проблему там, и только потом приходи сюда за деталями.</div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

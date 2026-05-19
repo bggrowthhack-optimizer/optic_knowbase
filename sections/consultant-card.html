@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Карта консультанта — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--red    { background: var(--red-bg); }
+  .card-icon--purple { background: rgba(91,94,244,0.12); }
+
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Layout diagram ── */
+  .layout-diagram {
+    display: flex; flex-direction: column; gap: 0;
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  }
+  .layout-row { display: flex; }
+  .layout-block {
+    flex: 1; padding: 9px 14px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center; text-align: center;
+  }
+  .layout-block:last-child { border-right: none; }
+  .layout-block--accent { background: var(--accent-light); color: var(--accent); }
+  .layout-block--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .layout-block--green  { background: var(--green-bg);  color: var(--green); }
+  .layout-block--muted  { background: var(--surface-2); color: var(--text-muted); }
+
+  /* ── Header demo ── */
+  .consultant-header-demo {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 18px; margin-bottom: 12px;
+    background: linear-gradient(135deg, rgba(91,94,244,0.04) 0%, transparent 100%);
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .cons-name { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+  .cons-sep  { color: var(--text-muted); }
+  .score-chip {
+    font-size: 13px; font-weight: 700; padding: 3px 12px; border-radius: 100px;
+  }
+  .score-chip--green  { background: var(--green-bg);  color: var(--green); }
+  .score-chip--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .score-chip--red    { background: var(--red-bg);    color: var(--red); }
+  .cons-count { font-size: 13px; color: var(--text-secondary); }
+  .header-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .btn-report {
+    font-size: 12px; font-weight: 600; color: #fff;
+    background: var(--accent); border: none;
+    padding: 6px 14px; border-radius: 5px; cursor: pointer; font-family: inherit;
+  }
+  .selector-mock {
+    font-size: 12px; color: var(--text-secondary);
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 10px; background: var(--surface);
+  }
+
+  /* ── Summary cards ── */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+    margin-bottom: 12px;
+  }
+  .summary-card {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 14px; background: var(--surface);
+  }
+  .summary-card-name { font-size: 10.5px; color: var(--text-muted); font-weight: 500; margin-bottom: 5px; line-height: 1.35; }
+  .summary-card-val  { font-size: 18px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+  .summary-card-plan { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .summary-card-exec {
+    display: inline-flex; align-items: center;
+    font-size: 10.5px; font-weight: 600;
+    padding: 2px 6px; border-radius: 100px; margin-top: 5px;
+  }
+  .exec--green  { background: var(--green-bg);  color: var(--green); }
+  .exec--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .exec--red    { background: var(--red-bg);    color: var(--red); }
+
+  /* ── Speech analytics ── */
+  .speech-block {
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 8px;
+  }
+  .speech-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 700; color: var(--text-primary);
+  }
+  .speech-score {
+    font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-left: auto;
+  }
+  .speech-score--green  { background: var(--green-bg);  color: var(--green); }
+  .speech-score--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .speech-score--red    { background: var(--red-bg);    color: var(--red); }
+  .speech-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 14px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .speech-item:last-child { border-bottom: none; }
+  .speech-item-name { flex: 1; font-size: 13px; color: var(--text-secondary); }
+  .speech-bar-wrap { width: 90px; height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .speech-bar { height: 100%; border-radius: 3px; }
+  .speech-bar--green  { background: var(--green); }
+  .speech-bar--yellow { background: #eab308; }
+  .speech-bar--red    { background: var(--red); }
+  .speech-item-cnt { font-size: 11px; color: var(--text-muted); min-width: 52px; text-align: right; }
+  .speech-item-score {
+    font-size: 11.5px; font-weight: 700; min-width: 34px; text-align: right;
+  }
+  .speech-item-score--green  { color: var(--green); }
+  .speech-item-score--yellow { color: var(--yellow); }
+  .speech-item-score--red    { color: var(--red); }
+
+  /* ── Stats row inside speech analytics ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: rgba(91,94,244,0.03);
+  }
+  .stats-cell {
+    padding: 10px 12px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stats-cell:last-child { border-right: none; }
+  .stats-cell-label { font-size: 10px; color: var(--text-muted); font-weight: 500; margin-bottom: 3px; }
+  .stats-cell-val   { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+
+  /* ── Diff table ── */
+  .diff-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .diff-table th {
+    text-align: left; padding: 8px 12px;
+    background: var(--surface-2); color: var(--text-muted);
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .diff-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .diff-table tr:last-child td { border-bottom: none; }
+  .diff-table td:first-child { font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+  .diff-table td:nth-child(2) { color: var(--text-secondary); }
+  .diff-table td:nth-child(3) { color: var(--text-secondary); }
+
+  /* ── Interaction item ── */
+  .date-group {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 8px;
+  }
+  .date-group-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px; background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px; color: var(--text-secondary); font-weight: 600;
+  }
+  .date-group-score {
+    margin-left: auto; font-size: 11.5px; font-weight: 700; padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .interaction-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .interaction-row:last-child { border-bottom: none; }
+  .int-time { font-size: 12px; color: var(--text-muted); min-width: 46px; }
+  .int-dur  { font-size: 12px; color: var(--text-muted); }
+  .int-type { font-size: 12px; color: var(--text-secondary); flex: 1; }
+  .int-order { font-size: 12px; color: var(--text-secondary); }
+  .int-score {
+    font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+  }
+  .int-score--green  { background: var(--green-bg);  color: var(--green); }
+  .int-score--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .int-score--red    { background: var(--red-bg);    color: var(--red); }
+
+  /* ── Interaction body ── */
+  .interaction-body {
+    border-top: 1px solid var(--border); padding: 14px;
+    background: rgba(248,249,252,0.7);
+  }
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+  }
+  .scores-2col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+  }
+  .score-box {
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 10px 12px; background: var(--surface); text-align: center;
+  }
+  .score-box-label { font-size: 10.5px; color: var(--text-muted); margin-bottom: 3px; }
+  .score-box-val { font-size: 20px; font-weight: 800; }
+
+  .standard-group { margin-bottom: 10px; }
+  .standard-label {
+    font-size: 11px; font-weight: 600; color: var(--text-muted);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .status-dot--green  { background: var(--green); }
+  .status-dot--red    { background: var(--red); }
+  .status-dot--muted  { background: var(--text-muted); }
+  .standard-list { display: flex; flex-direction: column; gap: 4px; }
+  .standard-item {
+    font-size: 12.5px; color: var(--text-secondary);
+    padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 6px;
+  }
+  .standard-item--ok   { background: var(--green-bg); }
+  .standard-item--miss { background: var(--red-bg);   color: var(--red); }
+  .standard-item--skip { background: var(--surface-2); color: var(--text-muted); }
+
+  /* ── Step list ── */
+  .step-list { display: flex; flex-direction: column; gap: 14px; }
+  .step-item { display: flex; align-items: flex-start; gap: 14px; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .step-body { padding-top: 4px; }
+  .step-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+  .step-desc  { font-size: 13.5px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: var(--radius); padding: 14px 18px;
+    font-size: 13.5px; line-height: 1.6;
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 12px;
+  }
+  .callout--blue   { background: rgba(91,94,244,0.07);  border: 1px solid rgba(91,94,244,0.18); color: #3a3da8; }
+  .callout--yellow { background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.2);   color: #7a4f00; }
+  .callout--green  { background: var(--green-bg);  border: 1px solid rgba(22,163,74,0.2);   color: #14532d; }
+  .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Карта консультанта</h1>
+    <p class="hero-desc">
+      Инструмент для разбора работы конкретного консультанта. Показывает результаты продаж,
+      речевую аналитику по взаимодействиям с клиентами и детальный разбор каждого диалога.
+      Логика страницы похожа на карту врача, но метрики и аналитические блоки другие.
+    </p>
+  </div>
+
+  <!-- Устройство -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Устройство страницы
+    </div>
+
+    <div class="layout-diagram">
+      <div class="layout-row">
+        <div class="layout-block layout-block--muted" style="flex:2">Имя консультанта · Балл · Количество заказов</div>
+        <div class="layout-block layout-block--muted" style="flex:1">Выбор консультанта · Период · «Отчёт»</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--accent">Кол-во заказов</div>
+        <div class="layout-block layout-block--accent">% рецепт→заказ</div>
+        <div class="layout-block layout-block--accent">Ср. чек</div>
+        <div class="layout-block layout-block--accent">% чужих заказов</div>
+        <div class="layout-block layout-block--accent">% продаж ВТЛ</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--muted" style="flex:1">Динамика за период (линейный график)</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--yellow" style="flex:1">Речевая аналитика: Соблюдение стандартов + Навыки продаж</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--muted" style="flex:1">Задачи на консультанта</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-block layout-block--green" style="flex:1">Взаимодействия: Худшие · Лучшие · Все (по датам)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Шапка -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">👤</div>
+      Шапка страницы
+    </div>
+
+    <div class="consultant-header-demo">
+      <span class="cons-name">Иванова А.В.</span>
+      <span class="cons-sep">·</span>
+      <span class="score-chip score-chip--yellow">Балл 68%</span>
+      <span class="cons-sep">·</span>
+      <span class="cons-count">Заказов: 89</span>
+      <div class="header-actions">
+        <span class="selector-mock">Иванова А.В. ▾</span>
+        <span class="selector-mock">01.05 — 18.05 ▾</span>
+        <button class="btn-report">Отчёт</button>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Балл</strong> — средний балл речевой аналитики за период. Зелёный ≥ 70%, жёлтый ≥ 40%, красный &lt; 40%.</div>
+      <div class="bullet-item"><strong>Заказов</strong> — количество заказов, по которым есть записи и анализ за выбранный период.</div>
+    </div>
+
+    <div class="callout callout--blue" style="margin-top:12px">
+      <span class="callout-icon">ℹ️</span>
+      Пороги оценки у консультанта другие, чем у врача: лучшие взаимодействия — балл ≥ 70%, худшие — &lt; 40%.
+      У врача лучшие ≥ 80%, худшие &lt; 55%.
+    </div>
+  </div>
+
+  <!-- Метрики -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📊</div>
+      Пять ключевых метрик
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-card-name">Количество заказов</div>
+        <div class="summary-card-val">89</div>
+        <div class="summary-card-plan">план 100</div>
+        <div class="summary-card-exec exec--yellow">89% от плана</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-name">% рецепт → заказ</div>
+        <div class="summary-card-val">71%</div>
+        <div class="summary-card-plan">план 80%</div>
+        <div class="summary-card-exec exec--yellow">89% от плана</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-name">Средний чек</div>
+        <div class="summary-card-val">5 240 ₽</div>
+        <div class="summary-card-plan">план 5 800 ₽</div>
+        <div class="summary-card-exec exec--yellow">90% от плана</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-name">% чужих заказов</div>
+        <div class="summary-card-val">24%</div>
+        <div class="summary-card-plan">норма ≤ 20%</div>
+        <div class="summary-card-exec exec--red">Выше нормы</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-name">% продаж ВТЛ</div>
+        <div class="summary-card-val">29%</div>
+        <div class="summary-card-plan">план 35%</div>
+        <div class="summary-card-exec exec--yellow">83% от плана</div>
+      </div>
+    </div>
+
+    <div class="callout callout--yellow">
+      <span class="callout-icon">⚠️</span>
+      <strong>% чужих заказов</strong> — единственная метрика, где чем меньше — тем лучше. У неё не план, а норма.
+      Превышение нормы означает, что слишком много клиентов приходит с чужим рецептом, а не уходит к нашему врачу.
+    </div>
+  </div>
+
+  <!-- Динамика -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📈</div>
+      Динамика за период
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Линейный график с переключением между пятью метриками. Показывает понедельную динамику за выбранный период.
+    </p>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Балл речевой аналитики</strong> — общий балл качества взаимодействий</div>
+      <div class="bullet-item"><strong>% рецепт → заказ</strong> — конверсия рецептов в заказы</div>
+      <div class="bullet-item"><strong>Итого ср. чек</strong> — средний чек заказа в рублях</div>
+      <div class="bullet-item"><strong>% продаж ВТЛ</strong> — доля высокотехнологичных линз</div>
+      <div class="bullet-item"><strong>Итого заказов</strong> — количество заказов за период</div>
+    </div>
+  </div>
+
+  <!-- Речевая аналитика -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🎙</div>
+      Речевая аналитика
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Вместо таблицы блоков чек-листа (как у врача) — два раздела: <strong>Соблюдение стандартов</strong>
+      и <strong>Навыки продаж</strong>. По каждому показателю: прогресс-бар, счётчик взаимодействий и балл.
+    </p>
+
+    <!-- Статы сверху -->
+    <div class="speech-block" style="margin-bottom:14px">
+      <div class="stats-row">
+        <div class="stats-cell">
+          <div class="stats-cell-label">Взаимодействий</div>
+          <div class="stats-cell-val">124</div>
+        </div>
+        <div class="stats-cell">
+          <div class="stats-cell-label">Продажных диалогов</div>
+          <div class="stats-cell-val">89</div>
+        </div>
+        <div class="stats-cell">
+          <div class="stats-cell-label">Ср. длительность</div>
+          <div class="stats-cell-val">14 мин</div>
+        </div>
+        <div class="stats-cell">
+          <div class="stats-cell-label">Активное время</div>
+          <div class="stats-cell-val">4 ч 12 мин</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Соблюдение стандартов -->
+    <div class="speech-block" style="margin-bottom:8px">
+      <div class="speech-head">
+        Соблюдение стандартов
+        <span class="speech-score speech-score--yellow">71%</span>
+      </div>
+      <div class="speech-item">
+        <div class="speech-item-name">Приветствие и представление</div>
+        <div class="speech-bar-wrap"><div class="speech-bar speech-bar--green" style="width:92%"></div></div>
+        <div class="speech-item-cnt">87 / 89</div>
+        <div class="speech-item-score speech-item-score--green">92%</div>
+      </div>
+      <div class="speech-item">
+        <div class="speech-item-name">Выяснение потребности</div>
+        <div class="speech-bar-wrap"><div class="speech-bar speech-bar--yellow" style="width:68%"></div></div>
+        <div class="speech-item-cnt">61 / 89</div>
+        <div class="speech-item-score speech-item-score--yellow">68%</div>
+      </div>
+      <div class="speech-item">
+        <div class="speech-item-name">Предложение ВТЛ</div>
+        <div class="speech-bar-wrap"><div class="speech-bar speech-bar--red" style="width:43%"></div></div>
+        <div class="speech-item-cnt">38 / 89</div>
+        <div class="speech-item-score speech-item-score--red">43%</div>
+      </div>
+      <div class="speech-item">
+        <div class="speech-item-name">Работа с возражениями</div>
+        <div class="speech-bar-wrap"><div class="speech-bar speech-bar--yellow" style="width:61%"></div></div>
+        <div class="speech-item-cnt">54 / 89</div>
+        <div class="speech-item-score speech-item-score--yellow">61%</div>
+      </div>
+    </div>
+
+    <!-- Навыки продаж -->
+    <div class="speech-block">
+      <div class="speech-head">
+        Навыки продаж
+        <span class="speech-score speech-score--yellow">64%</span>
+      </div>
+      <div class="speech-item">
+        <div class="speech-item-name">Активное слушание</div>
+        <div class="speech-bar-wrap"><div class="speech-bar speech-bar--green" style="width:81%"></div></div>
+        <div class="speech-item-cnt">72 / 89</div>
+        <div class="speech-item-score speech-item-score--green">81%</div>
+      </div>
+      <div class="speech-item">
+        <div class="speech-item-name">Аргументация ценности</div>
+        <div class="speech-bar-wrap"><div class="speech-bar speech-bar--red" style="width:48%"></div></div>
+        <div class="speech-item-cnt">43 / 89</div>
+        <div class="speech-item-score speech-item-score--red">48%</div>
+      </div>
+      <div class="speech-item">
+        <div class="speech-item-name">Завершение сделки</div>
+        <div class="speech-bar-wrap"><div class="speech-bar speech-bar--yellow" style="width:63%"></div></div>
+        <div class="speech-item-cnt">56 / 89</div>
+        <div class="speech-item-score speech-item-score--yellow">63%</div>
+      </div>
+    </div>
+
+    <div class="callout callout--blue" style="margin-top:12px">
+      <span class="callout-icon">ℹ️</span>
+      Счётчик показывает, в скольких взаимодействиях стандарт или навык применялся / был оценён.
+      Если взаимодействий мало — результат менее репрезентативен.
+    </div>
+  </div>
+
+  <!-- Взаимодействия -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">💬</div>
+      Взаимодействия
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
+      Список взаимодействий с клиентами. Три вкладки: <strong>Худшие</strong> (балл &lt; 40%),
+      <strong>Лучшие</strong> (≥ 70%), <strong>Все</strong>. В отличие от карты врача,
+      взаимодействия сгруппированы по датам — по 10 дней на странице.
+    </p>
+
+    <!-- Группа по дате -->
+    <div class="date-group" style="margin-bottom:16px">
+      <div class="date-group-head">
+        14 мая 2026 &nbsp;·&nbsp; 7 взаимодействий
+        <span class="date-group-score exec--yellow" style="font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:100px">Ср. балл 61%</span>
+      </div>
+      <div class="interaction-row">
+        <div class="int-time">10:14</div>
+        <div class="int-dur">12 мин</div>
+        <div class="int-type">Заказ по рецепту врача</div>
+        <div class="int-order">№ 1041</div>
+        <div class="int-score int-score--green">74%</div>
+      </div>
+      <div class="interaction-row">
+        <div class="int-time">11:32</div>
+        <div class="int-dur">9 мин</div>
+        <div class="int-type">Заказ по чужому рецепту</div>
+        <div class="int-order">№ 1042</div>
+        <div class="int-score int-score--red">37%</div>
+      </div>
+      <div class="interaction-row">
+        <div class="int-time">14:05</div>
+        <div class="int-dur">18 мин</div>
+        <div class="int-type">Заказ по рецепту врача · ВТЛ</div>
+        <div class="int-order">№ 1045</div>
+        <div class="int-score int-score--green">88%</div>
+      </div>
+    </div>
+
+    <!-- Развёрнутое взаимодействие -->
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Развёрнутое взаимодействие (пример)</div>
+    <div class="date-group">
+      <div class="interaction-row">
+        <div class="int-time">14:05</div>
+        <div class="int-dur">18 мин</div>
+        <div class="int-type">Заказ по рецепту врача · ВТЛ</div>
+        <div class="int-order">№ 1045</div>
+        <div class="int-score int-score--green">88%</div>
+        <div style="color:var(--text-muted);font-size:11px;cursor:pointer">▲</div>
+      </div>
+      <div class="interaction-body">
+        <div class="section-label">Оценки взаимодействия</div>
+        <div class="scores-2col" style="margin-bottom:14px">
+          <div class="score-box">
+            <div class="score-box-label">Соблюдение стандартов</div>
+            <div class="score-box-val" style="color:var(--green)">91%</div>
+          </div>
+          <div class="score-box">
+            <div class="score-box-label">Навыки продаж</div>
+            <div class="score-box-val" style="color:var(--green)">84%</div>
+          </div>
+        </div>
+
+        <div class="section-label">Анализ стандартов и навыков</div>
+        <div class="standard-group">
+          <div class="standard-label"><span class="status-dot status-dot--green"></span>Выполнено</div>
+          <div class="standard-list">
+            <div class="standard-item standard-item--ok">Приветствие и представление</div>
+            <div class="standard-item standard-item--ok">Предложение ВТЛ (прогрессивные линзы)</div>
+            <div class="standard-item standard-item--ok">Аргументация ценности</div>
+          </div>
+        </div>
+        <div class="standard-group">
+          <div class="standard-label"><span class="status-dot status-dot--red"></span>Пропущено</div>
+          <div class="standard-list">
+            <div class="standard-item standard-item--miss">Работа с возражением по цене</div>
+          </div>
+        </div>
+        <div class="standard-group">
+          <div class="standard-label"><span class="status-dot status-dot--muted"></span>Не применялось</div>
+          <div class="standard-list">
+            <div class="standard-item standard-item--skip">Допродажа аксессуаров</div>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin-top:12px">Резюме взаимодействия</div>
+        <div style="font-size:13px; color:var(--text-secondary); line-height:1.6">
+          <strong style="color:var(--text-muted)">Сильные стороны:</strong> грамотное выявление потребности, уверенная презентация ВТЛ с привязкой к образу жизни клиента.<br>
+          <strong style="color:var(--text-muted)">Пробелы:</strong> не отработано возражение по стоимости прогрессивных линз — клиент сомневался, но консультант перешёл к оформлению.<br>
+          <strong style="color:var(--text-muted)">Возможности роста:</strong> добавить 1–2 аргумента о долгосрочной экономии и комфорте при работе с возражением по цене.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Чем отличается от карты врача -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">🔄</div>
+      Чем отличается от карты врача
+    </div>
+
+    <table class="diff-table">
+      <thead>
+        <tr>
+          <th>Параметр</th>
+          <th>Карта консультанта</th>
+          <th>Карта врача</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Метрики</td>
+          <td>5 карточек: заказы, конверсия, чек, % чужих, % ВТЛ</td>
+          <td>4 карточки: конверсия, чек, чек линз, % ВТЛ</td>
+        </tr>
+        <tr>
+          <td>Аналитический блок</td>
+          <td>Речевая аналитика (стандарты + навыки продаж)</td>
+          <td>Блоки чек-листа (этапы приёма)</td>
+        </tr>
+        <tr>
+          <td>Список событий</td>
+          <td>Взаимодействия, сгруппированы по датам</td>
+          <td>Приёмы, плоский список (10 на страницу)</td>
+        </tr>
+        <tr>
+          <td>Внутри события</td>
+          <td>Стандарты + навыки: выполнено / пропущено / не применялось</td>
+          <td>Блоки → критерии + навыки эффективности</td>
+        </tr>
+        <tr>
+          <td>Лучшие / Худшие</td>
+          <td>Лучшие ≥ 70%, худшие &lt; 40%</td>
+          <td>Лучшие ≥ 80%, худшие &lt; 55%</td>
+        </tr>
+        <tr>
+          <td>Доп. статистика</td>
+          <td>Всего взаимодействий, продажных диалогов, ср. длительность, активное время</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Алгоритм работы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">▶️</div>
+      Алгоритм работы
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Выбери консультанта и период</div>
+          <div class="step-desc">По умолчанию — текущий месяц. Переключай между консультантами прямо в шапке.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Смотри метрики и балл</div>
+          <div class="step-desc">Красные карточки — приоритет. % чужих выше нормы — повод разбирать, почему клиенты не идут к нашему врачу.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Открой речевую аналитику</div>
+          <div class="step-desc">Найди красные строки — это стандарты или навыки, которые консультант регулярно пропускает. Это системная проблема.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Разбери худшие взаимодействия</div>
+          <div class="step-desc">2–3 взаимодействия с минимальным баллом: читай резюме и раздел «Пропущено». Ищи повторяющийся паттерн ошибки.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Поставь задачу</div>
+          <div class="step-desc">В блоке задач создай задачу на конкретный стандарт или навык — что именно отрабатывать, как проверить результат.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout--green" style="margin-top:20px">
+      <span class="callout-icon">✅</span>
+      Хороший разбор карты консультанта занимает 10–15 минут и заканчивается одной конкретной задачей
+      с формулировкой «что делать» и датой контроля.
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

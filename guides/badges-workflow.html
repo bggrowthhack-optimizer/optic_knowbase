@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ежедневная работа с бейджами — Optimizer</title>
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #22c55e;
+    --green-bg: #f0fdf4;
+    --green-border: #bbf7d0;
+    --yellow: #f59e0b;
+    --yellow-bg: #fffbeb;
+    --yellow-border: #fde68a;
+    --red: #ef4444;
+    --red-bg: #fef2f2;
+    --red-border: #fecaca;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Hero */
+  .hero { margin-bottom: 40px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* Card base */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .card-icon--purple { background: var(--accent-light); }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--red    { background: var(--red-bg); }
+
+  /* Participants */
+  .participant-list { display: flex; flex-direction: column; gap: 10px; }
+  .participant {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+  .participant-role {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+  .participant-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Day sections */
+  .day-section { margin-bottom: 28px; }
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .day-pill {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+  .day-pill--morning {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+  }
+  .day-pill--evening {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+
+  /* Steps */
+  .step-list { display: flex; flex-direction: column; gap: 0; }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+  }
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-num--morning { background: #ea580c; }
+  .step-num--evening { background: #2563eb; }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    min-height: 18px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+  .step-body { padding-bottom: 20px; flex: 1; min-width: 0; }
+  .step-item:last-child .step-body { padding-bottom: 0; }
+  .step-item:last-child .step-line { display: none; }
+  .step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    padding-top: 5px;
+  }
+  .step-detail {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+  .step-detail code {
+    font-family: ui-monospace, monospace;
+    font-size: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--text-primary);
+  }
+
+  /* Rules list */
+  .rule-list { display: flex; flex-direction: column; gap: 8px; }
+  .rule-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .rule-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-light);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .rule-item strong { color: var(--text-primary); }
+
+  /* Good/bad recordings */
+  .quality-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) { .quality-grid { grid-template-columns: 1fr; } }
+  .quality-col {
+    border-radius: var(--radius);
+    padding: 16px;
+    border: 1px solid;
+  }
+  .quality-col--good {
+    background: var(--green-bg);
+    border-color: var(--green-border);
+  }
+  .quality-col--bad {
+    background: var(--red-bg);
+    border-color: var(--red-border);
+  }
+  .quality-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .quality-col--good .quality-label { color: #15803d; }
+  .quality-col--bad  .quality-label { color: #b91c1c; }
+  .quality-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .quality-list li {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+  .quality-list li::before { flex-shrink: 0; margin-top: 2px; }
+  .quality-col--good .quality-list li::before { content: '✓'; color: var(--green); font-weight: 700; }
+  .quality-col--bad  .quality-list li::before { content: '✗'; color: var(--red);   font-weight: 700; }
+
+  /* Errors list */
+  .error-list { display: flex; flex-direction: column; gap: 6px; }
+  .error-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 8px 12px;
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    border-radius: var(--radius);
+  }
+  .error-item::before {
+    content: '!';
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--red);
+    background: #fee2e2;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Upload filename */
+  .filename-block {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-family: ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--text-primary);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    line-height: 1.8;
+  }
+  .fn-part { color: var(--text-muted); }
+  .fn-val  { color: var(--accent); font-weight: 600; }
+  .fn-sep  { color: var(--text-muted); margin: 0 1px; }
+  .fn-desc {
+    display: block;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* Algorithm */
+  .algo-list { display: flex; flex-direction: column; gap: 10px; }
+  .algo-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .algo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .algo-item strong { color: var(--text-primary); }
+
+  /* Tip */
+  .tip {
+    padding: 14px 18px;
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Инструкция
+    </div>
+    <h1>Ежедневная работа с аудиобейджами</h1>
+    <p class="hero-desc">
+      Пошаговый процесс выдачи, возврата и загрузки записей. Для администратора, который ведёт бейджи каждый день, и для РОПа, который понимает, как устроен процесс.
+    </p>
+  </div>
+
+  <!-- Участники -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">👥</div>
+      Кто участвует в процессе
+    </div>
+    <div class="participant-list">
+      <div class="participant">
+        <div class="participant-role">РОП</div>
+        <div class="participant-desc">Понимает весь процесс, отвечает за организацию. Следит за тем, чтобы бейджи выдавались и записи загружались корректно.</div>
+      </div>
+      <div class="participant">
+        <div class="participant-role">Администратор</div>
+        <div class="participant-desc">Выполняет ежедневные операции: регистрирует выдачу и возврат, проверяет записи, загружает нужные, отмечает плохие с указанием причины. Именно администратор работает с системой каждый день.</div>
+      </div>
+      <div class="participant">
+        <div class="participant-role">Сотрудник</div>
+        <div class="participant-desc">Врач или консультант — носит бейдж и соблюдает правила записи. В систему не заходит.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Утро -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🌅</div>
+      Утро — выдача бейджей
+    </div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num step-num--morning">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Добавить бейдж в справочник (если новый)</div>
+          <div class="step-detail">Раздел <strong>Аудиобейджи → Справочник бейджей</strong>. Указать номер устройства и описание. Делается один раз при появлении нового бейджа.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num step-num--morning">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Зарегистрировать выдачу в системе</div>
+          <div class="step-detail">Раздел <strong>Аудиобейджи → Ежедневная регистрация → Выдать</strong>. Выбрать сотрудника, бейдж, указать дату и время начала работы. Без регистрации запись нельзя будет загрузить.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num step-num--morning">3</div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Выдать бейдж сотруднику</div>
+          <div class="step-detail">Убедиться, что бейдж включён и надет правильно (микрофон не закрыт). Запись должна начаться до первого клиента.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Вечер -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">🌙</div>
+      Вечер — приём и загрузка записей
+    </div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num step-num--evening">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Принять бейдж у сотрудника</div>
+          <div class="step-detail">Нажать <strong>«Вернуть»</strong> в строке сотрудника в разделе Аудиобейджи. Зафиксировать время возврата.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num step-num--evening">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Подключить к компьютеру и проверить записи</div>
+          <div class="step-detail">
+            Просмотреть список файлов на устройстве. Имя файла содержит дату, время начала и номер бейджа — сверить с расписанием сотрудника.<br><br>
+            Прослушать каждую запись: слышно ли сотрудника и клиента, есть ли целевое взаимодействие (врач — подбор, консультант — работа с клиентом).
+          </div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num step-num--evening">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Отметить и удалить плохие записи</div>
+          <div class="step-detail">Плохие записи не загружаются. В <strong>истории выдачи</strong> обязательно указать причину: плохое качество звука, нет целевого взаимодействия, запись слишком короткая и т. д.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num step-num--evening">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Загрузить хорошие записи</div>
+          <div class="step-detail"><strong>Аудиобейджи → Загрузить запись</strong>. Выбрать файл — система проверит регистрацию и отсутствие дубликатов. Дождаться подтверждения загрузки.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-left">
+          <div class="step-num step-num--evening">5</div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Поставить бейдж на зарядку</div>
+          <div class="step-detail">Зарядить устройство до следующего рабочего дня.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Имя файла -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">📄</div>
+      Как читать имя файла записи
+    </div>
+    <div class="filename-block">
+      <span class="fn-val">EM</span><span class="fn-sep">_</span><span class="fn-val">STORE</span><span class="fn-sep">_</span><span class="fn-val">20260519</span><span class="fn-sep">-</span><span class="fn-val">090000</span><span class="fn-sep">_</span><span class="fn-val">12</span><span class="fn-part">.wav</span>
+      <span class="fn-desc">EM = сотрудник / STORE = филиал / 20260519 = дата / 090000 = время начала / 12 = номер бейджа</span>
+    </div>
+    <div class="step-detail">Сверяй дату и время начала с расписанием. Если запись началась значительно позже начала смены — сотрудник включил бейдж с опозданием.</div>
+  </div>
+
+  <!-- Качество записи -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🎙</div>
+      Хорошая и плохая запись
+    </div>
+    <div class="quality-grid">
+      <div class="quality-col quality-col--good">
+        <div class="quality-label">Загружать</div>
+        <ul class="quality-list">
+          <li>Сотрудник и клиент слышны без помех</li>
+          <li>Есть целевое взаимодействие (подбор или работа с клиентом)</li>
+          <li>Время записи совпадает с расписанием</li>
+          <li>Длительность не менее 30 минут</li>
+        </ul>
+      </div>
+      <div class="quality-col quality-col--bad">
+        <div class="quality-label">Не загружать</div>
+        <ul class="quality-list">
+          <li>Сильный фоновый шум, речь неразборчива</li>
+          <li>Нет целевого взаимодействия (только тишина или посторонние разговоры)</li>
+          <li>Время не совпадает с расписанием</li>
+          <li>Запись слишком короткая или явно обрезана</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Правила для сотрудника -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">📋</div>
+      Правила для сотрудника
+    </div>
+    <div class="rule-list">
+      <div class="rule-item">
+        <div class="rule-num">1</div>
+        <div><strong>Запись идёт непрерывно весь день.</strong> Не включать и не выключать между клиентами — система анализирует контекст переходов.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">2</div>
+        <div><strong>Бейдж на человеке, не на столе.</strong> Если бейдж лежит — запись есть, но качество анализа будет низким.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">3</div>
+        <div><strong>Микрофон должен быть открыт.</strong> Волосы, шарф, воротник, одежда — всё это снижает качество звука и искажает результат анализа.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">4</div>
+        <div><strong>На обед можно снять бейдж, но не выключать.</strong> Перед следующим клиентом нужно надеть обратно.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Типичные ошибки -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--red">⚠️</div>
+      Типичные ошибки
+    </div>
+    <div class="error-list">
+      <div class="error-item">Бейдж не зарегистрирован до начала работы — запись нельзя загрузить в систему</div>
+      <div class="error-item">Сотрудник включил бейдж поздно — пропущены первые взаимодействия с клиентами</div>
+      <div class="error-item">Несколько коротких файлов вместо одного — сотрудник выключал и включал бейдж между клиентами</div>
+      <div class="error-item">Бейдж лежал на столе — запись есть, но качество анализа снижено</div>
+      <div class="error-item">Микрофон закрыт одеждой или волосами — речь плохо распознаётся</div>
+      <div class="error-item">Загружена плохая запись без проверки — снижает точность оценок сотрудника</div>
+    </div>
+    <div class="tip">Причина плохой записи всегда указывается в заметках к истории выдачи. Это помогает отслеживать системные проблемы.</div>
+  </div>
+
+  <!-- Алгоритм проверки перед загрузкой -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">✅</div>
+      Проверь перед загрузкой
+    </div>
+    <div class="algo-list">
+      <div class="algo-item">
+        <div class="algo-dot"></div>
+        <div><strong>Дата и время</strong> в имени файла совпадают с датой работы сотрудника</div>
+      </div>
+      <div class="algo-item">
+        <div class="algo-dot"></div>
+        <div><strong>Длительность</strong> не менее 30 минут</div>
+      </div>
+      <div class="algo-item">
+        <div class="algo-dot"></div>
+        <div><strong>Качество звука</strong> — прослушай фрагмент, сотрудник и клиент разборчивы</div>
+      </div>
+      <div class="algo-item">
+        <div class="algo-dot"></div>
+        <div><strong>Целевое взаимодействие</strong> — есть реальный контакт с клиентом, соответствует роли сотрудника</div>
+      </div>
+      <div class="algo-item">
+        <div class="algo-dot"></div>
+        <div><strong>Нет дубликата</strong> — система проверит автоматически, но если уже загружали этот файл, он будет отклонён</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

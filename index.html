@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>База знаний — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #f8f9fc;
+    color: #18192b;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .kb-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 28px 32px 24px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #18192b;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .hero p {
+    font-size: 14px;
+    color: #72768a;
+    max-width: 540px;
+  }
+
+  /* ── Search ── */
+  .search-row {
+    margin-bottom: 20px;
+    position: relative;
+    max-width: 360px;
+  }
+  .search-row svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ea3b8;
+    pointer-events: none;
+  }
+  #search {
+    font-family: inherit;
+    font-size: 14px;
+    width: 100%;
+    padding: 9px 14px 9px 36px;
+    border: 1px solid #e5e7ee;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #18192b;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  #search:focus {
+    border-color: #5b5ef4;
+    box-shadow: 0 0 0 3px rgba(91,94,244,0.1);
+  }
+  #search::placeholder { color: #9ea3b8; }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #9ea3b8;
+    margin-bottom: 10px;
+  }
+
+  /* ── Card label row (header of each catalog card) ── */
+  .card-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .card-label-row .section-label { margin-bottom: 0; }
+
+  /* ── Catalog grid ── */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 0;
+    align-items: stretch;
+  }
+
+  .catalog-card {
+    background: #ffffff;
+    border: 1px solid #e5e7ee;
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  }
+
+  .catalog-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f2f3f8;
+  }
+
+  .catalog-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: rgba(91,94,244,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #5b5ef4;
+  }
+
+  .catalog-card-head h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #18192b;
+    flex: 1;
+  }
+
+  .count-badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: #9ea3b8;
+    background: #f2f3f8;
+    border: 1px solid #e5e7ee;
+    padding: 2px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* ── Article list ── */
+  .article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .article-list--2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .art-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .article-list--2col .art-badge {
+    display: none;
+  }
+
+  .article-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 5px;
+    font-size: 13.5px;
+    text-decoration: none;
+    color: #18192b;
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+  .article-item:hover { background: #f2f3f8; }
+
+  .article-item.ready:hover { background: rgba(91,94,244,0.07); }
+  .article-item.ready { color: #18192b; }
+
+  .article-item.pending {
+    color: #9ea3b8;
+    cursor: default;
+  }
+  .article-item.pending:hover { background: transparent; }
+
+  .art-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .article-item.ready .art-dot { background: #5b5ef4; }
+  .article-item.pending .art-dot { background: #d1d5e0; }
+
+  .art-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background: #f2f3f8;
+    color: #9ea3b8;
+    border: 1px solid #e5e7ee;
+  }
+
+  /* ── No results ── */
+  #no-results {
+    display: none;
+    padding: 40px 0;
+    text-align: center;
+    color: #9ea3b8;
+    font-size: 14px;
+  }
+
+  @media (max-width: 680px) {
+    .catalog-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="kb-page">
+
+  <div class="hero">
+    <h1>База знаний Оптимайзера</h1>
+    <p>Инструкции по всем разделам системы, справочники метрик и пошаговые руководства.</p>
+  </div>
+
+  <div class="search-row">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input id="search" type="text" placeholder="Поиск по статьям…" autocomplete="off">
+  </div>
+
+  <div class="section-label" style="margin-bottom:12px">Все статьи</div>
+
+  <div class="catalog-grid" id="catalog">
+
+    <!-- Разделы системы -->
+    <div class="catalog-card">
+      <div class="card-label-row">
+        <span class="section-label">Разделы системы</span>
+        <span class="count-badge">15</span>
+      </div>
+      <div class="article-list article-list--2col">
+        <a class="article-item ready" href="sections/main.html" data-title="Главная страница"><span class="art-dot"></span><span class="art-text">Главная страница</span></a>
+        <a class="article-item ready" href="sections/branches.html" data-title="Результаты по филиалам"><span class="art-dot"></span><span class="art-text">Результаты по филиалам</span></a>
+        <a class="article-item ready" href="sections/analysis.html" data-title="Анализ филиала"><span class="art-dot"></span><span class="art-text">Анализ филиала</span></a>
+        <a class="article-item ready" href="sections/doctor-card.html" data-title="Карта врача"><span class="art-dot"></span><span class="art-text">Карта врача</span></a>
+        <a class="article-item ready" href="sections/consultant-card.html" data-title="Карта консультанта"><span class="art-dot"></span><span class="art-text">Карта консультанта</span></a>
+        <a class="article-item ready" href="sections/sales-dynamics.html" data-title="Динамика продаж"><span class="art-dot"></span><span class="art-text">Динамика продаж</span></a>
+        <a class="article-item ready" href="sections/employees.html" data-title="Результаты сотрудников"><span class="art-dot"></span><span class="art-text">Результаты сотрудников</span></a>
+        <a class="article-item ready" href="sections/tasks.html" data-title="План задач на неделю"><span class="art-dot"></span><span class="art-text">План задач на неделю</span></a>
+        <a class="article-item ready" href="sections/badges.html" data-title="Аудиобейджи"><span class="art-dot"></span><span class="art-text">Аудиобейджи</span></a>
+        <span class="article-item pending" data-title="Мотивация"><span class="art-dot"></span><span class="art-text">Мотивация</span></span>
+        <a class="article-item ready" href="sections/meeting-plan.html" data-title="Планёрка КД"><span class="art-dot"></span><span class="art-text">Планёрка КД</span></a>
+        <span class="article-item pending" data-title="Речевая аналитика — колл-центр"><span class="art-dot"></span><span class="art-text">Речевая аналитика — колл-центр</span></span>
+        <span class="article-item pending" data-title="Активность"><span class="art-dot"></span><span class="art-text">Активность</span></span>
+        <span class="article-item pending" data-title="Пользователи"><span class="art-dot"></span><span class="art-text">Пользователи</span></span>
+        <span class="article-item pending" data-title="Чат с AI"><span class="art-dot"></span><span class="art-text">Чат с AI</span></span>
+      </div>
+    </div>
+
+    <!-- Инструкции и справочники -->
+    <div class="catalog-card">
+      <div class="card-label-row">
+        <span class="section-label">Инструкции</span>
+      </div>
+      <div class="article-list" style="margin-bottom:16px">
+        <a class="article-item ready" href="guides/plan-decomposition.html" data-title="Декомпозиция плана продаж">
+          <span class="art-dot"></span>Декомпозиция плана продаж
+        </a>
+        <a class="article-item ready" href="guides/badges-workflow.html" data-title="Ежедневная работа с бейджами"><span class="art-dot"></span>Ежедневная работа с бейджами</a>
+        <a class="article-item ready" href="guides/getting-started.html" data-title="Начало работы"><span class="art-dot"></span>Начало работы</a>
+      </div>
+      <div class="section-label">Справочники</div>
+      <div class="article-list">
+        <a class="article-item ready" href="reference/metrics.html" data-title="Справочник метрик">
+          <span class="art-dot"></span>Справочник метрик
+        </a>
+        <a class="article-item ready" href="reference/roles.html" data-title="Роли и доступы"><span class="art-dot"></span>Роли и доступы</a>
+        <span class="article-item pending" data-title="Частые вопросы"><span class="art-dot"></span>Частые вопросы<span class="art-badge">Скоро</span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="no-results">Ничего не найдено</div>
+
+</div>
+
+<script>
+  const searchEl = document.getElementById('search');
+  const items = document.querySelectorAll('.article-item[data-title]');
+  const noResults = document.getElementById('no-results');
+
+  searchEl.addEventListener('input', () => {
+    const q = searchEl.value.trim().toLowerCase();
+    let visible = 0;
+    items.forEach(item => {
+      const match = !q || item.dataset.title.toLowerCase().includes(q);
+      item.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    noResults.style.display = q && visible === 0 ? 'block' : 'none';
+  });
+</script>
+
+<script src="_sidebar.js"></script>
+</body>
+</html>
