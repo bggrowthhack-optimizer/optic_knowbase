@@ -515,9 +515,15 @@
     { p: `(?<!${CY})рецепты(?!${CY})`,                    k: 'prescriptions' },
   ];
 
-  const mTermRe = new RegExp(MTERMS.map(t => `(${t.p})`).join('|'), 'gi');
+  let mTermRe = null;
+  try {
+    mTermRe = new RegExp(MTERMS.map(t => `(${t.p})`).join('|'), 'gi');
+  } catch (e) {
+    // Браузер не поддерживает lookbehind — тултипы отключены, сайдбар работает
+  }
 
   function wrapMetricTerms(root) {
+    if (!mTermRe) return;
     const SKIP = new Set(['script','style','code','pre','button','input','textarea','h1','h2','h3','h4','h5','h6']);
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
