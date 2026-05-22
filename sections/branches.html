@@ -71,17 +71,22 @@
   .card-icon--yellow { background: var(--yellow-bg); }
   .card-icon--blue   { background: var(--accent-light); }
   .card-icon--green  { background: var(--green-bg); }
+  .card-icon--purple { background: rgba(91,94,244,0.12); }
 
-  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
-  .bullet-item {
-    display: flex; align-items: flex-start; gap: 10px;
+  /* Steps */
+  .steps-list { display: flex; flex-direction: column; gap: 12px; }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 12px;
     font-size: 14px; color: var(--text-secondary); line-height: 1.55;
   }
-  .bullet-item::before {
-    content: ''; width: 5px; height: 5px; border-radius: 50%;
-    background: var(--accent); flex-shrink: 0; margin-top: 7px;
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent); color: white;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
   }
-  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+  .step-item strong { color: var(--text-primary); font-weight: 600; }
 
   /* Branch card demo */
   .branch-demo {
@@ -91,8 +96,8 @@
     margin-bottom: 12px;
   }
   .branch-header {
-    display: flex; align-items: center; gap: 0;
-    background: var(--surface); padding: 0;
+    display: flex; align-items: center;
+    background: var(--surface);
   }
   .branch-zone-bar {
     width: 4px; align-self: stretch; flex-shrink: 0;
@@ -142,17 +147,15 @@
     gap: 8px; background: var(--surface);
     cursor: pointer;
   }
-  .metric-row:hover { background: var(--surface-2); }
   .metric-name { flex: 1; font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-  .metric-fact { font-size: 13px; font-weight: 600; color: var(--text-muted); min-width: 90px; text-align: center; }
+  .metric-fact { font-size: 13px; font-weight: 600; color: var(--text-muted); min-width: 100px; text-align: center; }
   .metric-pct-plain { font-size: 13px; font-weight: 700; min-width: 40px; text-align: right; }
   .metric-pct-plain--red    { color: var(--red); }
   .metric-pct-plain--green  { color: var(--green); }
   .metric-pct-plain--yellow { color: var(--yellow); }
-  .metric-trend-plain { font-size: 12px; color: var(--text-muted); min-width: 90px; text-align: right; }
   .metric-trend-badge {
     font-size: 11px; font-weight: 600; padding: 2px 8px;
-    border-radius: 4px; min-width: 72px; text-align: center;
+    border-radius: 4px; min-width: 80px; text-align: center;
   }
   .metric-trend-badge--up   { color: var(--green); background: var(--green-bg); }
   .metric-trend-badge--down { color: var(--red); background: var(--red-bg); }
@@ -162,6 +165,15 @@
     font-size: 10px; font-weight: 600; color: var(--accent);
     background: var(--accent-light); border-radius: 6px;
     padding: 3px 8px; white-space: nowrap;
+  }
+  .block-section-header {
+    padding: 9px 16px;
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+  }
+  .block-section-title {
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
   }
 
   /* Expanded dynamics */
@@ -187,71 +199,38 @@
   .week-delta--up   { color: var(--green); }
   .week-delta--down { color: var(--red); }
 
-  /* Block sections */
-  .block-section-header {
-    padding: 10px 16px;
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-  }
-  .block-section-title {
-    font-size: 12px; font-weight: 700; color: var(--text-primary);
-  }
-
-  /* Five blocks list */
-  .blocks-list { display: flex; flex-direction: column; gap: 10px; }
-  .block-item {
-    background: var(--surface-2); border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .block-item-title { font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
-  .block-item-metrics { font-size: 12.5px; color: var(--text-muted); line-height: 1.7; }
-
   /* Plan button states */
-  .plan-states { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .plan-states { display: flex; flex-direction: column; gap: 6px; }
   .plan-state {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 14px; border-radius: var(--radius);
-    border: 1px solid var(--border); background: var(--surface);
+    padding: 9px 12px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: var(--surface-2);
   }
   .plan-state-btn {
-    font-size: 11px; font-weight: 600; padding: 5px 10px;
+    font-size: 11px; font-weight: 600; padding: 4px 10px;
     border-radius: 7px; white-space: nowrap; border: 2px solid transparent;
-    display: flex; align-items: center; gap: 4px;
+    display: flex; align-items: center; gap: 4px; flex-shrink: 0;
   }
-  .plan-state-btn--missing  { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.4); }
-  .plan-state-btn--incomplete { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.4); }
-  .plan-state-btn--complete { color: var(--accent); background: var(--accent-light); }
+  .plan-state-btn--warn { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.4); }
+  .plan-state-btn--ok   { color: var(--accent); background: var(--accent-light); }
   .plan-state-desc { font-size: 12.5px; color: var(--text-secondary); }
 
-  /* Steps */
-  .steps-list { display: flex; flex-direction: column; gap: 10px; }
-  .step-item {
-    display: flex; align-items: flex-start; gap: 12px;
-    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
-  }
-  .step-num {
-    width: 22px; height: 22px; border-radius: 50%;
-    background: var(--accent); color: white;
-    font-size: 11px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 1px;
-  }
-  .step-item strong { color: var(--text-primary); font-weight: 600; }
+  /* Blocks list */
+  .blocks-summary { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .block-summary-item { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .block-summary-item:last-child { border-bottom: none; }
+  .block-summary-num { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+  .block-summary-title { font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+  .block-summary-desc { font-size: 12.5px; color: var(--text-secondary); }
 
-  .tip {
-    background: var(--accent-light);
-    border: 1px solid rgba(91,94,244,0.2);
-    border-left: 3px solid var(--accent);
-    border-radius: var(--radius);
-    padding: 16px 18px; margin-bottom: 16px;
-    font-size: 14px; color: var(--text-primary); line-height: 1.6;
+  .callout {
+    border-radius: var(--radius); padding: 14px 18px;
+    font-size: 13.5px; line-height: 1.6;
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 12px;
   }
-  .tip-label {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 5px;
-  }
+  .callout--blue   { background: rgba(91,94,244,0.07);  border: 1px solid rgba(91,94,244,0.18); color: #3a3da8; }
+  .callout--yellow { background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.2); color: #7a4f00; }
+  .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
 
   .warn {
     background: var(--yellow-bg);
@@ -275,17 +254,47 @@
   <div class="hero">
     <div class="hero-badge">Раздел системы</div>
     <h1>Результаты по филиалам</h1>
-    <p class="hero-desc">Блок на главной странице. Показывает текущую ситуацию по каждому салону — зона, ключевые показатели, детальная статистика. Главный инструмент РОПа для ежедневного контроля.</p>
+    <p class="hero-desc">Блок на главной странице. За 1–2 минуты показывает, где всё хорошо, а где нужно разобраться — без углублённого анализа. Используй каждое утро как первый экран.</p>
   </div>
 
-  <!-- Строка филиала -->
+  <!-- Алгоритм — сразу в начале -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">▶️</div>
+      Как работать с блоком
+    </div>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>Смотри <strong>зоны</strong> — найди красные и жёлтые филиалы</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>Глянь <strong>ср. чек и выручку</strong> в свёрнутой строке — быстрая оценка без раскрытия</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div><strong>Раскрой проблемный филиал</strong> — просмотри пять блоков данных сверху вниз</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div>Найди <strong>красный показатель</strong> — кликни на строку, чтобы увидеть динамику по неделям</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div>Нажми <strong>«Анализ филиала»</strong> — узнай причину и поставь задачу прямо оттуда</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Свёрнутая строка -->
   <div class="card">
     <div class="card-title">
       <div class="card-icon card-icon--blue">🏢</div>
-      Строка филиала (свёрнутый вид)
+      Строка филиала
     </div>
 
-    <div class="branch-demo">
+    <div class="branch-demo" style="margin-bottom:16px">
       <div class="branch-header">
         <div class="branch-zone-bar branch-zone-bar--yellow"></div>
         <div class="branch-header-inner">
@@ -310,261 +319,114 @@
       </div>
     </div>
 
-    <div class="bullet-list" style="margin-bottom:16px">
-      <div class="bullet-item"><span><strong>Цветная полоса слева</strong> — зона филиала: зелёная / жёлтая / красная</span></div>
-      <div class="bullet-item"><span><strong>Зона badge</strong> — текстовое обозначение рядом с названием</span></div>
-      <div class="bullet-item"><span><strong>Ср. чек и выручка</strong> — быстрые итоговые показатели</span></div>
-      <div class="bullet-item"><span><strong>Кнопка «Анализ филиала»</strong> — открывает AI-анализ: зона, топ-3 проблемы, лучшие и худшие сотрудники, рекомендации. Текст появляется при наведении</span></div>
-      <div class="bullet-item"><span><strong>Кнопка плана</strong> — три состояния в зависимости от заполненности плана (см. ниже)</span></div>
-    </div>
+    <p style="font-size:13.5px;color:var(--text-secondary);margin-bottom:14px;line-height:1.6">
+      Цветная полоса и бейдж слева — <strong>зона</strong> (зелёная / жёлтая / красная).
+      Справа — ср. чек и выручка. Кнопка <strong>«Анализ филиала»</strong> открывает AI-разбор:
+      зона, топ-3 проблемы, лучшие и худшие сотрудники. Клик на строку — раскрывает детальные блоки.
+    </p>
 
-    <!-- Состояния кнопки плана -->
-    <p style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px">Состояния кнопки плана:</p>
+    <p style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:8px">Кнопка плана — три состояния:</p>
     <div class="plan-states">
       <div class="plan-state">
-        <div class="plan-state-btn plan-state-btn--missing">📅 Загрузить план</div>
-        <div class="plan-state-desc">План на этот месяц не заведён совсем. Жёлтый бордер — сигнал что нужно действовать</div>
+        <div class="plan-state-btn plan-state-btn--warn">📅 Загрузить план</div>
+        <div class="plan-state-desc">Плана на этот месяц нет — система не может считать зону и прогноз</div>
       </div>
       <div class="plan-state">
-        <div class="plan-state-btn plan-state-btn--incomplete">⚠ Дополнить план</div>
-        <div class="plan-state-desc">План есть, но заполнены не все поля. Тоже жёлтый бордер</div>
+        <div class="plan-state-btn plan-state-btn--warn">⚠ Дополнить план</div>
+        <div class="plan-state-desc">План есть, но заполнен не полностью</div>
       </div>
       <div class="plan-state">
-        <div class="plan-state-btn plan-state-btn--complete">📅 Изменить план</div>
+        <div class="plan-state-btn plan-state-btn--ok">📅 Изменить план</div>
         <div class="plan-state-desc">План заполнен полностью — всё в порядке</div>
       </div>
     </div>
   </div>
 
-  <!-- Раскрытый филиал -->
+  <!-- Пять блоков -->
   <div class="card">
     <div class="card-title">
       <div class="card-icon card-icon--blue">📊</div>
-      Раскрытый филиал — пять блоков данных
+      Раскрытый филиал — пять блоков
     </div>
-    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px">Клик на строку филиала раскрывает детальную таблицу. Блоки идут сверху вниз:</p>
 
-    <div class="blocks-list">
+    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">
+      Клик на строку раскрывает таблицу с показателями. Блоки идут сверху вниз — читай в том же порядке.
+    </p>
 
-      <!-- Блок 1 -->
-      <div class="block-item">
-        <div class="block-section-header">
-          <div class="block-section-title">1 · Воронка продаж</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Окна</div>
-          <div class="metric-fact">115.8 из 189</div>
-          <div class="metric-pct-plain metric-pct-plain--red">61%</div>
-          <div style="flex:1"></div>
-          <div class="metric-trend-plain">→ Стабильно</div>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Подборы</div>
-          <div class="metric-fact">20 из 35</div>
-          <div class="metric-pct-plain metric-pct-plain--red">57%</div>
-          <div style="flex:1"></div>
-          <span class="metric-detail-btn">Детализация</span>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Рецепты</div>
-          <div class="metric-fact">20 из 35</div>
-          <div class="metric-pct-plain metric-pct-plain--red">57%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Заказы (наши)</div>
-          <div class="metric-fact">8 из 32</div>
-          <div class="metric-pct-plain metric-pct-plain--red">25%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
+    <div class="blocks-summary" style="margin-bottom:16px">
+      <div class="block-summary-item">
+        <div class="block-summary-num">Блок 1</div>
+        <div class="block-summary-title">Воронка продаж</div>
+        <div class="block-summary-desc">Окна → Подборы → Рецепты → Заказы (наши). Факт из плана — здесь видно, где обрыв воронки</div>
       </div>
-
-      <!-- Блок 2 -->
-      <div class="block-item">
-        <div class="block-section-header">
-          <div class="block-section-title">2 · Показатели эффективности воронки</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">% загрузки</div>
-          <div class="metric-fact">61% из 80%</div>
-          <div class="metric-pct-plain metric-pct-plain--red">76%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">% подбор → рецепт</div>
-          <div class="metric-fact">61% из 70%</div>
-          <div class="metric-pct-plain metric-pct-plain--red">87%</div>
-          <div style="flex:1"></div>
-          <span class="metric-detail-btn">Детализация</span>
-          <span class="metric-trend-badge metric-trend-badge--up">↗ Растёт</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">% рецепт → заказ</div>
-          <div class="metric-fact">82% из 80%</div>
-          <div class="metric-pct-plain metric-pct-plain--green">103%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">% подбор → заказ (наш)</div>
-          <div class="metric-fact">50% из 60%</div>
-          <div class="metric-pct-plain metric-pct-plain--yellow">83%</div>
-          <div style="flex:1"></div>
-          <span class="metric-detail-btn">Детализация</span>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
+      <div class="block-summary-item">
+        <div class="block-summary-num">Блок 2</div>
+        <div class="block-summary-title">Показатели эффективности воронки</div>
+        <div class="block-summary-desc">% загрузки, % подбор→рецепт, % рецепт→заказ, % подбор→заказ. Помогает понять, на каком шаге теряем клиентов</div>
       </div>
-
-      <!-- Блок 3 -->
-      <div class="block-item">
-        <div class="block-section-header">
-          <div class="block-section-title">3 · Анализ ВТЛ</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">% рекомендаций ВТЛ</div>
-          <div class="metric-fact">48% из 60%</div>
-          <div class="metric-pct-plain metric-pct-plain--red">80%</div>
-          <div style="flex:1"></div>
-          <span class="metric-detail-btn">Детализация</span>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">% продаж ВТЛ</div>
-          <div class="metric-fact">24% из 50%</div>
-          <div class="metric-pct-plain metric-pct-plain--red">48%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Кол-во рекомендаций ВТЛ</div>
-          <div class="metric-fact">34 из 45</div>
-          <div class="metric-pct-plain metric-pct-plain--red">76%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Кол-во заказов ВТЛ</div>
-          <div class="metric-fact">8 из 22</div>
-          <div class="metric-pct-plain metric-pct-plain--red">36%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Ср. чек заказа ВТЛ</div>
-          <div class="metric-fact">24К из 28К</div>
-          <div class="metric-pct-plain metric-pct-plain--yellow">86%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-          <div class="metric-chevron">▼</div>
-        </div>
+      <div class="block-summary-item">
+        <div class="block-summary-num">Блок 3</div>
+        <div class="block-summary-title">Анализ ВТЛ</div>
+        <div class="block-summary-desc">% рекомендаций, % продаж, кол-во заказов, ср. чек ВТЛ. ВТЛ — главный рычаг среднего чека</div>
       </div>
-
-      <!-- Блок 4 -->
-      <div class="block-item">
-        <div class="block-section-header">
-          <div class="block-section-title">4 · Анализ Наши/Чужие</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">% чужих заказов</div>
-          <div class="metric-fact">18% из 15%</div>
-          <div class="metric-pct-plain metric-pct-plain--red">—</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--up">↗ Растёт</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Заказы (чужие)</div>
-          <div class="metric-fact">12 из 10</div>
-          <div class="metric-pct-plain metric-pct-plain--red">—</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Ср. чек (чужой)</div>
-          <div class="metric-fact">18К из 20К</div>
-          <div class="metric-pct-plain metric-pct-plain--yellow">90%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Заказы (наши)</div>
-          <div class="metric-fact">54 из 70</div>
-          <div class="metric-pct-plain metric-pct-plain--red">77%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Ср. чек (наш)</div>
-          <div class="metric-fact">46К из 48К</div>
-          <div class="metric-pct-plain metric-pct-plain--yellow">96%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-          <div class="metric-chevron">▼</div>
-        </div>
+      <div class="block-summary-item">
+        <div class="block-summary-num">Блок 4</div>
+        <div class="block-summary-title">Анализ Наши / Чужие</div>
+        <div class="block-summary-desc">Структура заказов по типу рецепта: наши заказы vs чужие, чеки по каждому типу</div>
       </div>
-
-      <!-- Блок 5 -->
-      <div class="block-item">
-        <div class="block-section-header">
-          <div class="block-section-title">5 · Итого по всем заказам</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Итого заказов</div>
-          <div class="metric-fact">66 из 80</div>
-          <div class="metric-pct-plain metric-pct-plain--red">83%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Итого сумма заказов</div>
-          <div class="metric-fact">1.2М из 1.5М</div>
-          <div class="metric-pct-plain metric-pct-plain--red">80%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-          <div class="metric-chevron">▼</div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-name">Итого ср. чек</div>
-          <div class="metric-fact">18К из 19К</div>
-          <div class="metric-pct-plain metric-pct-plain--yellow">95%</div>
-          <div style="flex:1"></div>
-          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-          <div class="metric-chevron">▼</div>
-        </div>
+      <div class="block-summary-item">
+        <div class="block-summary-num">Блок 5</div>
+        <div class="block-summary-title">Итого по всем заказам</div>
+        <div class="block-summary-desc">Итоговое кол-во заказов, сумма и ср. чек с учётом всех типов</div>
       </div>
+    </div>
 
+    <p style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:8px">Как читать строку метрики:</p>
+
+    <div class="branch-demo">
+      <div class="block-section-header">
+        <div class="block-section-title">Воронка продаж</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Подборы</div>
+        <div class="metric-fact">20 из 35</div>
+        <div class="metric-pct-plain metric-pct-plain--red">57%</div>
+        <div style="flex:1"></div>
+        <span class="metric-detail-btn">Детализация</span>
+        <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
+        <div class="metric-chevron">▼</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-name">Рецепты</div>
+        <div class="metric-fact">20 из 35</div>
+        <div class="metric-pct-plain metric-pct-plain--red">57%</div>
+        <div style="flex:1"></div>
+        <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
+        <div class="metric-chevron">▼</div>
+      </div>
+    </div>
+
+    <p style="font-size:12.5px;color:var(--text-secondary);margin-top:10px;line-height:1.6">
+      <strong>Факт из плана</strong> — сколько есть сейчас из запланированного на месяц. &nbsp;
+      <strong>%</strong> — выполнение: красный / жёлтый / зелёный. &nbsp;
+      <strong>Динамика</strong> — растёт или падает по сравнению с прошлой неделей. &nbsp;
+      <strong>▼</strong> — клик раскрывает недельную динамику.
+    </p>
+
+    <div class="callout callout--blue" style="margin-top:12px">
+      <span class="callout-icon">ℹ️</span>
+      Кнопка <strong>«Детализация»</strong> есть у некоторых метрик (Подборы, % подбор→рецепт, % подбор→заказ, Рекомендации ВТЛ) — открывает разбивку внутри показателя по сотрудникам.
     </div>
   </div>
 
-  <!-- Динамика показателя -->
+  <!-- Динамика -->
   <div class="card">
     <div class="card-title">
       <div class="card-icon card-icon--blue">📈</div>
-      Динамика показателя
+      Динамика по неделям
     </div>
-    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;line-height:1.6">
-      Каждая строка метрики кликабельна — нажми на неё и раскроется динамика по последним неделям:
-      график и карточки с недельными значениями и изменением к предыдущей неделе.
+    <p style="font-size:13.5px;color:var(--text-secondary);margin-bottom:14px;line-height:1.6">
+      Кликни на любую строку метрики — раскроется история по последним неделям. Видно, стабилизировался показатель или продолжает падать.
     </p>
 
     <div class="branch-demo">
@@ -601,53 +463,12 @@
         </div>
       </div>
     </div>
-
-    <div class="bullet-list" style="margin-top:4px">
-      <div class="bullet-item"><span><strong>График</strong> — визуальная линия по неделям с отметкой плана</span></div>
-      <div class="bullet-item"><span><strong>Карточки недель</strong> — значение за каждую неделю и дельта к предыдущей (+/−)</span></div>
-      <div class="bullet-item"><span><strong>Кнопка «Детализация»</strong> — у некоторых метрик (Подборы, % подбор→рецепт, % подбор→заказ, Рекомендации ВТЛ) открывает разбивку внутри показателя</span></div>
-    </div>
   </div>
 
-  <!-- Важное различие -->
+  <!-- Предупреждение -->
   <div class="warn">
-    <div class="warn-label">Не путай % выполнения и динамику</div>
-    Показатель может быть <strong>красным, но расти</strong> — значит, работа уже ведётся, но результата ещё нет. Или <strong>зелёным, но падать</strong> — формально выполняет план, но уже в минус. Всегда смотри оба столбца вместе.
-  </div>
-
-  <!-- Алгоритм -->
-  <div class="card">
-    <div class="card-title">
-      <div class="card-icon card-icon--yellow">▶️</div>
-      Алгоритм работы с блоком
-    </div>
-    <div class="steps-list">
-      <div class="step-item">
-        <div class="step-num">1</div>
-        <div>Посмотри <strong>зоны</strong> — найди красные и жёлтые филиалы</div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">2</div>
-        <div>Сравни <strong>ср. чек и выручку</strong> — быстрая оценка без раскрытия</div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">3</div>
-        <div><strong>Раскрой проблемный филиал</strong> — просмотри блоки сверху вниз</div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">4</div>
-        <div>Найди <strong>красный показатель</strong> — кликни на строку чтобы увидеть динамику по неделям</div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">5</div>
-        <div>Открой <strong>«Анализ филиала»</strong> — узнай причину и поставь задачу прямо оттуда</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="tip" style="margin-bottom:0;">
-    <div class="tip-label">Фильтры</div>
-    Данные в блоке меняются вместе с фильтрами главной страницы: <strong>период</strong> (месяц) и <strong>РОП</strong> (для КД — фильтр по конкретному руководителю отдела продаж).
+    <div class="warn-label">Важно</div>
+    Не путай <strong>% выполнения</strong> и <strong>динамику</strong>. Показатель может быть красным, но уже расти — работа ведётся, результат ещё впереди. Или зелёным, но падать — формально в плане, но уже в минус. Смотри оба столбца вместе.
   </div>
 
 </div>
