@@ -188,6 +188,19 @@
     font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
     text-transform: uppercase; color: var(--accent); margin-bottom: 5px;
   }
+
+  .section-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 8px 0 16px;
+  }
+  .section-divider-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .section-divider-line {
+    flex: 1; height: 1px; background: var(--border);
+  }
 </style>
 </head>
 <body>
@@ -230,6 +243,11 @@
     </div>
   </div>
 
+  <div class="section-divider">
+    <span class="section-divider-label">Управление страницей</span>
+    <div class="section-divider-line"></div>
+  </div>
+
   <!-- Фильтры -->
   <div class="card">
     <div class="card-title">
@@ -241,6 +259,11 @@
       <div class="bullet-item"><span><strong>РОП</strong> — только для КД. Позволяет смотреть данные по конкретному руководителю отдела продаж и его филиалам</span></div>
       <div class="bullet-item"><span><strong>Настроить метрики</strong> — управление набором KPI-карточек. <a href="#metrics-settings" style="color:var(--accent);font-weight:600">Как это выглядит ↓</a></span></div>
     </div>
+  </div>
+
+  <div class="section-divider">
+    <span class="section-divider-label">Блоки данных</span>
+    <div class="section-divider-line"></div>
   </div>
 
   <!-- Фиолетовый блок -->
