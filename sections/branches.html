@@ -140,29 +140,45 @@
     margin-right: 8px;
   }
 
-  /* Metric row — фиксированные колонки для выравнивания */
+  /* Metric row */
   .metric-row {
     display: flex; align-items: center;
     padding: 10px 16px; border-top: 1px solid var(--border);
-    gap: 8px; background: var(--surface);
-    cursor: pointer;
+    background: var(--surface); cursor: pointer; gap: 12px;
   }
-  .metric-name { flex: 1; font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-  .metric-fact { font-size: 13px; font-weight: 600; color: var(--text-muted); width: 100px; text-align: center; flex-shrink: 0; }
-  .metric-pct-plain { font-size: 13px; font-weight: 700; width: 38px; text-align: right; flex-shrink: 0; }
+  /* Название — берёт всё доступное пространство, не сжимает правую часть */
+  .metric-name {
+    flex: 1; min-width: 0;
+    font-size: 13px; color: var(--text-secondary); font-weight: 500;
+  }
+  /* Правая часть — монолитный flex-блок, не сжимается */
+  .metric-right {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .metric-fact {
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    white-space: nowrap; min-width: 90px; text-align: right;
+  }
+  .metric-pct-plain {
+    font-size: 13px; font-weight: 700;
+    white-space: nowrap; min-width: 36px; text-align: right;
+  }
   .metric-pct-plain--red    { color: var(--red); }
   .metric-pct-plain--green  { color: var(--green); }
   .metric-pct-plain--yellow { color: var(--yellow); }
-  /* Фиксированный слот для кнопки «Детализация» — всегда занимает место */
-  .metric-detail-slot { width: 80px; text-align: center; flex-shrink: 0; }
+  /* Слот для «Детализация» — фиксированная ширина, пуст если кнопки нет */
+  .metric-detail-slot {
+    width: 76px; flex-shrink: 0; display: flex; justify-content: center;
+  }
   .metric-detail-btn {
     font-size: 10px; font-weight: 600; color: var(--accent);
     background: var(--accent-light); border-radius: 6px;
-    padding: 3px 8px; white-space: nowrap; display: inline-block;
+    padding: 3px 8px; white-space: nowrap;
   }
   .metric-trend-badge {
     font-size: 11px; font-weight: 600; padding: 2px 8px;
-    border-radius: 4px; width: 88px; text-align: center; flex-shrink: 0;
+    border-radius: 4px; white-space: nowrap;
+    min-width: 88px; text-align: center;
   }
   .metric-trend-badge--up   { color: var(--green); background: var(--green-bg); }
   .metric-trend-badge--down { color: var(--red); background: var(--red-bg); }
@@ -431,20 +447,24 @@
       <!-- Строка с кнопкой Детализация -->
       <div class="metric-row">
         <div class="metric-name">Подборы</div>
-        <div class="metric-fact">20 из 35</div>
-        <div class="metric-pct-plain metric-pct-plain--red">57%</div>
-        <div class="metric-detail-slot"><span class="metric-detail-btn">Детализация</span></div>
-        <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
-        <div class="metric-chevron">▼</div>
+        <div class="metric-right">
+          <span class="metric-fact">20 из 35</span>
+          <span class="metric-pct-plain metric-pct-plain--red">57%</span>
+          <div class="metric-detail-slot"><span class="metric-detail-btn">Детализация</span></div>
+          <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
+          <span class="metric-chevron">▼</span>
+        </div>
       </div>
       <!-- Строка без кнопки Детализация — слот пустой, выравнивание одинаковое -->
       <div class="metric-row">
         <div class="metric-name">Рецепты</div>
-        <div class="metric-fact">27 из 35</div>
-        <div class="metric-pct-plain metric-pct-plain--yellow">77%</div>
-        <div class="metric-detail-slot"></div>
-        <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
-        <div class="metric-chevron">▼</div>
+        <div class="metric-right">
+          <span class="metric-fact">27 из 35</span>
+          <span class="metric-pct-plain metric-pct-plain--yellow">77%</span>
+          <div class="metric-detail-slot"></div>
+          <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
+          <span class="metric-chevron">▼</span>
+        </div>
       </div>
     </div>
 
@@ -474,11 +494,13 @@
     <div class="branch-demo">
       <div class="metric-row" style="background:var(--surface-2)">
         <div class="metric-name">% подбор → рецепт</div>
-        <div class="metric-fact">61% из 70%</div>
-        <div class="metric-pct-plain metric-pct-plain--red">87%</div>
-        <div class="metric-detail-slot"><span class="metric-detail-btn">Детализация</span></div>
-        <span class="metric-trend-badge metric-trend-badge--up">↗ Растёт</span>
-        <div class="metric-chevron" style="transform:rotate(180deg)">▼</div>
+        <div class="metric-right">
+          <span class="metric-fact">61% из 70%</span>
+          <span class="metric-pct-plain metric-pct-plain--red">87%</span>
+          <div class="metric-detail-slot"><span class="metric-detail-btn">Детализация</span></div>
+          <span class="metric-trend-badge metric-trend-badge--up">↗ Растёт</span>
+          <span class="metric-chevron" style="transform:rotate(180deg)">▼</span>
+        </div>
       </div>
       <div class="metric-expanded">
         <div class="dynamics-label">Динамика последних недель</div>
