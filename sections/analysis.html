@@ -67,7 +67,6 @@
   .card-icon--red    { background: var(--red-bg); }
   .card-icon--purple { background: rgba(91,94,244,0.12); }
 
-  /* Callout */
   .callout {
     border-radius: var(--radius); padding: 14px 18px;
     font-size: 13.5px; line-height: 1.6;
@@ -75,13 +74,22 @@
   }
   .callout--blue   { background: rgba(91,94,244,0.07); border: 1px solid rgba(91,94,244,0.18); color: #3a3da8; }
   .callout--yellow { background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.2); color: #7a4f00; }
-  .callout--green  { background: var(--green-bg); border: 1px solid rgba(22,163,74,0.2); color: #14532d; }
   .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Step list */
+  .step-list { display: flex; flex-direction: column; gap: 12px; }
+  .step-item { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step-item strong { color: var(--text-primary); font-weight: 600; }
 
   /* Modal demo */
   .modal-demo {
     border: 1px solid var(--border); border-radius: var(--radius);
-    overflow: hidden; margin-bottom: 12px;
+    overflow: hidden; margin-bottom: 14px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.10);
   }
   .modal-header {
@@ -89,78 +97,65 @@
     padding: 14px 18px;
   }
   .modal-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
-  .modal-meta {
-    display: flex; gap: 16px; font-size: 11.5px; color: var(--text-muted);
-  }
-  .modal-meta-item { display: flex; align-items: center; gap: 4px; }
+  .modal-meta { display: flex; gap: 16px; font-size: 11.5px; color: var(--text-muted); }
   .modal-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
   .modal-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-top: 2px; }
   .month-select {
     font-size: 12px; font-weight: 600; color: var(--text-primary);
     background: var(--surface-2); border: 1px solid var(--border);
-    border-radius: 7px; padding: 5px 10px; cursor: pointer;
+    border-radius: 7px; padding: 5px 10px;
   }
   .modal-close {
     width: 28px; height: 28px; border-radius: 6px;
     background: var(--surface-2); display: flex; align-items: center; justify-content: center;
-    font-size: 13px; color: var(--text-muted); cursor: pointer;
+    font-size: 13px; color: var(--text-muted);
   }
   .modal-body { padding: 16px 18px; background: var(--surface); }
 
-  /* Блок результатов */
+  /* Результаты */
   .results-block {
     background: rgba(91,94,244,0.04); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px;
   }
   .results-title { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
   .results-row { font-size: 13px; color: var(--text-primary); margin-bottom: 6px; line-height: 1.5; }
-  .results-row:last-child { margin-bottom: 0; }
-  .pct-red { color: var(--red); font-weight: 700; }
   .pct-yellow { color: var(--yellow); font-weight: 700; }
-  .pct-green { color: var(--green); font-weight: 700; }
+  .zone-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
   .zone-badge {
     display: inline-flex; align-items: center;
-    font-size: 11.5px; font-weight: 700;
-    padding: 3px 10px; border-radius: 100px; border: 1px solid;
+    font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 100px; border: 1px solid;
   }
   .zone-badge--yellow { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.3); }
-  .zone-badge--green  { color: var(--green); background: var(--green-bg); border-color: rgba(22,163,74,0.3); }
-  .zone-badge--red    { color: var(--red); background: var(--red-bg); border-color: rgba(220,38,38,0.3); }
-  .zone-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
+  .zone-badge--green  { color: var(--green);  background: var(--green-bg);  border-color: rgba(22,163,74,0.3); }
+  .zone-badge--red    { color: var(--red);    background: var(--red-bg);    border-color: rgba(220,38,38,0.3); }
   .results-summary {
     font-size: 12.5px; color: var(--text-secondary);
     border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px; line-height: 1.55;
   }
 
   /* Проблемные показатели */
-  .problems-header {
+  .section-label {
     display: flex; align-items: center; gap: 6px;
-    font-size: 13px; font-weight: 700; color: var(--text-primary);
-    margin-bottom: 10px;
+    font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px;
   }
   .problem-block {
-    border: 1px solid var(--border); border-radius: var(--radius);
-    overflow: hidden; margin-bottom: 8px;
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 8px;
   }
   .problem-head {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 9px 14px; background: rgba(220,38,38,0.05);
-    border-bottom: 1px solid var(--border);
+    padding: 9px 14px; background: rgba(220,38,38,0.05); border-bottom: 1px solid var(--border);
   }
   .problem-metric { font-size: 13px; font-weight: 700; color: var(--text-primary); }
   .problem-stats { display: flex; gap: 12px; font-size: 11.5px; color: var(--text-muted); }
   .problem-stats .fact { color: var(--red); font-weight: 700; }
   .problem-stats .target { color: var(--text-primary); font-weight: 600; }
   .problem-body { padding: 10px 14px; }
-  .employees-label {
-    font-size: 11px; color: var(--text-muted); margin-bottom: 8px;
-    display: flex; align-items: center; gap: 4px;
-  }
+  .employees-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
   .emp-block { margin-bottom: 10px; }
   .emp-block:last-child { margin-bottom: 0; }
   .emp-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
   .emp-name { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
-  .emp-val { font-size: 12.5px; font-weight: 700; color: var(--red); }
+  .emp-val  { font-size: 12.5px; font-weight: 700; color: var(--red); }
   .task-rows { display: flex; flex-direction: column; gap: 4px; }
   .task-row {
     display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
@@ -173,10 +168,9 @@
     padding: 2px 8px; white-space: nowrap; display: flex; align-items: center; gap: 3px;
   }
 
-  /* ТОП performers */
+  /* Performers */
   .performers-block {
-    border: 1px solid var(--border); border-radius: var(--radius);
-    overflow: hidden; margin-bottom: 8px;
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 10px;
   }
   .performers-head {
     display: flex; align-items: center; gap: 6px;
@@ -184,7 +178,7 @@
   }
   .performers-head--green { background: rgba(22,163,74,0.08); }
   .performers-head--red   { background: rgba(220,38,38,0.06); }
-  .performers-head-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .performers-head-title  { font-size: 13px; font-weight: 700; color: var(--text-primary); }
   .role-sub {
     padding: 6px 14px; font-size: 10px; font-weight: 700;
     color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em;
@@ -202,58 +196,32 @@
     font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px;
   }
   .rank-badge--green { background: var(--green-bg); color: var(--green); }
-  .rank-badge--red   { background: var(--red-bg); color: var(--red); }
-  .performer-name { font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .rank-badge--red   { background: var(--red-bg);   color: var(--red); }
+  .performer-name      { font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
   .performer-highlight { font-size: 11.5px; color: var(--text-muted); line-height: 1.45; margin-bottom: 2px; }
-  .performer-rec { font-size: 11.5px; color: var(--accent); font-style: italic; line-height: 1.45; }
-  .performer-weak { font-size: 11.5px; color: var(--text-secondary); line-height: 1.45; }
+  .performer-rec       { font-size: 11.5px; color: var(--accent); font-style: italic; line-height: 1.45; }
+  .performer-weak      { font-size: 11.5px; color: var(--text-secondary); line-height: 1.45; }
 
-  /* Attention block */
+  /* Attention */
   .attention-block {
-    border: 1px solid rgba(202,138,4,0.35); border-radius: var(--radius); overflow: hidden; margin-bottom: 8px;
+    border: 1px solid rgba(202,138,4,0.35); border-radius: var(--radius); overflow: hidden;
   }
   .attention-head {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    padding: 9px 14px; background: rgba(202,138,4,0.07);
-    border-bottom: 1px solid rgba(202,138,4,0.2);
+    padding: 9px 14px; background: rgba(202,138,4,0.07); border-bottom: 1px solid rgba(202,138,4,0.2);
   }
-  .attention-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .attention-title    { font-size: 13px; font-weight: 700; color: var(--text-primary); }
   .attention-subtitle { font-size: 11px; color: var(--text-muted); }
-  .attention-emp {
-    padding: 10px 14px; border-bottom: 1px solid var(--border);
-  }
-  .attention-emp:last-child { border-bottom: none; }
+  .attention-emp { padding: 10px 14px; }
   .attention-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 3px; }
   .attention-emp-name { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
-  .attention-role { font-size: 11.5px; color: var(--text-muted); }
-  .attention-metric { font-size: 11.5px; font-weight: 600; color: var(--text-primary); }
+  .attention-role     { font-size: 11.5px; color: var(--text-muted); }
+  .attention-metric   { font-size: 11.5px; font-weight: 600; color: var(--text-primary); }
   .attention-values {
-    display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-muted);
-    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;
   }
-  .att-now { color: var(--red); font-weight: 700; }
+  .att-now   { color: var(--red); font-weight: 700; }
   .att-delta { color: var(--red); font-weight: 700; background: var(--red-bg); padding: 1px 6px; border-radius: 4px; }
-
-  /* Step list */
-  .step-list { display: flex; flex-direction: column; gap: 12px; }
-  .step-item { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
-  .step-num {
-    width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff;
-    font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 1px;
-  }
-  .step-item strong { color: var(--text-primary); font-weight: 600; }
-
-  .warn {
-    background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.25);
-    border-left: 3px solid #eab308; border-radius: var(--radius);
-    padding: 14px 18px; margin-bottom: 16px;
-    font-size: 14px; color: #78350f; line-height: 1.6;
-  }
-  .warn-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
-    text-transform: uppercase; color: var(--yellow); margin-bottom: 5px;
-  }
 </style>
 </head>
 <body>
@@ -263,7 +231,37 @@
   <div class="hero">
     <div class="hero-badge">Раздел системы</div>
     <h1>Анализ филиала</h1>
-    <p class="hero-desc">Модал, который открывается кнопкой «Анализ филиала» в блоке результатов по филиалам. Система сама определяет зону, выделяет проблемные показатели до конкретных сотрудников и предлагает готовые задачи. Открывай минимум раз в неделю по каждому филиалу.</p>
+    <p class="hero-desc">Модал, который открывается кнопкой «Анализ филиала» из <a href="branches.html" style="color:var(--accent)">блока результатов по филиалам</a>. Система сама определяет зону, выделяет проблемные показатели до конкретных сотрудников и предлагает готовые задачи. Открывай минимум раз в неделю по каждому филиалу.</p>
+  </div>
+
+  <!-- Алгоритм — сразу -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--purple">▶️</div>
+      Как работать
+    </div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>Смотри <strong>зону и % плана</strong> — зелёная значит удерживать показатели, жёлтая/красная — читай дальше</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>Разбери <strong>проблемные показатели</strong> — по каждому видно, кто конкретно просаживает и насколько. Ставь задачи прямо отсюда кнопкой «+ Задача»</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div>Проверь <strong>«Требующие внимания»</strong> — если блок появился, у кого-то резкая просадка за прошлую неделю. Это приоритет на сегодня</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div>Загляни в <strong>ТОП лучших</strong> — поставь задачу на масштабирование: провести разбор практики с командой или назначить наставника</div>
+      </div>
+    </div>
+    <div class="callout callout--yellow" style="margin-top:18px">
+      <span class="callout-icon">⚡</span>
+      <span><strong>Главное правило:</strong> если открыл анализ и не поставил ни одной задачи — не доработал. Минимальный результат — хотя бы одна задача в «<a href="tasks.html" style="color:inherit;text-decoration:underline">Плане задач на неделю</a>».</span>
+    </div>
   </div>
 
   <!-- Устройство -->
@@ -273,15 +271,14 @@
       Устройство модала
     </div>
 
-    <!-- Демо модала -->
     <div class="modal-demo">
       <div class="modal-header">
         <div class="modal-header-row">
           <div>
             <div class="modal-title">Анализ филиала: Ревда, Максима Горького, 46</div>
             <div class="modal-meta">
-              <div class="modal-meta-item">📅 Период анализа: 1 – 20 мая</div>
-              <div class="modal-meta-item">🕐 Создан: 21.05.2026, 09:50</div>
+              <span>📅 Период анализа: 1 – 20 мая</span>
+              <span>🕐 Создан: 21.05.2026, 09:50</span>
             </div>
           </div>
           <div class="modal-controls">
@@ -292,17 +289,16 @@
       </div>
       <div class="modal-body">
         <div style="font-size:13.5px;color:var(--text-secondary);line-height:2">
-          ↓ Результаты за месяц (зона, % плана, прогноз)<br>
-          ↓ ТОП-N проблемных показателей + сотрудники + готовые задачи <em style="color:var(--text-muted)">(только жёлтая/красная зона)</em><br>
-          ↓ ТОП лучших сотрудников (врачи / консультанты)<br>
-          ↓ ТОП худших сотрудников (врачи / консультанты)<br>
-          ↓ Сотрудники, требующие внимания <em style="color:var(--text-muted)">(если есть просадка за неделю)</em>
+          ↓ Результаты за месяц — зона, % плана, прогноз выручки<br>
+          ↓ ТОП проблемных показателей + сотрудники + готовые задачи <em style="color:var(--text-muted)">(только жёлтая / красная зона)</em><br>
+          ↓ ТОП лучших и худших сотрудников (врачи / консультанты)<br>
+          ↓ Сотрудники, требующие внимания <em style="color:var(--text-muted)">(если есть просадка за прошлую неделю)</em>
         </div>
       </div>
     </div>
 
     <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6">
-      В шапке — название филиала, период анализа и дата его создания. Справа — <strong>выбор месяца</strong>: можно переключиться на любой предыдущий период и посмотреть архивный анализ. Анализ обновляется автоматически каждую ночь.
+      В шапке — название филиала, период анализа и дата его создания. Справа — <strong>выбор месяца</strong>: можно переключиться на любой предыдущий период и посмотреть архивный анализ.
     </p>
 
     <div class="callout callout--blue" style="margin-top:12px">
@@ -311,14 +307,14 @@
     </div>
   </div>
 
-  <!-- Блок 1: Результаты -->
+  <!-- Результаты за месяц -->
   <div class="card">
     <div class="card-title">
       <div class="card-icon card-icon--blue">📊</div>
-      Блок 1 — Результаты за месяц
+      Результаты за месяц
     </div>
     <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">
-      Первый блок после открытия — сводка текущего состояния филиала.
+      Первое, что видишь после открытия — сводка по филиалу: насколько идёт план, прогноз и зона.
     </p>
 
     <div class="results-block">
@@ -339,24 +335,22 @@
       </div>
     </div>
 
-    <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.55;margin-top:4px">
-      При <strong>зелёной зоне</strong> вместо проблем система пишет: «Все показатели в норме. Ключевая задача — удерживать показатели.»
+    <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.55">
+      При <strong>зелёной зоне</strong> система пишет: «Все показатели в норме. Ключевая задача — удерживать показатели» — и показывает только ТОП лучших и худших.
     </p>
   </div>
 
-  <!-- Блок 2: Проблемные показатели -->
+  <!-- Проблемные показатели -->
   <div class="card">
     <div class="card-title">
       <div class="card-icon card-icon--red">🔻</div>
-      Блок 2 — ТОП проблемных показателей
+      Проблемные показатели
     </div>
     <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">
-      Отображается только в жёлтой и красной зоне. Показывает метрики, которые тянут план вниз, — с разбивкой до конкретных сотрудников и готовыми задачами.
+      Только в жёлтой и красной зоне. Показывает метрики, которые тянут план вниз, — с разбивкой до конкретных сотрудников и готовыми задачами под каждым.
     </p>
 
-    <div class="problems-header">
-      ⚠️ ТОП-2 показателя, не позволяющих выполнить план
-    </div>
+    <div class="section-label">⚠️ ТОП-2 показателя, не позволяющих выполнить план</div>
 
     <div class="problem-block">
       <div class="problem-head">
@@ -432,25 +426,25 @@
       </div>
     </div>
 
-    <div class="callout callout--blue" style="margin-top:4px">
-      <span class="callout-icon">ℹ️</span>
-      <span>Если данных по сотрудникам недостаточно — система пишет «Разбивка по сотрудникам недоступна — слишком мало данных».</span>
-    </div>
+    <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.55;margin-top:8px">
+      Кнопка <strong>«+ Задача»</strong> открывает форму с предзаполненными данными: сотрудник, метрика и план работы уже вставлены из рекомендации. Текст можно отредактировать — задача попадает в «<a href="tasks.html" style="color:var(--accent)">План задач на неделю</a>».
+    </p>
   </div>
 
-  <!-- Блок 3: ТОП лучших -->
+  <!-- ТОП лучших и худших -->
   <div class="card">
     <div class="card-title">
-      <div class="card-icon card-icon--green">🏆</div>
-      Блок 3 — ТОП лучших сотрудников
+      <div class="card-icon card-icon--green">👥</div>
+      ТОП лучших и худших сотрудников
     </div>
-    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">
-      Лучшие врачи и консультанты — отдельными секциями. Для каждого: что работает хорошо и рекомендация, как масштабировать опыт на команду.
+    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px">
+      Два блока идут подряд. Врачи и консультанты — в отдельных секциях внутри каждого.
     </p>
 
+    <!-- Лучшие -->
     <div class="performers-block">
       <div class="performers-head performers-head--green">
-        <span style="font-size:13px">📈</span>
+        <span>📈</span>
         <span class="performers-head-title">ТОП-3 лучших сотрудника</span>
       </div>
       <div class="role-sub">Топ 1 врач</div>
@@ -459,7 +453,7 @@
           <div class="rank-badge rank-badge--green">1</div>
           <div>
             <div class="performer-name">Смирнова Екатерина Олеговна</div>
-            <div class="performer-highlight">Лучший % подбор→заказ среди врачей: 94%. Стабильно передаёт клиента консультанту с чётко сформулированной задачей.</div>
+            <div class="performer-highlight">Лучший % подбор→заказ: 94%. Стабильно передаёт клиента консультанту с чётко сформулированной задачей.</div>
             <div class="performer-rec">Провести разбор её приёмов с командой — показать, как строится передача.</div>
           </div>
         </div>
@@ -471,7 +465,7 @@
           <div class="rank-badge rank-badge--green">1</div>
           <div>
             <div class="performer-name">Козлова Ирина Петровна</div>
-            <div class="performer-highlight">Высокий средний чек ВТЛ: 26 400 ₽. Активно обсуждает зрительные задачи клиента на этапе подбора оправы.</div>
+            <div class="performer-highlight">Высокий средний чек ВТЛ: 26 400 ₽. Активно обсуждает зрительные задачи клиента при подборе оправы.</div>
             <div class="performer-rec">Использовать как наставника для Романовой С.А. на 2 недели.</div>
           </div>
         </div>
@@ -479,24 +473,10 @@
       </div>
     </div>
 
-    <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.55">
-      Кнопка «+ Задача» здесь — для фиксации хорошей практики: провести разбор, назначить наставника, масштабировать на команду.
-    </p>
-  </div>
-
-  <!-- Блок 3б: ТОП худших -->
-  <div class="card">
-    <div class="card-title">
-      <div class="card-icon card-icon--red">📉</div>
-      Блок 3 — ТОП худших сотрудников
-    </div>
-    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">
-      Отстающие врачи и консультанты — тоже раздельно. Для каждого: описание слабого места и готовые задачи для работы с ним.
-    </p>
-
+    <!-- Худшие -->
     <div class="performers-block">
       <div class="performers-head performers-head--red">
-        <span style="font-size:13px">📉</span>
+        <span>📉</span>
         <span class="performers-head-title">ТОП-3 сотрудника с худшими результатами</span>
       </div>
       <div class="role-sub">Топ 1 врач</div>
@@ -514,10 +494,6 @@
             <span class="task-btn">+ Задача</span>
           </div>
           <div class="task-row">
-            <span class="task-text">Разбор конкретных приёмов: почему не назначил ВТЛ</span>
-            <span class="task-btn">+ Задача</span>
-          </div>
-          <div class="task-row">
             <span class="task-text">Отработка скрипта маятника для ВТЛ</span>
             <span class="task-btn">+ Задача</span>
           </div>
@@ -529,7 +505,7 @@
           <div class="rank-badge rank-badge--red">1</div>
           <div>
             <div class="performer-name">Романова София Алексеевна</div>
-            <div class="performer-weak">Конверсия рецепт→заказ 58% ниже целевого ориентира 80% и филиального среднего 66.1%. Критическая метрика — нужно разобраться в причинах потери клиентов на этапе оформления заказа.</div>
+            <div class="performer-weak">Конверсия рецепт→заказ 58% ниже целевого ориентира 80% и филиального среднего 66.1%. Нужно разобраться в причинах потери клиентов на этапе оформления заказа.</div>
           </div>
         </div>
         <div class="task-rows" style="padding-left:32px">
@@ -546,14 +522,14 @@
     </div>
   </div>
 
-  <!-- Блок 4: Требующие внимания -->
+  <!-- Сотрудники требующие внимания -->
   <div class="card">
     <div class="card-title">
       <div class="card-icon card-icon--yellow">⚠️</div>
-      Блок 4 — Сотрудники, требующие внимания
+      Сотрудники, требующие внимания
     </div>
     <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">
-      Блок появляется, если у сотрудника прошлая неделя значительно хуже среднего за три предыдущие. Это сигнал про динамику, а не абсолютный уровень — даже «нормальный» сотрудник может здесь оказаться.
+      Блок появляется, если у кого-то прошлая неделя значительно хуже среднего за три предыдущие. Сигнал про динамику — даже «нормальный» сотрудник может здесь оказаться.
     </p>
 
     <div class="attention-block">
@@ -584,51 +560,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Кнопка + Задача -->
-  <div class="card">
-    <div class="card-title">
-      <div class="card-icon card-icon--purple">✦</div>
-      Кнопка «+ Задача»
-    </div>
-    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">
-      Кнопка «+ Задача» есть под каждой готовой рекомендацией. При нажатии открывается форма создания задачи — сотрудник, метрика и план работы уже предзаполнены текстом рекомендации. Задача сразу попадает в «<a href="tasks.html" style="color:var(--accent)">План задач на неделю</a>».
-    </p>
-    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6">
-      Текст можно отредактировать перед сохранением — система отслеживает, была ли задача создана «как есть» или с правками.
-    </p>
-  </div>
-
-  <!-- Алгоритм -->
-  <div class="card">
-    <div class="card-title">
-      <div class="card-icon card-icon--purple">▶️</div>
-      Алгоритм работы
-    </div>
-    <div class="step-list">
-      <div class="step-item">
-        <div class="step-num">1</div>
-        <div>Смотри <strong>зону и % плана</strong> — зелёная значит удерживать, жёлтая/красная — читай дальше</div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">2</div>
-        <div>Разбери <strong>ТОП проблемных показателей</strong> — по каждому смотри, кто конкретно просаживает. Ставь задачи прямо отсюда</div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">3</div>
-        <div>Проверь <strong>«Требующие внимания»</strong> — если блок есть, у кого-то резкая просадка за последнюю неделю. Это приоритет сегодня</div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">4</div>
-        <div>Используй <strong>ТОП лучших</strong> для масштабирования — поставь задачу на разбор практики или наставничество</div>
-      </div>
-    </div>
-
-    <div class="callout callout--yellow" style="margin-top:20px">
-      <span class="callout-icon">⚡</span>
-      <span><strong>Главное правило:</strong> если открыл анализ и не поставил ни одной задачи — не доработал. Минимальный результат — хотя бы одна задача в «Плане задач на неделю».</span>
     </div>
   </div>
 
