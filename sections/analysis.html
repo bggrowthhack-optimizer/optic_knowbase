@@ -312,10 +312,6 @@
 
     <div class="layout-diagram">
       <div class="layout-row">
-        <div class="layout-block layout-block--muted" style="flex:2">Выбор филиала + дата анализа</div>
-        <div class="layout-block layout-block--muted">Прогресс месяца</div>
-      </div>
-      <div class="layout-row">
         <div class="layout-block layout-block--accent" style="flex:3">Подборы · Рецепты · Заказы</div>
         <div class="layout-block layout-block--accent" style="flex:3">Рекоменд. ВТЛ · Заказы ВТЛ · Выручка</div>
       </div>
@@ -346,88 +342,6 @@
       <span><strong>Если анализ не отображается</strong> — скорее всего, по этому филиалу не заведён план
       на текущий месяц. Без плана система не может рассчитать зону и сформировать рекомендации.
       Зайди в раздел «Планирование» и заполни план, после чего анализ появится на следующий день.</span>
-    </div>
-  </div>
-
-  <!-- Выбор филиала и мета -->
-  <div class="card">
-    <div class="card-title">
-      <div class="card-icon card-icon--blue">🏢</div>
-      Выбор филиала и данные анализа
-    </div>
-    <p class="bullet-item" style="margin-bottom:14px">
-      В шапке страницы — выпадающий список филиалов. После выбора подгружается последний доступный анализ по этому салону.
-    </p>
-
-    <div class="meta-grid">
-      <div class="meta-cell">
-        <div class="meta-label">Филиал</div>
-        <div class="meta-value">Оптика на Ленина</div>
-      </div>
-      <div class="meta-cell">
-        <div class="meta-label">Дата анализа</div>
-        <div class="meta-value">18 мая 2026</div>
-      </div>
-      <div class="meta-cell">
-        <div class="meta-label">Прогресс месяца</div>
-        <div class="meta-value">18 / 31 день</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Метрики -->
-  <div class="card">
-    <div class="card-title">
-      <div class="card-icon card-icon--blue">📊</div>
-      Метрики на дату анализа
-    </div>
-    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px">
-      Шесть карточек показывают ключевые показатели: факт, план на дату анализа и % выполнения.
-    </p>
-
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-card-name">Подборы</div>
-        <div class="metric-card-fact">142</div>
-        <div class="metric-card-plan">план на дату: 150</div>
-        <div class="metric-card-pct metric-card-pct--yellow">95%</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card-name">Рецепты</div>
-        <div class="metric-card-fact">98</div>
-        <div class="metric-card-plan">план на дату: 88</div>
-        <div class="metric-card-pct metric-card-pct--green">111%</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card-name">Заказы (свои)</div>
-        <div class="metric-card-fact">71</div>
-        <div class="metric-card-plan">план на дату: 82</div>
-        <div class="metric-card-pct metric-card-pct--red">87%</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card-name">Рекоменд. ВТЛ</div>
-        <div class="metric-card-fact">89</div>
-        <div class="metric-card-plan">план на дату: 102</div>
-        <div class="metric-card-pct metric-card-pct--yellow">87%</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card-name">Заказы ВТЛ</div>
-        <div class="metric-card-fact">34</div>
-        <div class="metric-card-plan">план на дату: 41</div>
-        <div class="metric-card-pct metric-card-pct--red">83%</div>
-      </div>
-      <div class="metric-card metric-card--revenue">
-        <div class="metric-card-name">Выручка</div>
-        <div class="metric-card-fact">847 т₽</div>
-        <div class="metric-card-plan">план на дату: 960 т₽</div>
-        <div class="metric-card-pct metric-card-pct--red">88%</div>
-      </div>
-    </div>
-
-    <div class="callout callout--blue">
-      <span class="callout-icon">ℹ️</span>
-      % выполнения считается к плану <strong>на дату</strong> анализа, а не к полному месячному плану.
-      Это позволяет корректно оценить ситуацию в середине месяца.
     </div>
   </div>
 
@@ -626,33 +540,26 @@
       <div class="step-item">
         <div class="step-num">1</div>
         <div class="step-body">
-          <div class="step-title">Выбери филиал</div>
-          <div class="step-desc">Открой страницу, выбери нужный салон из выпадающего списка.</div>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">2</div>
-        <div class="step-body">
           <div class="step-title">Смотри зону и % плана</div>
           <div class="step-desc">Зелёная — всё в порядке, работай с масштабированием лучших практик. Жёлтая или красная — читай рекомендации AI и переходи к ТОП-3 проблем.</div>
         </div>
       </div>
       <div class="step-item">
-        <div class="step-num">3</div>
+        <div class="step-num">2</div>
         <div class="step-body">
           <div class="step-title">Разбери ТОП-3 проблемных показателя</div>
           <div class="step-desc">По каждому показателю — кто конкретно просаживает и как сильно. Нажми «+ Задача» по каждому сотруднику, у которого есть проблема.</div>
         </div>
       </div>
       <div class="step-item">
-        <div class="step-num">4</div>
+        <div class="step-num">3</div>
         <div class="step-body">
           <div class="step-title">Проверь блок «Требующие внимания»</div>
           <div class="step-desc">Если блок есть — посмотри, у кого резкая просадка за последнюю неделю. Это приоритет для разбора сегодня.</div>
         </div>
       </div>
       <div class="step-item">
-        <div class="step-num">5</div>
+        <div class="step-num">4</div>
         <div class="step-body">
           <div class="step-title">Используй ТОП лучших для масштабирования</div>
           <div class="step-desc">Создай задачу на основе хорошей практики лидера — например, провести разбор с командой или поставить наставника отстающему.</div>
