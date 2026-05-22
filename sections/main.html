@@ -320,12 +320,67 @@
       </div>
     </div>
 
-    <div class="bullet-list">
+    <div class="bullet-list" style="margin-bottom:16px">
       <div class="bullet-item"><span><strong>Цветная полоса слева</strong> — зелёная (норма) / красная (проблема) / серая (метрика без плана)</span></div>
       <div class="bullet-item"><span><strong>Прогресс-бар</strong> — визуальный % выполнения плана</span></div>
       <div class="bullet-item"><span><strong>Клик на карточку</strong> — открывает график динамики по неделям за месяц</span></div>
       <div class="bullet-item"><span><strong>Кнопка «Детализация»</strong> (появляется при наведении у некоторых метрик) — разбивка по типам</span></div>
-      <div class="bullet-item"><span><strong>Настроить метрики</strong> — кнопка в шапке страницы. Убери лишние, оставь только важные. Настройки сохраняются.</span></div>
+      <div class="bullet-item"><span><strong>Настроить метрики</strong> — кнопка в шапке страницы. Каждый пользователь выбирает под себя, за какими показателями ему важно следить. Настройки сохраняются.</span></div>
+    </div>
+
+    <!-- Демо: модальное окно настройки метрик -->
+    <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;font-size:13px;">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface);">
+        <div style="font-size:14px;font-weight:700;color:var(--text-primary)">Настройка отображаемых метрик</div>
+      </div>
+      <div style="padding:14px 18px;background:var(--surface);display:flex;flex-direction:column;gap:10px;">
+
+        <div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-weight:600;color:var(--text-primary)">01 · Воронка продаж</span>
+              <span style="font-size:11px;color:var(--text-muted)">(3 из 5)</span>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:11px;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;">Выбрать все</span>
+              <span style="font-size:11px;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;">Снять все</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" checked disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-primary)">Окна</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" checked disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-primary)">Подборы</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">Рецепты</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" checked disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-primary)">Заказы (наши)</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">Заказы (чужие)</span></label>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-weight:600;color:var(--text-primary)">02 · Конверсии воронки</span>
+              <span style="font-size:11px;color:var(--text-muted)">(2 из 6)</span>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:11px;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;">Выбрать все</span>
+              <span style="font-size:11px;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;">Снять все</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% загрузки</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" checked disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-primary)">% подбор → рецепт</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" checked disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-primary)">% рецепт → заказ</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% подбор → заказ (наш)</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% подбор → заказ (итого)</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% чужих заказов</span></label>
+          </div>
+        </div>
+
+      </div>
+      <div style="padding:10px 18px;border-top:1px solid var(--border);background:var(--surface-2);display:flex;justify-content:flex-end;gap:8px;">
+        <span style="font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:5px;color:var(--text-secondary);background:var(--surface)">Отмена</span>
+        <span style="font-size:12px;padding:6px 14px;border-radius:5px;color:#fff;background:var(--accent)">Сохранить</span>
+      </div>
     </div>
   </div>
 
