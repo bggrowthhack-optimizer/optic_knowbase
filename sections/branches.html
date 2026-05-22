@@ -280,9 +280,34 @@
     <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px">Клик на строку филиала раскрывает детальную таблицу. Блоки идут сверху вниз:</p>
 
     <div class="blocks-list">
-      <div class="block-item">
-        <div class="block-item-title">1 · Воронка продаж</div>
-        <div class="block-item-metrics">Окна → Подборы → Рецепты → Заказы (наши)</div>
+      <div class="block-item" style="padding:0;overflow:hidden;">
+        <div style="padding:10px 16px;background:var(--surface-2);border-bottom:1px solid var(--border);">
+          <div class="block-item-title" style="margin-bottom:0">1 · Воронка продаж</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-name">Окна</div>
+          <div class="metric-fact">115.8 из 189</div>
+          <div class="metric-pct metric-pct--red">61%</div>
+          <div class="metric-trend metric-trend--flat">→ Стабильно</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-name">Подборы</div>
+          <div class="metric-fact">20 из 35</div>
+          <div class="metric-pct metric-pct--red">57%</div>
+          <div class="metric-trend metric-trend--down">↘ Падает</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-name">Рецепты</div>
+          <div class="metric-fact">20 из 35</div>
+          <div class="metric-pct metric-pct--red">57%</div>
+          <div class="metric-trend metric-trend--down">↘ Падает</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-name">Заказы (наши)</div>
+          <div class="metric-fact">8 из 32</div>
+          <div class="metric-pct metric-pct--red">25%</div>
+          <div class="metric-trend metric-trend--down">↘ Падает</div>
+        </div>
       </div>
       <div class="block-item">
         <div class="block-item-title">2 · Показатели эффективности воронки</div>
