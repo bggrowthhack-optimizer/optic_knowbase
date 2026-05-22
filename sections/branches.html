@@ -140,7 +140,7 @@
     margin-right: 8px;
   }
 
-  /* Metric row */
+  /* Metric row — фиксированные колонки для выравнивания */
   .metric-row {
     display: flex; align-items: center;
     padding: 10px 16px; border-top: 1px solid var(--border);
@@ -148,29 +148,33 @@
     cursor: pointer;
   }
   .metric-name { flex: 1; font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-  .metric-fact { font-size: 13px; font-weight: 600; color: var(--text-muted); min-width: 100px; text-align: center; }
-  .metric-pct-plain { font-size: 13px; font-weight: 700; min-width: 40px; text-align: right; }
+  .metric-fact { font-size: 13px; font-weight: 600; color: var(--text-muted); width: 100px; text-align: center; flex-shrink: 0; }
+  .metric-pct-plain { font-size: 13px; font-weight: 700; width: 38px; text-align: right; flex-shrink: 0; }
   .metric-pct-plain--red    { color: var(--red); }
   .metric-pct-plain--green  { color: var(--green); }
   .metric-pct-plain--yellow { color: var(--yellow); }
+  /* Фиксированный слот для кнопки «Детализация» — всегда занимает место */
+  .metric-detail-slot { width: 80px; text-align: center; flex-shrink: 0; }
+  .metric-detail-btn {
+    font-size: 10px; font-weight: 600; color: var(--accent);
+    background: var(--accent-light); border-radius: 6px;
+    padding: 3px 8px; white-space: nowrap; display: inline-block;
+  }
   .metric-trend-badge {
     font-size: 11px; font-weight: 600; padding: 2px 8px;
-    border-radius: 4px; min-width: 80px; text-align: center;
+    border-radius: 4px; width: 88px; text-align: center; flex-shrink: 0;
   }
   .metric-trend-badge--up   { color: var(--green); background: var(--green-bg); }
   .metric-trend-badge--down { color: var(--red); background: var(--red-bg); }
   .metric-trend-badge--flat { color: var(--text-muted); background: var(--surface-2); }
-  .metric-chevron { color: var(--text-muted); font-size: 12px; margin-left: 2px; }
-  .metric-detail-btn {
-    font-size: 10px; font-weight: 600; color: var(--accent);
-    background: var(--accent-light); border-radius: 6px;
-    padding: 3px 8px; white-space: nowrap;
-  }
+  .metric-chevron { color: var(--text-muted); font-size: 12px; flex-shrink: 0; }
+
   .block-section-header {
     padding: 9px 16px;
     background: var(--surface-2);
     border-top: 1px solid var(--border);
   }
+  .block-section-header:first-child { border-top: none; }
   .block-section-title {
     font-size: 11px; font-weight: 700; color: var(--text-muted);
     text-transform: uppercase; letter-spacing: 0.05em;
@@ -188,6 +192,7 @@
   }
   .weeks-grid {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin-top: 12px;
   }
   .week-card {
     background: var(--surface); border: 1px solid var(--border);
@@ -216,12 +221,22 @@
   .plan-state-desc { font-size: 12.5px; color: var(--text-secondary); }
 
   /* Blocks list */
-  .blocks-summary { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-  .block-summary-item { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .blocks-summary {
+    border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .block-summary-item {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 140px 1fr; gap: 0 16px;
+    align-items: start;
+  }
   .block-summary-item:last-child { border-bottom: none; }
+  .block-summary-left {}
   .block-summary-num { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
-  .block-summary-title { font-size: 13.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
-  .block-summary-desc { font-size: 12.5px; color: var(--text-secondary); }
+  .block-summary-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .block-summary-right {}
+  .block-summary-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 4px; }
+  .block-summary-tip { font-size: 12px; color: var(--accent); font-weight: 500; }
 
   .callout {
     border-radius: var(--radius); padding: 14px 18px;
@@ -244,6 +259,12 @@
     font-size: 10px; font-weight: 700;
     letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--yellow); margin-bottom: 5px;
+  }
+
+  /* Chart */
+  .chart-wrap {
+    background: var(--surface-2); border-radius: var(--radius);
+    padding: 16px 12px 8px; margin-bottom: 12px;
   }
 </style>
 </head>
@@ -349,58 +370,84 @@
       Раскрытый филиал — пять блоков
     </div>
 
-    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px">
+    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px">
       Клик на строку раскрывает таблицу с показателями. Блоки идут сверху вниз — читай в том же порядке.
     </p>
 
-    <div class="blocks-summary" style="margin-bottom:16px">
+    <div class="blocks-summary">
       <div class="block-summary-item">
-        <div class="block-summary-num">Блок 1</div>
-        <div class="block-summary-title">Воронка продаж</div>
-        <div class="block-summary-desc">Окна → Подборы → Рецепты → Заказы (наши). Факт из плана — здесь видно, где обрыв воронки</div>
+        <div class="block-summary-left">
+          <div class="block-summary-num">Блок 1</div>
+          <div class="block-summary-title">Воронка продаж</div>
+        </div>
+        <div class="block-summary-right">
+          <div class="block-summary-desc">Окна → Подборы → Рецепты → Заказы (наши). Факт из плана по каждому шагу.</div>
+          <div class="block-summary-tip">👉 Ищи самый большой разрыв между шагами — там обрыв воронки</div>
+        </div>
       </div>
       <div class="block-summary-item">
-        <div class="block-summary-num">Блок 2</div>
-        <div class="block-summary-title">Показатели эффективности воронки</div>
-        <div class="block-summary-desc">% загрузки, % подбор→рецепт, % рецепт→заказ, % подбор→заказ. Помогает понять, на каком шаге теряем клиентов</div>
+        <div class="block-summary-left">
+          <div class="block-summary-num">Блок 2</div>
+          <div class="block-summary-title">Показатели эффективности воронки</div>
+        </div>
+        <div class="block-summary-right">
+          <div class="block-summary-desc">% загрузки, % подбор→рецепт, % рецепт→заказ, % подбор→заказ.</div>
+          <div class="block-summary-tip">👉 % рецепт→заказ — это консультант. % подбор→рецепт — это врач</div>
+        </div>
       </div>
       <div class="block-summary-item">
-        <div class="block-summary-num">Блок 3</div>
-        <div class="block-summary-title">Анализ ВТЛ</div>
-        <div class="block-summary-desc">% рекомендаций, % продаж, кол-во заказов, ср. чек ВТЛ. ВТЛ — главный рычаг среднего чека</div>
+        <div class="block-summary-left">
+          <div class="block-summary-num">Блок 3</div>
+          <div class="block-summary-title">Анализ ВТЛ</div>
+        </div>
+        <div class="block-summary-right">
+          <div class="block-summary-desc">% рекомендаций, % продаж, кол-во заказов, ср. чек ВТЛ.</div>
+          <div class="block-summary-tip">👉 Мало рекомендаций — проблема у врача. Рекомендуют, но не продают — у консультанта</div>
+        </div>
       </div>
       <div class="block-summary-item">
-        <div class="block-summary-num">Блок 4</div>
-        <div class="block-summary-title">Анализ Наши / Чужие</div>
-        <div class="block-summary-desc">Структура заказов по типу рецепта: наши заказы vs чужие, чеки по каждому типу</div>
+        <div class="block-summary-left">
+          <div class="block-summary-num">Блок 4</div>
+          <div class="block-summary-title">Анализ Наши / Чужие</div>
+        </div>
+        <div class="block-summary-right">
+          <div class="block-summary-desc">Структура заказов по типу рецепта: наши заказы vs чужие, чеки по каждому типу.</div>
+          <div class="block-summary-tip">👉 Если % чужих растёт — клиент приходит только за оправой, чек ниже</div>
+        </div>
       </div>
       <div class="block-summary-item">
-        <div class="block-summary-num">Блок 5</div>
-        <div class="block-summary-title">Итого по всем заказам</div>
-        <div class="block-summary-desc">Итоговое кол-во заказов, сумма и ср. чек с учётом всех типов</div>
+        <div class="block-summary-left">
+          <div class="block-summary-num">Блок 5</div>
+          <div class="block-summary-title">Итого по всем заказам</div>
+        </div>
+        <div class="block-summary-right">
+          <div class="block-summary-desc">Итоговое кол-во заказов, сумма и ср. чек с учётом всех типов.</div>
+          <div class="block-summary-tip">👉 Bottom line месяца — сверяй с планом выручки</div>
+        </div>
       </div>
     </div>
 
-    <p style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:8px">Как читать строку метрики:</p>
+    <p style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px">Как читать строку метрики:</p>
 
     <div class="branch-demo">
       <div class="block-section-header">
         <div class="block-section-title">Воронка продаж</div>
       </div>
+      <!-- Строка с кнопкой Детализация -->
       <div class="metric-row">
         <div class="metric-name">Подборы</div>
         <div class="metric-fact">20 из 35</div>
         <div class="metric-pct-plain metric-pct-plain--red">57%</div>
-        <div style="flex:1"></div>
-        <span class="metric-detail-btn">Детализация</span>
+        <div class="metric-detail-slot"><span class="metric-detail-btn">Детализация</span></div>
         <span class="metric-trend-badge metric-trend-badge--down">↘ Падает</span>
         <div class="metric-chevron">▼</div>
       </div>
+      <!-- Строка без кнопки Детализация — слот пустой, выравнивание одинаковое -->
       <div class="metric-row">
         <div class="metric-name">Рецепты</div>
-        <div class="metric-fact">20 из 35</div>
-        <div class="metric-pct-plain metric-pct-plain--red">57%</div>
-        <div style="flex:1"></div>
+        <div class="metric-fact">27 из 35</div>
+        <div class="metric-pct-plain metric-pct-plain--yellow">77%</div>
+        <div class="metric-detail-slot"></div>
         <span class="metric-trend-badge metric-trend-badge--flat">→ Стабильно</span>
         <div class="metric-chevron">▼</div>
       </div>
@@ -408,14 +455,14 @@
 
     <p style="font-size:12.5px;color:var(--text-secondary);margin-top:10px;line-height:1.6">
       <strong>Факт из плана</strong> — сколько есть сейчас из запланированного на месяц. &nbsp;
-      <strong>%</strong> — выполнение: красный / жёлтый / зелёный. &nbsp;
-      <strong>Динамика</strong> — растёт или падает по сравнению с прошлой неделей. &nbsp;
-      <strong>▼</strong> — клик раскрывает недельную динамику.
+      <strong>%</strong> — выполнение плана: красный / жёлтый / зелёный. &nbsp;
+      <strong>Динамика</strong> — растёт или падает к прошлой неделе. &nbsp;
+      <strong>▼</strong> — клик раскрывает динамику по неделям.
     </p>
 
     <div class="callout callout--blue" style="margin-top:12px">
       <span class="callout-icon">ℹ️</span>
-      Кнопка <strong>«Детализация»</strong> есть у некоторых метрик (Подборы, % подбор→рецепт, % подбор→заказ, Рекомендации ВТЛ) — открывает разбивку внутри показателя по сотрудникам.
+      Кнопка <strong>«Детализация»</strong> есть у некоторых метрик (Подборы, % подбор→рецепт, % подбор→заказ, Рекомендации ВТЛ) — открывает разбивку по сотрудникам внутри показателя.
     </div>
   </div>
 
@@ -434,12 +481,68 @@
         <div class="metric-name">% подбор → рецепт</div>
         <div class="metric-fact">61% из 70%</div>
         <div class="metric-pct-plain metric-pct-plain--red">87%</div>
-        <div style="flex:1"></div>
+        <div class="metric-detail-slot"><span class="metric-detail-btn">Детализация</span></div>
         <span class="metric-trend-badge metric-trend-badge--up">↗ Растёт</span>
         <div class="metric-chevron" style="transform:rotate(180deg)">▼</div>
       </div>
       <div class="metric-expanded">
         <div class="dynamics-label">Динамика последних недель</div>
+
+        <!-- SVG-график -->
+        <div class="chart-wrap">
+          <svg viewBox="0 0 440 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#5b5ef4" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#5b5ef4" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Горизонтальные сетки -->
+            <line x1="44" y1="18" x2="410" y2="18" stroke="#e5e7ee" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="44" y1="45" x2="410" y2="45" stroke="#e5e7ee" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="44" y1="72" x2="410" y2="72" stroke="#e5e7ee" stroke-width="1" stroke-dasharray="4,4"/>
+
+            <!-- Y-подписи -->
+            <text x="40" y="21" font-size="9" fill="#9ea3b8" text-anchor="end" font-family="Inter,sans-serif">70%</text>
+            <text x="40" y="48" font-size="9" fill="#9ea3b8" text-anchor="end" font-family="Inter,sans-serif">60%</text>
+            <text x="40" y="75" font-size="9" fill="#9ea3b8" text-anchor="end" font-family="Inter,sans-serif">50%</text>
+
+            <!-- Линия плана (пунктир) -->
+            <line x1="44" y1="18" x2="410" y2="18" stroke="#5b5ef4" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.45"/>
+            <text x="414" y="21" font-size="9" fill="#5b5ef4" opacity="0.7" font-family="Inter,sans-serif">план</text>
+
+            <!-- Заливка под линией -->
+            <!-- Точки: 54%→y=72, 58%→y=63, 61%→y=55, 65%→y=45 (шкала 50-70% → y 72-18) -->
+            <path d="M 80,72 L 180,63 L 290,55 L 380,45 L 380,90 L 80,90 Z" fill="url(#areaGrad)"/>
+
+            <!-- Линия -->
+            <polyline points="80,72 180,63 290,55 380,45" fill="none" stroke="#5b5ef4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Точки -->
+            <circle cx="80"  cy="72" r="4.5" fill="white" stroke="#5b5ef4" stroke-width="2.5"/>
+            <circle cx="180" cy="63" r="4.5" fill="white" stroke="#5b5ef4" stroke-width="2.5"/>
+            <circle cx="290" cy="55" r="4.5" fill="white" stroke="#5b5ef4" stroke-width="2.5"/>
+            <circle cx="380" cy="45" r="4.5" fill="white" stroke="#5b5ef4" stroke-width="2.5"/>
+
+            <!-- Значения над точками -->
+            <text x="80"  y="84" font-size="9.5" fill="#18192b" font-weight="700" text-anchor="middle" font-family="Inter,sans-serif">54%</text>
+            <text x="180" y="75" font-size="9.5" fill="#18192b" font-weight="700" text-anchor="middle" font-family="Inter,sans-serif">58%</text>
+            <text x="290" y="67" font-size="9.5" fill="#18192b" font-weight="700" text-anchor="middle" font-family="Inter,sans-serif">61%</text>
+            <text x="380" y="57" font-size="9.5" fill="#18192b" font-weight="700" text-anchor="middle" font-family="Inter,sans-serif">65%</text>
+
+            <!-- X-ось -->
+            <line x1="44" y1="90" x2="410" y2="90" stroke="#e5e7ee" stroke-width="1"/>
+
+            <!-- Подписи недель -->
+            <text x="80"  y="103" font-size="8.5" fill="#9ea3b8" text-anchor="middle" font-family="Inter,sans-serif">1–7 мая</text>
+            <text x="180" y="103" font-size="8.5" fill="#9ea3b8" text-anchor="middle" font-family="Inter,sans-serif">8–14 мая</text>
+            <text x="290" y="103" font-size="8.5" fill="#9ea3b8" text-anchor="middle" font-family="Inter,sans-serif">15–21 мая</text>
+            <text x="380" y="103" font-size="8.5" fill="#9ea3b8" text-anchor="middle" font-family="Inter,sans-serif">22–28 мая</text>
+          </svg>
+        </div>
+
+        <!-- Карточки недель -->
         <div class="weeks-grid">
           <div class="week-card">
             <div class="week-label">1–7 мая</div>
