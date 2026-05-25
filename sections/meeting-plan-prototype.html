@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Планёрка КД — прототип улучшений</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; }
+  .main { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* Hero */
+  .hero { margin-bottom: 24px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .hero-desc { font-size: 14px; color: var(--text-secondary); }
+
+  /* Change markers */
+  .change-marker {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+    text-transform: uppercase; letter-spacing: 0.04em; margin-left: 8px; vertical-align: middle;
+  }
+  .change-new  { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+  .change-fix  { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+  /* Legend */
+  .legend {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 16px; margin-bottom: 20px;
+    font-size: 12px; color: var(--text-secondary);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+
+  /* Week nav */
+  .week-nav {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 10px 14px; margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .week-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+  .week-label { font-size: 14px; font-weight: 700; flex: 1; text-align: center; }
+  .btn { font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; font-family: inherit; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-outline { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(91,94,244,0.2); }
+
+  /* ROP card */
+  .rop-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .rop-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; cursor: pointer; }
+  .rop-header:hover { background: var(--surface-2); }
+  .rop-name { font-size: 15px; font-weight: 700; }
+  .rop-branches { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+  .rop-pct { font-size: 26px; font-weight: 800; color: var(--yellow); }
+  .rop-forecast { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 2px; }
+  .chevron { font-size: 12px; color: var(--text-muted); }
+
+  /* Sections */
+  .rop-section { border-top: 2px solid var(--border); padding: 0; }
+  .section-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header--branches  { background: #f4f4fe; }
+  .section-header--last-week { background: #f5f7f5; }
+  .section-header--this-week { background: #f0f4fe; }
+  .section-header--attention  { background: #fef5f5; }
+  .section-body { padding: 14px 18px; }
+  .section-title {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text-muted);
+  }
+  .section-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot--branches  { background: var(--accent); }
+  .dot--last-week { background: var(--green); }
+  .dot--this-week { background: #3b82f6; }
+  .dot--attention { background: var(--red); }
+
+  /* Branch */
+  .branch-item { border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; display: flex; gap: 12px; align-items: flex-start; }
+  .branch-pct { font-size: 18px; font-weight: 800; }
+  .branch-zone { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px; display: inline-block; margin-top: 2px; }
+  .zone--green { background: var(--green-bg); color: var(--green); }
+  .zone--yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .zone--red { background: var(--red-bg); color: var(--red); }
+  .branch-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .branch-summary { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* Employee block */
+  .emp-block { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .emp-block:last-child { border-bottom: none; }
+  .emp-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .emp-name { font-size: 13.5px; font-weight: 700; }
+  .emp-branch { font-size: 11px; color: var(--text-muted); }
+  .emp-actions { margin-left: auto; display: flex; gap: 6px; }
+  .icon-btn {
+    width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface-2); display: flex; align-items: center; justify-content: center;
+    font-size: 12px; cursor: pointer; color: var(--text-secondary);
+  }
+  .icon-btn:hover { background: var(--accent-light); color: var(--accent); border-color: rgba(91,94,244,0.3); }
+  .add-task-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; color: var(--accent);
+    background: var(--accent-light); border: 1px solid rgba(91,94,244,0.2);
+    border-radius: 6px; padding: 3px 10px; cursor: pointer;
+  }
+
+  /* Task result row */
+  .task-row { padding: 8px 0; border-bottom: 1px solid rgba(229,231,238,0.6); }
+  .task-row:last-child { border-bottom: none; }
+  .task-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
+  .task-title { font-size: 13px; font-weight: 600; }
+  .task-detail { font-size: 11.5px; color: var(--text-secondary); margin-bottom: 5px; }
+
+  /* Result status */
+  .result-chip { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 100px; white-space: nowrap; }
+  .result-up   { background: var(--green-bg); color: var(--green); }
+  .result-down { background: var(--red-bg); color: var(--red); }
+  .result-flat { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+  .result-miss { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); font-style: italic; }
+
+  /* ── SPARKLINE (NEW) ── */
+  .metric-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .metric-label { font-size: 10.5px; color: var(--accent); font-weight: 500; }
+  .sparkline { display: flex; align-items: flex-end; gap: 2px; height: 20px; }
+  .spark-bar {
+    width: 6px; border-radius: 2px 2px 0 0;
+    transition: opacity 0.15s;
+  }
+  .spark-bar--up   { background: var(--green); }
+  .spark-bar--down { background: var(--red); }
+  .spark-bar--mid  { background: var(--text-muted); opacity: 0.5; }
+  .spark-task-marker {
+    width: 1px; background: var(--accent); opacity: 0.4; height: 100%;
+    margin: 0 1px;
+  }
+  .spark-values { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+
+  /* History */
+  .history-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--text-muted); cursor: pointer; margin-top: 4px; }
+  .history-btn:hover { color: var(--text-secondary); }
+  .history-panel { background: var(--surface-2); border-radius: 5px; padding: 8px 10px; margin-top: 6px; font-size: 11px; color: var(--text-secondary); }
+
+  /* This week task */
+  .this-week-item { padding: 8px 10px; border-left: 2px solid var(--accent); border-radius: 0 5px 5px 0; background: var(--accent-light); margin-bottom: 6px; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .this-week-body { flex: 1; min-width: 0; }
+  .task-time-label { font-size: 10.5px; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
+
+  /* Attention (без задачи) */
+  .attention-item { border: 1px solid rgba(220,38,38,0.2); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; background: rgba(220,38,38,0.025); }
+  .attention-name { font-size: 13.5px; font-weight: 700; color: var(--red); margin-bottom: 2px; }
+  .attention-branch { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .attention-reason { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; }
+  .attention-metric-label { font-size: 10.5px; color: var(--accent); font-weight: 500; margin-bottom: 8px; }
+
+  /* Recommendations (NEW) */
+  .rec-label { font-size: 10.5px; color: var(--text-muted); margin-bottom: 5px; margin-top: 8px; }
+  .rec-list { display: flex; flex-direction: column; gap: 4px; }
+  .rec-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; background: var(--surface-2); border-radius: 5px; padding: 6px 10px; }
+  .rec-text { font-size: 11.5px; color: var(--text-primary); flex: 1; line-height: 1.45; }
+  .rec-btn { flex-shrink: 0; font-size: 10.5px; font-weight: 600; color: var(--accent); background: var(--accent-light); border: 1px solid rgba(91,94,244,0.2); border-radius: 5px; padding: 2px 8px; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 3px; }
+
+  /* Footer */
+  .footer-bar { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); }
+  .footer-cell { padding: 10px 14px; text-align: center; border-right: 1px solid var(--border); }
+  .footer-cell:last-child { border-right: none; }
+  .footer-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+  .footer-val { font-size: 16px; font-weight: 800; }
+  .footer-den { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+
+  /* Callout */
+  .callout { border-radius: 6px; padding: 12px 16px; font-size: 13px; display: flex; gap: 8px; margin-top: 16px; }
+  .callout--blue { background: rgba(91,94,244,0.07); border: 1px solid rgba(91,94,244,0.18); color: #3a3da8; }
+  .callout-icon { flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Прототип — улучшения планёрки КД</div>
+    <h1>Планёрка КД</h1>
+    <p class="hero-desc">Еженедельный AI-дайджест для коммерческого директора. Ниже показаны все изменения относительно текущей версии.</p>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span style="font-size:12px;font-weight:600;color:var(--text-primary);margin-right:4px">Изменения:</span>
+    <span class="legend-item"><span class="change-marker change-new">Новое</span> — добавляется в интерфейс</span>
+    <span class="legend-item"><span class="change-marker change-fix">Фикс</span> — исправляется баг</span>
+  </div>
+
+  <!-- Week nav -->
+  <div class="week-nav">
+    <div class="week-btn">‹</div>
+    <div class="week-label">12–18 мая 2026</div>
+    <div class="week-btn">›</div>
+    <button class="btn btn-outline">↻ Обновить</button>
+  </div>
+
+  <!-- ROP card -->
+  <div class="rop-card">
+    <div class="rop-header">
+      <div>
+        <div class="rop-name">Петров А.С.</div>
+        <div class="rop-branches">Оптика на Ленина · Оптика Центральная · Оптика Южная</div>
+      </div>
+      <div style="text-align:right">
+        <div class="rop-pct">84%</div>
+        <div class="rop-forecast">прогноз 4 820 000 / 5 740 000 ₽</div>
+      </div>
+      <div class="chevron">▲</div>
+    </div>
+
+    <!-- Анализ филиалов -->
+    <div class="rop-section">
+      <div class="section-header section-header--branches">
+        <div class="section-dot dot--branches"></div>
+        <div class="section-title">Анализ филиалов</div>
+      </div>
+      <div class="section-body">
+      <div class="branch-item">
+        <div style="text-align:center;flex-shrink:0">
+          <div class="branch-pct" style="color:var(--green)">96%</div>
+          <div class="branch-zone zone--green">Зелёная</div>
+        </div>
+        <div>
+          <div class="branch-name">Оптика Центральная</div>
+          <div class="branch-summary">Филиал идёт в плане по всем ключевым показателям. Конверсия рецепт→заказ выросла на 8% — результат работы по скрипту передачи клиента.</div>
+        </div>
+      </div>
+      <div class="branch-item">
+        <div style="text-align:center;flex-shrink:0">
+          <div class="branch-pct" style="color:var(--yellow)">78%</div>
+          <div class="branch-zone zone--yellow">Жёлтая</div>
+        </div>
+        <div>
+          <div class="branch-name">Оптика на Ленина</div>
+          <div class="branch-summary">Основная просадка — доля ВТЛ: 21% при плане 35%. Консультант Иванова А.В. даёт 14% ВТЛ.</div>
+        </div>
+      </div>
+      <div class="branch-item">
+        <div style="text-align:center;flex-shrink:0">
+          <div class="branch-pct" style="color:var(--red)">61%</div>
+          <div class="branch-zone zone--red">Красная</div>
+        </div>
+        <div>
+          <div class="branch-name">Оптика Южная</div>
+          <div class="branch-summary">Критическое отставание по выручке. Загрузка окон 43% — врачи работают неполный день.</div>
+        </div>
+      </div>
+      </div><!-- /section-body branches -->
+    </div>
+
+    <!-- Результаты прошлой недели -->
+    <div class="rop-section">
+      <div class="section-header section-header--last-week">
+        <div class="section-dot dot--last-week"></div>
+        <div class="section-title">Результаты задач — прошлая неделя</div>
+      </div>
+      <div class="section-body">
+
+      <!-- Employee 1 -->
+      <div class="emp-block">
+        <div class="emp-header">
+          <div>
+            <div class="emp-name">Смирнова Е.О.</div>
+            <div class="emp-branch">Оптика Центральная</div>
+          </div>
+          <span style="font-size:10.5px;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);border-radius:100px;padding:2px 8px;margin-left:auto">2 задачи</span>
+        </div>
+
+        <!-- Task 1 — up, sparkline -->
+        <div class="task-row">
+          <div class="task-top">
+            <div class="task-title">Внедрить скрипт передачи клиента консультанту</div>
+            <span class="result-chip result-up">↑ Растёт</span>
+          </div>
+          <div class="task-detail">Разобрать алгоритм с врачом, провести тренировочный приём</div>
+
+          <!-- Metric + Sparkline (NEW) -->
+          <div class="metric-row">
+            <span class="metric-label">% рецепт→заказ</span>
+            <span class="change-marker change-new">Новое</span>
+            <div class="sparkline" title="4 недели: 62%, 65%, 68%, 76%">
+              <div class="spark-bar spark-bar--mid" style="height:10px" title="Нед -2: 62%"></div>
+              <div class="spark-bar spark-bar--mid" style="height:12px" title="Нед -1: 65%"></div>
+              <div style="width:1px;background:var(--accent);opacity:0.35;margin:0 1px;align-self:stretch"></div>
+              <div class="spark-bar spark-bar--up" style="height:14px" title="Нед +1: 68%"></div>
+              <div class="spark-bar spark-bar--up" style="height:20px" title="Нед +2: 76%"></div>
+            </div>
+            <span class="spark-values">62% → 65% | 68% → 76%</span>
+          </div>
+
+          <div class="history-btn">🕐 Показать историю</div>
+        </div>
+
+        <!-- Task 2 — flat -->
+        <div class="task-row">
+          <div class="task-top">
+            <div class="task-title">Увеличить долю рекомендаций ВТЛ при миопии &gt;−3</div>
+            <span class="result-chip result-flat">→ Без изменений</span>
+          </div>
+          <div class="task-detail">Использовать фразу «У вас как раз тот случай...»</div>
+          <div class="metric-row">
+            <span class="metric-label">% рекомендаций ВТЛ</span>
+            <span class="change-marker change-new">Новое</span>
+            <div class="sparkline" title="80%, 79%, 81%, 80%">
+              <div class="spark-bar spark-bar--mid" style="height:14px"></div>
+              <div class="spark-bar spark-bar--mid" style="height:13px"></div>
+              <div style="width:1px;background:var(--accent);opacity:0.35;margin:0 1px;align-self:stretch"></div>
+              <div class="spark-bar spark-bar--mid" style="height:14px"></div>
+              <div class="spark-bar spark-bar--mid" style="height:14px"></div>
+            </div>
+            <span class="spark-values">80% → 79% | 81% → 80%</span>
+          </div>
+          <div class="history-btn">🕐 Показать историю</div>
+        </div>
+      </div>
+
+      <!-- Employee 2 -->
+      <div class="emp-block">
+        <div class="emp-header">
+          <div>
+            <div class="emp-name">Иванова А.В.</div>
+            <div class="emp-branch">Оптика на Ленина</div>
+          </div>
+          <span style="font-size:10.5px;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);border-radius:100px;padding:2px 8px;margin-left:auto">1 задача</span>
+        </div>
+        <div class="task-row">
+          <div class="task-top">
+            <div class="task-title">Отработать аргументацию ВТЛ на приёмах</div>
+            <span class="result-chip result-down">↓ Падает</span>
+          </div>
+          <div class="task-detail">Разобрать 3 худших взаимодействия по речевой аналитике</div>
+          <div class="metric-row">
+            <span class="metric-label">% продаж ВТЛ</span>
+            <span class="change-marker change-new">Новое</span>
+            <div class="sparkline" title="22%, 20%, 18%, 14%">
+              <div class="spark-bar spark-bar--down" style="height:20px"></div>
+              <div class="spark-bar spark-bar--down" style="height:16px"></div>
+              <div style="width:1px;background:var(--accent);opacity:0.35;margin:0 1px;align-self:stretch"></div>
+              <div class="spark-bar spark-bar--down" style="height:12px"></div>
+              <div class="spark-bar spark-bar--down" style="height:8px"></div>
+            </div>
+            <span class="spark-values">22% → 20% | 18% → 14%</span>
+          </div>
+          <div class="history-btn">🕐 Показать историю</div>
+        </div>
+      </div>
+    </div>
+
+      </div><!-- /section-body last-week -->
+    </div>
+
+    <!-- Задачи на эту неделю -->
+    <div class="rop-section">
+      <div class="section-header section-header--this-week">
+        <div class="section-dot dot--this-week"></div>
+        <div class="section-title">Задачи на эту неделю — в календаре</div>
+        <span class="change-marker change-new" style="margin-left:6px">Новое: редактирование</span>
+      </div>
+      <div class="section-body">
+
+      <div class="emp-block">
+        <div class="emp-header">
+          <div>
+            <div class="emp-name">Смирнова Е.О.</div>
+            <div class="emp-branch">Оптика Центральная</div>
+          </div>
+          <div class="emp-actions">
+            <div class="icon-btn" title="Редактировать задачу">✏️</div>
+            <div class="add-task-btn">＋ Задача</div>
+          </div>
+        </div>
+        <div class="this-week-item">
+          <div class="this-week-body">
+            <div class="task-time-label">Пн 10:00</div>
+            <div class="task-title" style="font-size:12.5px">Разобрать рекомендацию ВТЛ при пресбиопии</div>
+            <div class="task-detail" style="margin-bottom:0">Провести мини-сессию: как говорить о прогрессивных линзах клиентам после 40</div>
+          </div>
+          <div class="icon-btn" title="Редактировать">✏️</div>
+        </div>
+      </div>
+    </div>
+
+      </div><!-- /section-body this-week -->
+    </div>
+
+    <!-- Без задачи -->
+    <div class="rop-section">
+      <div class="section-header section-header--attention">
+        <div class="section-dot dot--attention"></div>
+        <div class="section-title" style="color:var(--red)">Без задачи в календаре — требуют внимания</div>
+        <span class="change-marker change-new" style="margin-left:6px">Новое: рекомендации</span>
+      </div>
+      <div class="section-body">
+
+      <div class="attention-item">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div>
+            <div class="attention-name">Петров К.Д.</div>
+            <div class="attention-branch">Оптика Южная</div>
+          </div>
+          <div class="add-task-btn" style="margin-top:2px">＋ Задача</div>
+        </div>
+        <div class="attention-reason">На прошлой неделе показал резкое падение конверсии (−17%). Задача на разбор поставлена не была — ситуация не проработана.</div>
+        <div class="attention-metric-label">% рецепт→заказ</div>
+
+        <!-- Recommendations (NEW) -->
+        <div class="rec-label">Рекомендуемые задачи:</div>
+        <div class="rec-list">
+          <div class="rec-item">
+            <span class="rec-text">Разбор ушедших клиентов — причины и план возврата</span>
+            <span class="rec-btn">＋ Задача</span>
+          </div>
+          <div class="rec-item">
+            <span class="rec-text">Отработка топ-3 возражений этого консультанта</span>
+            <span class="rec-btn">＋ Задача</span>
+          </div>
+          <div class="rec-item">
+            <span class="rec-text">Совместный просмотр: сделал и не сделал заказ</span>
+            <span class="rec-btn">＋ Задача</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="attention-item">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div>
+            <div class="attention-name">Миронова Ю.В.</div>
+            <div class="attention-branch">Оптика на Ленина</div>
+          </div>
+          <div class="add-task-btn" style="margin-top:2px">＋ Задача</div>
+        </div>
+        <div class="attention-reason">Ни одной задачи за 2 недели. % продаж ВТЛ стабильно ниже нормы по филиалу.</div>
+        <div class="attention-metric-label">% продаж ВТЛ</div>
+
+        <div class="rec-label">Рекомендуемые задачи:</div>
+        <div class="rec-list">
+          <div class="rec-item">
+            <span class="rec-text">Тренинг по ассортименту ВТЛ и скрипту презентации</span>
+            <span class="rec-btn">＋ Задача</span>
+          </div>
+          <div class="rec-item">
+            <span class="rec-text">Разбор подхвата клиента с рекомендацией ВТЛ</span>
+            <span class="rec-btn">＋ Задача</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      </div><!-- /section-body attention -->
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-bar">
+      <div class="footer-cell">
+        <div class="footer-label">Задач выполнено</div>
+        <div class="footer-val" style="color:var(--yellow)">3 <span class="footer-den">/ 5</span></div>
+      </div>
+      <div class="footer-cell">
+        <div class="footer-label">
+          Дали результат
+          <span class="change-marker change-fix" style="margin-left:4px">Фикс</span>
+        </div>
+        <div class="footer-val" style="color:var(--yellow)">1 <span class="footer-den">/ 3</span></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">не считаем «нет данных»</div>
+      </div>
+      <div class="footer-cell">
+        <div class="footer-label">Сотрудников охвачено</div>
+        <div class="footer-val" style="color:var(--green)">6 <span class="footer-den">/ 7</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout--blue">
+    <span class="callout-icon">ℹ️</span>
+    <span>
+      <strong>Что изменилось:</strong><br>
+      <strong>Спарклайн</strong> — 4 точки по метрике (2 до задачи + 2 после) вместо одной оценки. Цвет отражает тренд.<br>
+      <strong>Рекомендации</strong> в блоке «Без задачи» — готовые варианты из анализа филиала с кнопкой «+ Задача».<br>
+      <strong>Добавить / редактировать задачу</strong> прямо из планёрки — без перехода в отдельный раздел.<br>
+      <strong>Фикс футера</strong> — «дали результат» считается только по задачам где метрика измерилась, а не включает «нет данных».
+    </span>
+  </div>
+
+</div>
+<script src="../_sidebar.js"></script>
+</body>
+</html>
