@@ -108,6 +108,7 @@
       'guides/badges-workflow.html',
       'guides/getting-started.html',
       'reference/roles.html',
+      'sections/rop-kd-bp.html',
     ].includes(href);
   }
 
@@ -188,14 +189,13 @@
 
     NAV.forEach(group => {
       if (group.label) {
-        const open = groupHasActive(group.items);
+        const open = true;
         const id = 'sbg-' + group.label.replace(/\s+/g, '-');
         html += `
-          <button class="sb-group-label ${open ? 'sb-group-open' : ''}" data-target="${id}" aria-expanded="${open}">
+          <div class="sb-group-label sb-group-open">
             ${group.label}
-            <span class="sb-group-chevron">${icon('chevron', 12)}</span>
-          </button>
-          <div class="sb-group-items${open ? ' sb-group-items--open' : ''}" id="${id}">`;
+          </div>
+          <div class="sb-group-items sb-group-items--open" id="${id}">`;
         group.items.forEach(item => { html += buildItem(item); });
         html += `</div>`;
       } else {
