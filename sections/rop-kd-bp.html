@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>РОП и КД: работа через Оптимайзер</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --accent-soft: #7b7ef6;
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08),0 2px 4px -2px rgba(0,0,0,0.06);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 36px; animation: fadeUp 0.5s ease both; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 30px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.02em;
+  }
+  .hero-desc {
+    font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px;
+  }
+  .audience-note {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 16px; padding: 10px 16px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 13px; color: var(--text-secondary);
+  }
+  .audience-note strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Why block ── */
+  .why-block {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 24px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.5s 0.08s ease both;
+  }
+  .block-title {
+    font-size: 15px; font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .block-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .block-icon--yellow { background: var(--yellow-bg); }
+  .block-icon--blue   { background: var(--accent-light); }
+  .block-icon--green  { background: var(--green-bg); }
+  .block-icon--red    { background: var(--red-bg); }
+  .block-icon--gray   { background: var(--surface-2); }
+
+  .why-text { font-size: 14px; color: var(--text-secondary); line-height: 1.75; }
+  .why-text p + p { margin-top: 8px; }
+  .why-text strong { color: var(--text-primary); font-weight: 600; }
+  .why-result {
+    margin-top: 14px; padding: 12px 16px;
+    background: var(--accent-light); border-radius: var(--radius);
+    border-left: 3px solid var(--accent);
+    font-size: 13.5px; color: var(--accent); font-weight: 500; line-height: 1.6;
+  }
+
+  /* ── Two-col grid ── */
+  .grid-2 {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .audience-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .audience-card-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; margin-bottom: 10px;
+  }
+  .audience-card-label--kd  { color: var(--accent); }
+  .audience-card-label--rop { color: var(--green); }
+  .audience-card p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; }
+  .audience-card p + p { margin-top: 6px; }
+  .audience-card strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Flow chain ── */
+  .flow-block {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 24px;
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.5s 0.14s ease both;
+  }
+  .flow-chain { display: flex; flex-direction: column; gap: 0; }
+  .flow-item { display: flex; align-items: flex-start; gap: 16px; }
+  .flow-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .flow-dot {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .flow-dot--blue { background: var(--accent); }
+  .flow-dot--red  { background: var(--red); }
+  .flow-line {
+    width: 2px; flex: 1; min-height: 20px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+    margin: 4px 0; opacity: 0.25;
+  }
+  .flow-content { padding-bottom: 22px; flex: 1; }
+  .flow-item:last-child .flow-content { padding-bottom: 0; }
+  .flow-content h3 { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+  .flow-content p { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+  .flow-content strong { color: var(--text-primary); font-weight: 600; }
+  .flow-deadline {
+    margin-top: 8px; padding: 8px 12px;
+    background: var(--red-bg); border: 1px solid rgba(220,38,38,0.2);
+    border-radius: var(--radius); font-size: 12.5px; color: var(--red);
+    font-weight: 500; line-height: 1.5;
+  }
+
+  /* ── Location cards ── */
+  .location-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .location-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+  .location-card p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; }
+  .location-hint {
+    margin-top: 10px; display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--accent); font-weight: 500;
+    background: var(--accent-light); padding: 5px 10px; border-radius: 100px;
+  }
+
+  /* ── Priority chips ── */
+  .priority-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 560px) { .priority-grid { grid-template-columns: 1fr; } }
+  .priority-chip {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+  }
+  .priority-chip-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .priority-dot--red    { background: var(--red); }
+  .priority-dot--yellow { background: var(--yellow); }
+  .priority-dot--blue   { background: var(--accent); }
+  .priority-chip-name { font-size: 13px; font-weight: 700; }
+  .priority-chip-name--red    { color: var(--red); }
+  .priority-chip-name--yellow { color: var(--yellow); }
+  .priority-chip-name--blue   { color: var(--accent); }
+  .priority-chip p { font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; }
+  .priority-footer {
+    margin-bottom: 24px; font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+    padding: 12px 16px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 12px;
+  }
+
+  /* ── Step cards (collapsible) ── */
+  .step-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+    margin-bottom: 10px; overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    animation: fadeUp 0.5s ease both;
+  }
+  .step-card:hover { box-shadow: var(--shadow-md); }
+
+  .step-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 22px; cursor: pointer; user-select: none;
+    transition: background 0.15s;
+  }
+  .step-header:hover { background: var(--surface-2); }
+
+  .step-num {
+    width: 34px; height: 34px; background: var(--accent);
+    border-radius: 9px; display: flex; align-items: center;
+    justify-content: center; color: white; font-size: 14px;
+    font-weight: 700; flex-shrink: 0;
+  }
+  .step-header-text { flex: 1; }
+  .step-title { font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+  .step-subtitle { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+  .step-chevron {
+    color: var(--text-muted); transition: transform 0.3s ease;
+    flex-shrink: 0; font-size: 18px;
+  }
+  .step-card.open .step-chevron { transform: rotate(180deg); }
+
+  .step-body {
+    display: none; padding: 0 22px 24px;
+    border-top: 1px solid var(--border);
+    animation: fadeIn 0.2s ease;
+  }
+  .step-card.open .step-body { display: block; }
+
+  /* ── Inside step body ── */
+  .step-section { margin-top: 20px; }
+  .step-section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px;
+  }
+  .step-text { font-size: 14px; color: var(--text-secondary); line-height: 1.75; }
+  .step-text p + p { margin-top: 8px; }
+  .step-text strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Fields grid */
+  .fields-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+  }
+  .field-chip {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 11px 13px; font-size: 13px;
+  }
+  .field-chip-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 3px;
+  }
+  .field-chip-name { font-weight: 600; color: var(--text-primary); font-size: 13px; }
+
+  /* Rule subsection */
+  .rule-block { margin-top: 16px; }
+  .rule-title {
+    font-size: 13px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
+  .rule-body { font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; }
+  .rule-body + .rule-block { margin-top: 18px; }
+
+  /* Example block */
+  .example-block {
+    margin-top: 12px; background: var(--surface-2);
+    border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden;
+  }
+  .example-header {
+    padding: 8px 14px; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .example-header--good { color: var(--green); }
+  .example-header--bad  { color: var(--red); }
+  .example-body { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+  .example-body em { color: var(--text-primary); font-style: italic; }
+  .example-pair { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+
+  /* Close scenarios */
+  .scenario-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .scenario {
+    border-radius: var(--radius); padding: 16px;
+    border: 1px solid var(--border);
+  }
+  .scenario--green  { background: rgba(22,163,74,0.05);  border-color: rgba(22,163,74,0.2); }
+  .scenario--yellow { background: rgba(202,138,4,0.05);  border-color: rgba(202,138,4,0.2); }
+  .scenario--red    { background: rgba(220,38,38,0.05);  border-color: rgba(220,38,38,0.2); }
+  .scenario-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .scenario-icon { font-size: 15px; }
+  .scenario-name { font-size: 14px; font-weight: 700; }
+  .scenario-name--green  { color: var(--green); }
+  .scenario-name--yellow { color: var(--yellow); }
+  .scenario-name--red    { color: var(--red); }
+  .scenario-desc { font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; }
+  .scenario-desc strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Result structure */
+  .result-structure {
+    margin-top: 14px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .result-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-size: 13.5px;
+  }
+  .result-row-num {
+    width: 20px; height: 20px; background: var(--accent);
+    border-radius: 5px; display: flex; align-items: center;
+    justify-content: center; color: white; font-size: 11px;
+    font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  .result-row-content { flex: 1; }
+  .result-row-label { font-weight: 600; color: var(--text-primary); display: block; }
+  .result-row-hint { color: var(--text-secondary); }
+
+  /* Signal cards */
+  .signal-list { display: flex; flex-direction: column; gap: 10px; }
+  .signal {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px; background: var(--surface-2);
+    border-radius: var(--radius); border: 1px solid var(--border);
+  }
+  .signal-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .signal-icon--red    { background: var(--red-bg); }
+  .signal-icon--yellow { background: var(--yellow-bg); }
+  .signal-icon--gray   { background: var(--surface); border: 1px solid var(--border); }
+  .signal-content { flex: 1; }
+  .signal-trigger { font-size: 13.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .signal-action { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .signal-action strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Responsibility table */
+  .resp-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); overflow: hidden;
+    box-shadow: var(--shadow-sm); margin-top: 24px;
+  }
+  .resp-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .resp-row:last-child { border-bottom: none; }
+  .resp-cell {
+    padding: 13px 18px; font-size: 13.5px;
+    border-right: 1px solid var(--border);
+  }
+  .resp-cell:last-child { border-right: none; }
+  .resp-cell--header {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text-muted);
+    background: var(--surface-2);
+  }
+
+  /* Check list */
+  .check-list { display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+    padding: 9px 13px; background: var(--surface-2);
+    border-radius: 6px; border: 1px solid var(--border);
+  }
+  .check-item::before {
+    content: '✓'; color: var(--accent); font-weight: 700;
+    font-size: 11px; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .step-card:nth-child(1) { animation-delay: 0.28s; }
+  .step-card:nth-child(2) { animation-delay: 0.33s; }
+  .step-card:nth-child(3) { animation-delay: 0.38s; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 24px; }
+    .main { padding: 24px 16px 60px; }
+    .step-header { padding: 14px 16px; }
+    .step-body { padding: 0 16px 20px; }
+    .priority-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<main class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">⚙ Бизнес-процесс</div>
+    <h1>РОП и КД: работа через Оптимайзер</h1>
+    <p class="hero-desc">Как РОП управляет задачами самостоятельно, а КД контролирует через AI-отчёт — без созвонов и ручной постановки задач.</p>
+    <div class="audience-note">
+      <span>📋</span>
+      <span><strong>КД</strong> (Коммерческий директор) читает документ полностью.&nbsp;&nbsp;<strong>РОП</strong> (Руководитель отдела продаж) — начиная с раздела «Как устроена неделя».</span>
+    </div>
+  </div>
+
+  <!-- Why -->
+  <div class="why-block">
+    <div class="block-title">
+      <div class="block-icon block-icon--yellow">💡</div>
+      Зачем это нужно
+    </div>
+    <div class="why-text">
+      <p>Сейчас КД сам ставит задачи сотрудникам. Это работает, но не масштабируется: <strong>без участия КД работа не начинается</strong>, а РОП не развивает самостоятельность.</p>
+      <p>Этот процесс меняет распределение: РОП управляет задачами сам, КД контролирует через AI-отчёт. <strong>Один отчёт раз в неделю заменяет созвоны и ручную постановку задач.</strong></p>
+    </div>
+    <div class="why-result">
+      КД читает отчёт и видит полную картину: что поставлено, что сделано, кому не поставили задачу. Участвовать в постановке задач не нужно.
+    </div>
+  </div>
+
+  <!-- What each gets -->
+  <div class="why-block" style="animation: fadeUp 0.5s 0.1s ease both;">
+    <div class="why-text">
+      <p>РОП ставит задачи по проблемным показателям и закрывает их с результатом в течение недели. КД читает AI-отчёт в понедельник и видит полную картину без созвонов: что сделано, что нет, каким сотрудникам нужно внимание — и поставил ли РОП по ним задачи.</p>
+    </div>
+  </div>
+
+  <!-- Week flow -->
+  <div class="flow-block">
+    <div class="block-title">
+      <div class="block-icon block-icon--blue">🗓</div>
+      Как устроена неделя
+    </div>
+    <div class="flow-chain">
+
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot flow-dot--blue">1</div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <h3>Понедельник 8:00 — система формирует отчёт</h3>
+          <p><strong>КД</strong> читает AI-отчёт. Если есть сигналы — ставит свои задачи РОПу или сотрудникам в системе до конца понедельника, чтобы РОП видел их при планировании.</p>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot flow-dot--blue">2</div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <h3>Понедельник — РОП планирует</h3>
+          <p><strong>РОП</strong> открывает Оптимайзер, смотрит показатели, ставит задачи на неделю по сотрудникам в красной и жёлтой зоне.</p>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot flow-dot--blue">3</div>
+          <div class="flow-line"></div>
+        </div>
+        <div class="flow-content">
+          <h3>Понедельник–воскресенье — РОП работает</h3>
+          <p>Проводит работу с сотрудниками. <strong>Закрывает задачу с результатом в тот же день</strong> когда провёл встречу — не копит на конец недели.</p>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-left">
+          <div class="flow-dot flow-dot--red">!</div>
+        </div>
+        <div class="flow-content">
+          <h3>Воскресенье — дедлайн</h3>
+          <p>Все задачи должны быть закрыты до конца воскресенья.</p>
+          <div class="flow-deadline">
+            Отчёт формируется в понедельник в 8:00 автоматически и <strong>не может быть исправлен задним числом</strong>. Что закрыто до воскресенья — попало в отчёт. Что нет — потеряно.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Where to look -->
+  <div class="section-label">Где смотреть показатели</div>
+  <div class="grid-2" style="margin-bottom:24px; animation: fadeUp 0.5s 0.16s ease both;">
+    <div class="location-card">
+      <h3>📊 Анализ филиала</h3>
+      <p>Общая картина по всем показателям. <strong>Смотри сюда первым:</strong> сразу видно что в красной и жёлтой зоне на уровне филиала.</p>
+      <div class="location-hint">кнопка «+ Задача» рядом с показателем</div>
+    </div>
+    <div class="location-card">
+      <h3>👤 Карта сотрудника</h3>
+      <p>Детализация по конкретному человеку. Заходи когда понятно <strong>кто</strong> проседает — видно по каким именно показателям.</p>
+      <div class="location-hint">«+ Задача» или «Добавить задачу» вверху</div>
+    </div>
+  </div>
+  <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:24px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
+    Система сама выделяет сотрудников которым нужно внимание — это отправная точка, не нужно искать проблемы самому.
+  </div>
+
+  <!-- Priorities -->
+  <div class="section-label">Как расставлять приоритеты</div>
+  <div class="priority-grid" style="animation: fadeUp 0.5s 0.2s ease both;">
+    <div class="priority-chip">
+      <div class="priority-chip-header">
+        <div class="priority-dot priority-dot--red"></div>
+        <div class="priority-chip-name priority-chip-name--red">Критично</div>
+      </div>
+      <p>Красная зона. Берём в первую очередь — напрямую влияет на выполнение плана прямо сейчас.</p>
+    </div>
+    <div class="priority-chip">
+      <div class="priority-chip-header">
+        <div class="priority-dot priority-dot--yellow"></div>
+        <div class="priority-chip-name priority-chip-name--yellow">Важно</div>
+      </div>
+      <p>Жёлтая зона или устойчивый негативный тренд. Берём если осталась ёмкость после критичных.</p>
+    </div>
+    <div class="priority-chip">
+      <div class="priority-chip-header">
+        <div class="priority-dot priority-dot--blue"></div>
+        <div class="priority-chip-name priority-chip-name--blue">Развитие</div>
+      </div>
+      <p>Всё в норме, но есть потенциал роста. Берём когда нет срочных задач.</p>
+    </div>
+  </div>
+  <div class="priority-footer">
+    Лучше <strong>три хорошо проработанные задачи</strong>, чем десять формальных. Если проблемных показателей много — выбирай главный по каждому сотруднику.
+  </div>
+
+  <!-- Step cards -->
+  <div class="section-label">Шаги процесса</div>
+
+  <!-- Step 1 -->
+  <div class="step-card" id="step1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-header-text">
+        <div class="step-title">Постановка задачи</div>
+        <div class="step-subtitle">Какие поля заполнять и как это влияет на отчёт</div>
+      </div>
+      <div class="step-chevron">⌄</div>
+    </div>
+    <div class="step-body">
+
+      <div class="step-section">
+        <div class="step-section-label">Обязательные поля</div>
+        <div class="fields-grid">
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Сотрудник</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Показатель</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">План работы</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Дата</div>
+          </div>
+          <div class="field-chip">
+            <div class="field-chip-label">Вручную</div>
+            <div class="field-chip-name">Приоритет</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Правила заполнения</div>
+        <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.7;">Оптимайзер анализирует задачи автоматически и строит на их основе AI-отчёт. Чем точнее заполнена задача — тем точнее отчёт отражает реальную картину.</p>
+
+        <div class="rule-block" style="margin-top:18px;">
+          <div class="rule-title">📌 Показатель</div>
+          <div class="rule-body">
+            Система связывает задачу с конкретной метрикой. В отчёте КД видит не просто «задача поставлена», а «по показателю X поставлена задача, вот что сделано». Если показатель не указан или указан неточно — реальная проблема в отчёте висит без задачи, как будто РОП её не заметил.
+            <br><br>
+            Выбирай тот показатель который реально провисает. Если задача затрагивает несколько — выбирай главный. <strong>«Без показателя»</strong> использовать только для организационных задач не связанных с метриками филиала.
+          </div>
+        </div>
+
+        <div class="rule-block">
+          <div class="rule-title">📝 План работы</div>
+          <div class="rule-body">
+            AI оценивает план по трём критериям:
+            <br><br>
+            <strong>Конкретность действия</strong> — не «поговорить» или «обсудить», а что именно делаешь: разобрать технику, прослушать звонок, отработать возражение на примере.
+            <br><br>
+            <strong>Связь с показателем</strong> — из текста должно быть понятно почему это действие влияет на выбранный показатель. Если связи нет — AI не может оценить адекватность задачи, в отчёте это выглядит как формальная активность.
+            <br><br>
+            <strong>Точка проверки</strong> — когда и по чему поймёшь что сработало.
+            <br><br>
+            Система запоминает формулировки которые ты используешь и потом предлагает их как подсказки. Чем точнее пишешь сейчас — тем умнее становятся подсказки.
+          </div>
+          <div class="example-pair">
+            <div class="example-block">
+              <div class="example-header example-header--good">✓ Хороший план</div>
+              <div class="example-body"><em>«Разобрать с Ивановой презентацию ВТЛ — она не предлагает прогрессив клиентам старше 40 с монофокальным рецептом. Отработать на реальном примере из её заказов. Проверю % рекомендаций ВТЛ в пятницу по карте.»</em></div>
+            </div>
+            <div class="example-block">
+              <div class="example-header example-header--bad">✗ Плохой план</div>
+              <div class="example-body"><em>«Поговорить про ВТЛ»</em>&nbsp;&nbsp;·&nbsp;&nbsp;<em>«Объяснить важность показателя»</em></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rule-block">
+          <div class="rule-title">✅ Результат</div>
+          <div class="rule-body">
+            Заполняется после работы с сотрудником — в день когда провёл встречу. Результат задачи это не движение метрики, а то что произошло на встрече. Метрика изменится позже — ждать её не нужно.
+          </div>
+          <div class="result-structure">
+            <div class="result-row">
+              <div class="result-row-num">1</div>
+              <div class="result-row-content">
+                <span class="result-row-label">Факт</span>
+                <span class="result-row-hint">— что произошло на встрече</span>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="result-row-num">2</div>
+              <div class="result-row-content">
+                <span class="result-row-label">Вывод</span>
+                <span class="result-row-hint">— к чему пришли, в чём причина проблемы</span>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="result-row-num">3</div>
+              <div class="result-row-content">
+                <span class="result-row-label">Договорённость</span>
+                <span class="result-row-hint">— что сотрудник будет делать иначе и когда проверишь</span>
+              </div>
+            </div>
+          </div>
+          <div class="example-pair">
+            <div class="example-block">
+              <div class="example-header example-header--good">✓ Хороший результат</div>
+              <div class="example-body"><em>«Разобрали три последних заказа где не было рекомендации ВТЛ. Оказалось — Иванова не предлагает прогрессив если клиент сам не спросил, считает что дорого. Договорились: предлагает всегда, называет выгоду для зрения, цену — только если клиент спросил. Проверю в следующий понедельник.»</em></div>
+            </div>
+            <div class="example-block">
+              <div class="example-header example-header--bad">✗ Плохой результат</div>
+              <div class="example-body"><em>«Провёл беседу»</em>&nbsp;&nbsp;·&nbsp;&nbsp;<em>«Объяснил важность показателя»</em>&nbsp;&nbsp;·&nbsp;&nbsp;<em>«Созвон запланирован»</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step-card" id="step2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-header-text">
+        <div class="step-title">Закрытие задачи</div>
+        <div class="step-subtitle">Три варианта — когда и какой использовать</div>
+      </div>
+      <div class="step-chevron">⌄</div>
+    </div>
+    <div class="step-body">
+
+      <div class="step-section">
+        <div class="step-section-label">Варианты закрытия</div>
+        <div class="scenario-list">
+
+          <div class="scenario scenario--green">
+            <div class="scenario-header">
+              <div class="scenario-icon">✅</div>
+              <div class="scenario-name scenario-name--green">Завершить</div>
+            </div>
+            <div class="scenario-desc">
+              Работа проведена и есть конкретный результат. <strong>Без заполненного поля «Результат» завершить нельзя</strong> — система не даст закрыть задачу.
+              <br>Используй когда: провёл встречу, договорился с сотрудником о конкретном изменении.
+            </div>
+          </div>
+
+          <div class="scenario scenario--yellow">
+            <div class="scenario-header">
+              <div class="scenario-icon">⏸</div>
+              <div class="scenario-name scenario-name--yellow">Отложить</div>
+            </div>
+            <div class="scenario-desc">
+              Задача переносится. <strong>РОП выбирает новую дату — максимум на одну неделю.</strong> Задача остаётся в списке незакрытых с пометкой «Отложена» и видна КД в отчёте отдельно.
+              <br>Используй когда: встреча не состоялась или нужно дополнительное время.
+            </div>
+          </div>
+
+          <div class="scenario scenario--red">
+            <div class="scenario-header">
+              <div class="scenario-icon">✗</div>
+              <div class="scenario-name scenario-name--red">Отменить</div>
+            </div>
+            <div class="scenario-desc">
+              Задача снята — работа не будет проводиться. <strong>Попадает в отчёт как невыполненная.</strong>
+              <br>Используй когда: задача потеряла актуальность или ситуация изменилась.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="step-section">
+        <div class="step-section-label">Что проверить перед закрытием</div>
+        <div class="check-list">
+          <div class="check-item">Задача закрывается в день когда провёл работу с сотрудником — не в конце недели</div>
+          <div class="check-item">В результате есть все три элемента: факт, вывод, договорённость</div>
+          <div class="check-item">Результат описывает что произошло на встрече, а не что планируется в будущем</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step-card" id="step3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-header-text">
+        <div class="step-title">Контроль КД</div>
+        <div class="step-subtitle">Три сигнала в отчёте и что с ними делать</div>
+      </div>
+      <div class="step-chevron">⌄</div>
+    </div>
+    <div class="step-body">
+
+      <div class="step-section">
+        <div class="step-section-label">Сигналы и действия</div>
+        <div class="signal-list">
+
+          <div class="signal">
+            <div class="signal-icon signal-icon--red">🔴</div>
+            <div class="signal-content">
+              <div class="signal-trigger">Задачи не поставлены по показателям в красной зоне</div>
+              <div class="signal-action">РОП не работает с аналитикой самостоятельно. <strong>Разобрать на ближайшей планёрке:</strong> почему не поставил, что помешало.</div>
+            </div>
+          </div>
+
+          <div class="signal">
+            <div class="signal-icon signal-icon--yellow">⚠️</div>
+            <div class="signal-content">
+              <div class="signal-trigger">Задачи закрыты без содержательного результата</div>
+              <div class="signal-action">Формальное закрытие — реальная работа не велась или не зафиксирована. <strong>Поставить задачу РОПу в системе:</strong> переформулировать результат или провести работу заново.</div>
+            </div>
+          </div>
+
+          <div class="signal">
+            <div class="signal-icon signal-icon--gray">🔁</div>
+            <div class="signal-content">
+              <div class="signal-trigger">Задачи откладываются две недели подряд</div>
+              <div class="signal-action">Проблема не решается. <strong>Подключиться лично:</strong> помочь РОПу разобраться с ситуацией или поставить свою задачу по этому сотруднику.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Responsibility -->
+  <div class="resp-card" style="animation: fadeUp 0.5s 0.4s ease both;">
+    <div class="resp-row">
+      <div class="resp-cell resp-cell--header">Кто ставит задачу</div>
+      <div class="resp-cell resp-cell--header">Кто закрывает</div>
+    </div>
+    <div class="resp-row">
+      <div class="resp-cell">РОП</div>
+      <div class="resp-cell">РОП</div>
+    </div>
+    <div class="resp-row">
+      <div class="resp-cell">КД</div>
+      <div class="resp-cell">КД</div>
+    </div>
+  </div>
+  <p style="font-size:12.5px;color:var(--text-muted);margin-top:8px;line-height:1.5;">В отчёте задачи КД и РОПа разделены автоматически.</p>
+
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    ['step1','step2','step3'].forEach(function(id) {
+      var card = document.getElementById(id)
+      if (!card) return
+      card.querySelector('.step-header').addEventListener('click', function() {
+        var isOpen = card.classList.contains('open')
+        document.querySelectorAll('.step-card').forEach(function(c) { c.classList.remove('open') })
+        if (!isOpen) {
+          card.classList.add('open')
+          setTimeout(function() {
+            window.scrollTo({ top: card.getBoundingClientRect().top + window.scrollY - 20, behavior: 'smooth' })
+          }, 50)
+        }
+      })
+    })
+  })
+</script>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>
