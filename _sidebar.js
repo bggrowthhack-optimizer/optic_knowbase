@@ -189,13 +189,14 @@
 
     NAV.forEach(group => {
       if (group.label) {
-        const open = true;
+        const open = groupHasActive(group.items);
         const id = 'sbg-' + group.label.replace(/\s+/g, '-');
         html += `
-          <div class="sb-group-label sb-group-open">
+          <button class="sb-group-label ${open ? 'sb-group-open' : ''}" data-target="${id}" aria-expanded="${open}">
             ${group.label}
-          </div>
-          <div class="sb-group-items sb-group-items--open" id="${id}">`;
+            <span class="sb-group-chevron">${icon('chevron', 12)}</span>
+          </button>
+          <div class="sb-group-items${open ? ' sb-group-items--open' : ''}" id="${id}">`;
         group.items.forEach(item => { html += buildItem(item); });
         html += `</div>`;
       } else {
