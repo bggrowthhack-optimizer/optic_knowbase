@@ -39,6 +39,7 @@
       label: 'Инструкции',
       items: [
         { title: 'Декомпозиция плана продаж', href: 'guides/plan-decomposition.html', icon: 'guide', ready: true },
+        { title: 'БП: РОП и КД',             href: 'sections/rop-kd-bp.html',        icon: 'guide', ready: true },
         { title: 'Работа с бейджами',         href: 'guides/badges-workflow.html',    icon: 'guide' },
         { title: 'Начало работы',             href: 'guides/getting-started.html',    icon: 'guide' },
       ],
