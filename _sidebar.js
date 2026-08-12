@@ -12,7 +12,8 @@
   const NAV = [
     {
       items: [
-        { title: 'База знаний', href: 'index.html', icon: 'home' },
+        { title: 'База знаний',  href: 'index.html',            icon: 'home' },
+        { title: 'Что нового',   href: 'sections/whats-new.html', icon: 'bell' },
       ],
     },
     {
@@ -27,6 +28,8 @@
         { title: 'Результаты сотрудников',    href: 'sections/employees.html',          icon: 'users' },
         { title: 'План задач на неделю',      href: 'sections/tasks.html',              icon: 'clipboard' },
         { title: 'Аудиобейджи',               href: 'sections/badges.html',             icon: 'mic' },
+        { title: 'Складская аналитика',       href: 'sections/warehouse.html',          icon: 'package' },
+        { title: 'Протоколы встреч',          href: 'sections/meeting-protocols.html',  icon: 'scroll-text' },
         { title: 'Мотивация',                 href: 'sections/motivation.html',         icon: 'ruble' },
         { title: 'Планёрка КД',              href: 'sections/meeting-plan.html',       icon: 'presentation' },
         { title: 'Речевая аналитика — колл-центр', href: 'sections/speech-callcenter.html', icon: 'phone' },
@@ -67,12 +70,15 @@
     users:        `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
     clipboard:    `<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>`,
     mic:          `<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>`,
+    package:      `<line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>`,
+    'scroll-text':`<path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M15 8h-5"/><path d="M15 12h-5"/>`,
     ruble:        ``,
     presentation: `<path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="M7 21l5-5 5 5"/>`,
     'mic-2':      `<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/>`,
     activity:     `<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>`,
     'user-cog':   `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><circle cx="19" cy="11" r="2"/><path d="M23 11h-2m-1.5-2.5-.7.7M19 9V7m-1.5 5.5-.7-.7M15 11h2m1.5 2.5.7-.7"/>`,
     sparkles:     `<path d="M12 3l1.88 5.76a2 2 0 0 0 1.36 1.36L21 12l-5.76 1.88a2 2 0 0 0-1.36 1.36L12 21l-1.88-5.76a2 2 0 0 0-1.36-1.36L3 12l5.76-1.88a2 2 0 0 0 1.36-1.36z"/>`,
+    bell:         `<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>`,
     guide:        `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>`,
     book:         `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>`,
     shield:       `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>`,
@@ -109,6 +115,9 @@
       'guides/getting-started.html',
       'reference/roles.html',
       'sections/rop-kd-bp.html',
+      'sections/warehouse.html',
+      'sections/meeting-protocols.html',
+      'sections/whats-new.html',
     ].includes(href);
   }
 

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Что нового — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --teal: #0d9488;
+    --teal-bg: #ccfbf1;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text-primary);
+    line-height: 1.6; min-height: 100vh;
+  }
+  .main { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 100px; margin-bottom: 14px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px; font-weight: 700; line-height: 1.25;
+    color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .hero-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; }
+
+  /* ── Period bar ── */
+  .period-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 16px;
+    margin-bottom: 28px; box-shadow: var(--shadow-sm);
+  }
+  .period-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+  }
+  .period-text { font-size: 13px; color: var(--text-secondary); }
+  .period-text strong { color: var(--text-primary); }
+  .period-count {
+    margin-left: auto; font-size: 11px; font-weight: 600;
+    color: var(--accent); background: var(--accent-light);
+    padding: 2px 10px; border-radius: 100px;
+  }
+
+  /* ── Section divider ── */
+  .section-divider {
+    display: flex; align-items: center; gap: 12px; margin: 8px 0 16px;
+  }
+  .section-divider-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--text-muted); white-space: nowrap;
+  }
+  .section-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── Change group ── */
+  .change-group {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+    margin-bottom: 16px; overflow: hidden;
+  }
+  .change-group-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .change-group-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .change-group-title {
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+  }
+  .change-group-icon--purple { background: rgba(124,58,237,0.1); }
+  .change-group-icon--blue   { background: var(--accent-light); }
+  .change-group-icon--green  { background: var(--green-bg); }
+  .change-group-icon--yellow { background: var(--yellow-bg); }
+  .change-group-icon--teal   { background: var(--teal-bg); }
+  .change-group-icon--red    { background: var(--red-bg); }
+  .change-group-icon--gray   { background: var(--surface-2); }
+
+  /* ── Change item ── */
+  .change-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+  }
+  .change-item:last-child { border-bottom: none; }
+  .change-item:hover { background: var(--surface-2); }
+  .change-ver {
+    font-size: 10px; font-weight: 700; color: var(--text-muted);
+    background: var(--surface-2); border: 1px solid var(--border);
+    padding: 2px 7px; border-radius: 4px; flex-shrink: 0;
+    margin-top: 2px; letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .change-body { flex: 1; }
+  .change-title {
+    font-size: 13.5px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 3px;
+  }
+  .change-desc {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .change-link {
+    font-size: 11.5px; font-weight: 600; color: var(--accent);
+    background: var(--accent-light); border: 1px solid rgba(91,94,244,0.15);
+    padding: 3px 10px; border-radius: 4px; text-decoration: none;
+    flex-shrink: 0; white-space: nowrap; margin-top: 1px;
+    display: inline-flex; align-items: center;
+  }
+  .change-link:hover { background: rgba(91,94,244,0.14); }
+
+  /* ── Accent left borders ── */
+  .change-item--ai     { border-left: 3px solid #7c3aed; }
+  .change-item--tasks  { border-left: 3px solid var(--accent); }
+  .change-item--metric { border-left: 3px solid var(--teal); }
+  .change-item--report { border-left: 3px solid var(--green); }
+  .change-item--people { border-left: 3px solid var(--yellow); }
+  .change-item--badge  { border-left: 3px solid var(--red); }
+  .change-item--stock  { border-left: 3px solid var(--text-muted); }
+
+  /* ── New badge ── */
+  .new-badge {
+    display: inline-block; font-size: 9.5px; font-weight: 700;
+    background: rgba(124,58,237,0.1); color: #7c3aed;
+    padding: 1px 6px; border-radius: 100px; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-left: 6px; vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <div class="hero">
+    <div class="hero-badge">Обновления системы</div>
+    <h1>Что нового в Оптимайзере</h1>
+    <p class="hero-desc">Все изменения, которые появились в системе с момента запуска базы знаний. Сгруппированы по теме — не нужно читать всё подряд, достаточно найти свой раздел.</p>
+  </div>
+
+  <div class="period-bar">
+    <div class="period-dot"></div>
+    <div class="period-text">Охваченный период: <strong>май — июль 2026</strong> · версии 1.11 → 1.39</div>
+    <div class="period-count">29 версий</div>
+  </div>
+
+  <!-- AI -->
+  <div class="change-group">
+    <div class="change-group-header">
+      <div class="change-group-icon change-group-icon--purple">🤖</div>
+      <div class="change-group-title">AI-инструменты</div>
+    </div>
+
+    <div class="change-item change-item--ai">
+      <div class="change-ver">v1.38</div>
+      <div class="change-body">
+        <div class="change-title">Разбор записи встречи 1:1</div>
+        <div class="change-desc">В задаче «Развитие» появилась загрузка аудиозаписи встречи с сотрудником — система расшифровывает её и предлагает черновик результата с пометкой «из записи». Под результатом — «Комментарий помощника»: что получилось, что не сработало, что попробовать в следующий раз. Все разобранные встречи собираются в подразделе «Встречи 1:1 РОП».</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+
+    <div class="change-item change-item--ai">
+      <div class="change-ver">v1.38</div>
+      <div class="change-body">
+        <div class="change-title">Встречи 1:1 РОП <span class="new-badge">Новый подраздел</span></div>
+        <div class="change-desc">Архив всех разобранных записей встреч: дата, РОП, сотрудник, показатель, расшифровка, результат и комментарий помощника. Фильтры по сотруднику, руководителю и дате. РОП видит свои встречи, коммерческий директор — все.</div>
+      </div>
+      <a class="change-link" href="meeting-protocols.html">Раздел →</a>
+    </div>
+
+    <div class="change-item change-item--ai">
+      <div class="change-ver">v1.34</div>
+      <div class="change-body">
+        <div class="change-title">Протоколы планёрок <span class="new-badge">Новый раздел</span></div>
+        <div class="change-desc">Появился раздел «Протоколы встреч»: загружаешь аудиозапись планёрки — система расшифровывает её и формирует структурированный отчёт. Отчёт можно отредактировать и подтвердить. Пока идёт обработка — в списке виден статус «В обработке», страница обновляется сама.</div>
+      </div>
+      <a class="change-link" href="meeting-protocols.html">Раздел →</a>
+    </div>
+  </div>
+
+  <!-- Задачи -->
+  <div class="change-group">
+    <div class="change-group-header">
+      <div class="change-group-icon change-group-icon--blue">📋</div>
+      <div class="change-group-title">Задачи и планирование</div>
+    </div>
+
+    <div class="change-item change-item--tasks">
+      <div class="change-ver">v1.35</div>
+      <div class="change-body">
+        <div class="change-title">Регулярные задачи</div>
+        <div class="change-desc">В форме появился переключатель «Регулярная задача»: при включении выбираешь периодичность (ежедневно, еженедельно, ежемесячно) — система автоматически создаёт повторяющиеся задачи на горизонт 30 дней.</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+
+    <div class="change-item change-item--tasks">
+      <div class="change-ver">v1.35</div>
+      <div class="change-body">
+        <div class="change-title">Обновлённая форма постановки задачи</div>
+        <div class="change-desc">Тип задачи выбирается переключателем в верхней части формы: «Развитие» или «Организационные». Для организационных задач поля «Сотрудник» и «Показатель» скрываются автоматически. Завершить организационную задачу можно без заполнения результата.</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+
+    <div class="change-item change-item--tasks">
+      <div class="change-ver">v1.32</div>
+      <div class="change-body">
+        <div class="change-title">Личный отчёт для РОПа</div>
+        <div class="change-desc">У РОПа появилась кнопка «Мой отчёт за неделю» — только его часть отчёта: своя строка дисциплины, свой фокус по метрикам, своя оценка качества разбора. Данные других РОПов недоступны. У коммерческого директора и администраторов отчёт остался полным.</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+
+    <div class="change-item change-item--tasks">
+      <div class="change-ver">v1.31</div>
+      <div class="change-body">
+        <div class="change-title">Два типа задач: Развитие и Организационные</div>
+        <div class="change-desc">При постановке задачи выбирается категория. В отчёте за неделю организационные задачи вынесены в отдельный блок — фокус по метрикам и качество разбора считаются только по задачам «Развитие».</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+
+    <div class="change-item change-item--tasks">
+      <div class="change-ver">v1.27</div>
+      <div class="change-body">
+        <div class="change-title">День формирования отчёта за неделю</div>
+        <div class="change-desc">Администратор может выбрать день недели, в который формируется автоматический отчёт. Если выбрать более поздний день (например, среду), у руководителей будет время дозаполнить результаты прошлой недели до «заморозки» отчёта.</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+
+    <div class="change-item change-item--tasks">
+      <div class="change-ver">v1.21</div>
+      <div class="change-body">
+        <div class="change-title">Кнопки закрытия: Завершить, Отложить, Отменить</div>
+        <div class="change-desc">Вместо одной кнопки — три с подсказками: «Завершить» закрывает как успешную, «Отложить» оставляет задачу в списке незакрытых с пометкой, «Отменить» закрывает как невыполненную. Отложенные задачи больше не пропадают из вида.</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+
+    <div class="change-item change-item--tasks">
+      <div class="change-ver">v1.18</div>
+      <div class="change-body">
+        <div class="change-title">РОП может быть исполнителем задачи</div>
+        <div class="change-desc">В поле «Сотрудник» теперь можно выбрать РОПа — в том числе себя. Удобно для задач на собственное развитие. Когда задачу создаёт РОП, исполнителем по умолчанию подставляется он сам.</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+  </div>
+
+  <!-- Метрики -->
+  <div class="change-group">
+    <div class="change-group-header">
+      <div class="change-group-icon change-group-icon--teal">📊</div>
+      <div class="change-group-title">Метрики и аналитика</div>
+    </div>
+
+    <div class="change-item change-item--metric">
+      <div class="change-ver">v1.39</div>
+      <div class="change-body">
+        <div class="change-title">Прочие продажи: МКЛ, ОКЛ, Солнцезащ. и другие <span class="new-badge">Новая группа</span></div>
+        <div class="change-desc">В настройках метрик появилась группа «07 · Прочие продажи»: МКЛ, ОКЛ, Солнцезащитные очки, Ремонт, Аксессуары, Медицинские услуги, Прочее. По каждому типу — кол-во, сумма и средний чек. Все показатели доступны в Динамике продаж.</div>
+      </div>
+      <a class="change-link" href="sales-dynamics.html">Динамика →</a>
+    </div>
+
+    <div class="change-item change-item--metric">
+      <div class="change-ver">v1.37</div>
+      <div class="change-body">
+        <div class="change-title">Новый показатель: % трафик → подбор</div>
+        <div class="change-desc">Добавился показатель «% трафик → подбор» — доля посетителей, дошедших до подбора. Доступен в Динамике продаж и в блоке «Поток посетителей» карточки филиала. У Трафика и «% трафик → заказ» появились план и % выполнения.</div>
+      </div>
+      <a class="change-link" href="main.html">Главная →</a>
+    </div>
+
+    <div class="change-item change-item--metric">
+      <div class="change-ver">v1.22</div>
+      <div class="change-body">
+        <div class="change-title">Трафик и конверсия трафик → заказ</div>
+        <div class="change-desc">Появились два новых показателя: «Трафик» — количество посетителей салона за период, и «% трафик → заказ» — доля посетителей, совершивших заказ. Доступны на главном дашборде и в Динамике продаж. Данные загружаются автоматически из iTigris.</div>
+      </div>
+      <a class="change-link" href="main.html">Главная →</a>
+    </div>
+
+    <div class="change-item change-item--metric">
+      <div class="change-ver">v1.11</div>
+      <div class="change-body">
+        <div class="change-title">Итого сумма линз и сумма оправ в Динамике продаж</div>
+        <div class="change-desc">В фильтре «Показатель» добавлены «Итого сумма линз» и «Итого сумма оправ» — суммарная стоимость по этим позициям за выбранный период. Динамику можно смотреть по неделям и сравнивать филиалы.</div>
+      </div>
+      <a class="change-link" href="sales-dynamics.html">Динамика →</a>
+    </div>
+  </div>
+
+  <!-- Планёрка -->
+  <div class="change-group">
+    <div class="change-group-header">
+      <div class="change-group-icon change-group-icon--green">📑</div>
+      <div class="change-group-title">Планёрка КД и отчёты</div>
+    </div>
+
+    <div class="change-item change-item--report">
+      <div class="change-ver">v1.23</div>
+      <div class="change-body">
+        <div class="change-title">Отчёт за неделю на странице задач</div>
+        <div class="change-desc">Появилась кнопка «Отчёт за неделю» (для коммерческого директора и администраторов) — открывает аналитический отчёт о работе РОПов: дисциплина, фокус по метрикам, качество разбора, системные паттерны, риски. Можно распечатать.</div>
+      </div>
+      <a class="change-link" href="tasks.html">Задачи →</a>
+    </div>
+
+    <div class="change-item change-item--report">
+      <div class="change-ver">v1.12</div>
+      <div class="change-body">
+        <div class="change-title">Спарклайны динамики в результатах задач</div>
+        <div class="change-desc">У каждой задачи прошлой недели появился мини-график метрики за 4–5 недель — сразу видно тренд, не переходя в другие разделы. При наведении — значение метрики за каждую неделю.</div>
+      </div>
+      <a class="change-link" href="meeting-plan.html">Планёрка →</a>
+    </div>
+
+    <div class="change-item change-item--report">
+      <div class="change-ver">v1.12</div>
+      <div class="change-body">
+        <div class="change-title">Сводная строка по всем РОПам</div>
+        <div class="change-desc">Над карточками РОПов появилась общая сводка: задачи прошлой недели (выполнено / не выполнено / повлияли / без изменений) и план на текущую (задач в плане / без задачи). Даёт общую картину одним взглядом до погружения в детали.</div>
+      </div>
+      <a class="change-link" href="meeting-plan.html">Планёрка →</a>
+    </div>
+
+    <div class="change-item change-item--report">
+      <div class="change-ver">v1.12</div>
+      <div class="change-body">
+        <div class="change-title">Задачи прямо из планёрки</div>
+        <div class="change-desc">Ставить и редактировать задачи можно прямо со страницы планёрки: кнопка «＋ Задача» рядом с сотрудником создаёт задачу с уже заполненным планом работы, кнопка ✏️ — редактирует задачу на эту неделю. Список обновляется без перегенерации всей страницы.</div>
+      </div>
+      <a class="change-link" href="meeting-plan.html">Планёрка →</a>
+    </div>
+  </div>
+
+  <!-- Сотрудники -->
+  <div class="change-group">
+    <div class="change-group-header">
+      <div class="change-group-icon change-group-icon--yellow">👥</div>
+      <div class="change-group-title">Сотрудники и пользователи</div>
+    </div>
+
+    <div class="change-item change-item--people">
+      <div class="change-ver">v1.30</div>
+      <div class="change-body">
+        <div class="change-title">Управление справочником сотрудников <span class="new-badge">Новая вкладка</span></div>
+        <div class="change-desc">В разделе «Пользователи» появилась вкладка «Сотрудники» (для администраторов): таблица ФИО, роли и статуса. Можно добавить сотрудника вручную, отредактировать данные или деактивировать уволенного — история его заказов и приёмов при этом сохраняется.</div>
+      </div>
+    </div>
+
+    <div class="change-item change-item--people">
+      <div class="change-ver">v1.26</div>
+      <div class="change-body">
+        <div class="change-title">Конверсия рецепт → заказ теперь и у консультантов</div>
+        <div class="change-desc">В таблице консультантов появился столбец «% рецепт → заказ (наш)» — доля заказов по своим рецептам от рецептов, выписанных на приёмах с участием консультанта. Раньше этот столбец показывал 0, теперь заполняется по реальным данным.</div>
+      </div>
+      <a class="change-link" href="employees.html">Сотрудники →</a>
+    </div>
+
+    <div class="change-item change-item--people">
+      <div class="change-ver">v1.20</div>
+      <div class="change-body">
+        <div class="change-title">РОПы могут корректировать баллы речевой аналитики</div>
+        <div class="change-desc">В карточке врача РОП теперь может изменить балл блока чек-листа или навыка, указав причину. У консультанта баллы корректируются внутри конкретного взаимодействия. Все изменения видны в «Истории изменений».</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Аудиобейджи -->
+  <div class="change-group">
+    <div class="change-group-header">
+      <div class="change-group-icon change-group-icon--red">🎵</div>
+      <div class="change-group-title">Аудиобейджи</div>
+    </div>
+
+    <div class="change-item change-item--badge">
+      <div class="change-ver">v1.36</div>
+      <div class="change-body">
+        <div class="change-title">Исключение взаимодействия из расчёта метрик</div>
+        <div class="change-desc">У каждого взаимодействия консультанта появилась кнопка «Исключить из расчёта метрик» — открывает окно с полем причины. После исключения пересчитываются балл, число диалогов, соблюдение стандартов и навыки продаж. Исключённое взаимодействие остаётся в списке (помечается серым), его всегда можно вернуть обратно.</div>
+      </div>
+      <a class="change-link" href="badges.html">Бейджи →</a>
+    </div>
+
+    <div class="change-item change-item--badge">
+      <div class="change-ver">v1.28</div>
+      <div class="change-body">
+        <div class="change-title">Поддержка формата MP3</div>
+        <div class="change-desc">При загрузке записи с бейджа теперь можно выбрать файл в формате MP3 — не только WAV. Конвертировать MP3 в WAV перед загрузкой больше не нужно. Проверки длительности и имени файла работают для обоих форматов одинаково.</div>
+      </div>
+      <a class="change-link" href="badges.html">Бейджи →</a>
+    </div>
+  </div>
+
+  <!-- Склад -->
+  <div class="change-group">
+    <div class="change-group-icon change-group-icon--gray" style="display:none"></div>
+    <div class="change-group-header">
+      <div class="change-group-icon change-group-icon--gray">🗄️</div>
+      <div class="change-group-title">Складская аналитика</div>
+    </div>
+
+    <div class="change-item change-item--stock">
+      <div class="change-ver">v1.33</div>
+      <div class="change-body">
+        <div class="change-title">Выгрузка и печать выбранных перемещений</div>
+        <div class="change-desc">В журнале у каждой строки появилась галочка. Отметь нужные перемещения — выгрузка и печать будут только по ним. Если ничего не отмечено — работают по всему списку, как раньше.</div>
+      </div>
+      <a class="change-link" href="warehouse.html">Склад →</a>
+    </div>
+
+    <div class="change-item change-item--stock">
+      <div class="change-ver">v1.29</div>
+      <div class="change-body">
+        <div class="change-title">Вкладки «Активные» и «Завершённые» в журнале</div>
+        <div class="change-desc">Журнал перемещений разделён на две вкладки — активные перемещения (подтверждено, в пути) и завершённые (выполнено). Выполненные больше не смешиваются с текущими. Печать и выгрузка формируются по текущей вкладке.</div>
+      </div>
+      <a class="change-link" href="warehouse.html">Склад →</a>
+    </div>
+
+    <div class="change-item change-item--stock">
+      <div class="change-ver">v1.25</div>
+      <div class="change-body">
+        <div class="change-title">Динамические рекомендации по перемещениям</div>
+        <div class="change-desc">Рекомендации учитывают уже подтверждённые перемещения: отправленный сток больше не предлагается повторно. Если дефицит частично закрыт — рекомендация показывает только остаток. Счётчики пересчитываются сразу после подтверждения.</div>
+      </div>
+      <a class="change-link" href="warehouse.html">Склад →</a>
+    </div>
+
+    <div class="change-item change-item--stock">
+      <div class="change-ver">v1.24</div>
+      <div class="change-body">
+        <div class="change-title">Выгрузка в Excel, печать и комментарии к перемещениям</div>
+        <div class="change-desc">Журнал перемещений можно выгрузить в Excel и распечатать с учётом выбранных фильтров. К каждому перемещению можно добавить произвольный комментарий — отображается в распечатке и в выгрузке.</div>
+      </div>
+      <a class="change-link" href="warehouse.html">Склад →</a>
+    </div>
+
+    <div class="change-item change-item--stock">
+      <div class="change-ver">v1.19</div>
+      <div class="change-body">
+        <div class="change-title">Детализация состава перемещения</div>
+        <div class="change-desc">При создании перемещения теперь виден его состав: модель, материал, размер, количество в наличии. По каждой позиции можно задать, сколько единиц перемещать, — внизу показывается итог.</div>
+      </div>
+      <a class="change-link" href="warehouse.html">Склад →</a>
+    </div>
+
+    <div class="change-item change-item--stock">
+      <div class="change-ver">v1.14</div>
+      <div class="change-body">
+        <div class="change-title">Раздел «Складские остатки» <span class="new-badge">Новый раздел</span></div>
+        <div class="change-desc">Появился раздел «Складская аналитика»: KPI по сети, разбивка по филиалам и категориям, рекомендации по перемещениям и журнал ротаций. Сток обновляется из выгрузки раз в неделю.</div>
+      </div>
+      <a class="change-link" href="warehouse.html">Склад →</a>
+    </div>
+  </div>
+
+  <!-- Прочие улучшения -->
+  <div class="section-divider">
+    <span class="section-divider-label">Интерфейсные улучшения</span>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="change-group" style="margin-bottom:0">
+    <div class="change-item" style="border-left:3px solid var(--border)">
+      <div class="change-ver">v1.16</div>
+      <div class="change-body">
+        <div class="change-title">Главная: все филиалы всегда видны</div>
+        <div class="change-desc">Карточки филиалов отображаются даже в начале месяца, когда данных ещё нет — с нулевыми показателями. При входе автоматически выбирается последний месяц, по которому есть данные.</div>
+      </div>
+      <a class="change-link" href="main.html">Главная →</a>
+    </div>
+
+    <div class="change-item" style="border-left:3px solid var(--border)">
+      <div class="change-ver">v1.15</div>
+      <div class="change-body">
+        <div class="change-title">Окна врачей в планировании</div>
+        <div class="change-desc">В планировании появились «Окна врачей»: план и факт приёмов по каждому врачу за месяц с % загрузки. Поле «Количество окон» автоматически подставляет run-rate прогноз из расписания, история за 3 месяца доступна одним кликом.</div>
+      </div>
+    </div>
+
+    <div class="change-item" style="border-left:3px solid var(--border)">
+      <div class="change-ver">v1.10</div>
+      <div class="change-body">
+        <div class="change-title">Поиск в списках сотрудников</div>
+        <div class="change-desc">Во всех фильтрах и формах, где надо выбрать сотрудника, появилась строка поиска. Автоматически появляется, если в списке больше пяти позиций.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

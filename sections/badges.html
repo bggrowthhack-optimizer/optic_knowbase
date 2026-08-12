@@ -594,7 +594,7 @@
 
     <div class="section-label">Что проверяет система при загрузке</div>
     <div class="validation-list">
-      <div class="validation-item"><span class="v-icon">📁</span> Имя файла соответствует маске <code style="font-size:12px; background:var(--surface-2); padding:1px 5px; border-radius:3px">EM_STORE_YYYYMMDD-HHMMSS_номербейджа.wav</code></div>
+      <div class="validation-item"><span class="v-icon">📁</span> Имя файла соответствует маске <code style="font-size:12px; background:var(--surface-2); padding:1px 5px; border-radius:3px">EM_STORE_YYYYMMDD-HHMMSS_номербейджа.wav</code> или <code style="font-size:12px; background:var(--surface-2); padding:1px 5px; border-radius:3px">.mp3</code></div>
       <div class="validation-item"><span class="v-icon">🔍</span> Из имени файла извлекается номер бейджа и дата записи</div>
       <div class="validation-item"><span class="v-icon">📌</span> Найдена регистрация с совпадающим бейджем и датой</div>
       <div class="validation-item"><span class="v-icon">⏱</span> Длительность записи не менее 30 минут</div>
@@ -606,6 +606,10 @@
       Загрузка идёт в фоне — можно закрыть диалог и продолжать работу. Прогресс видно в сворачиваемом блоке
       «Очередь загрузки» на той же вкладке. После завершения появится кнопка «Синхронизировать с сервером»,
       которая подтвердит наличие файла.
+    </div>
+    <div class="callout callout--yellow" style="margin-top:8px">
+      <span class="callout-icon">🎵</span>
+      Поддерживаются форматы <strong>WAV</strong> и <strong>MP3</strong> — конвертировать MP3 в WAV перед загрузкой больше не нужно. Проверки длительности и имени файла работают для обоих форматов одинаково.
     </div>
   </div>
 
@@ -749,7 +753,7 @@
       <div class="bullet-item"><strong>Бейдж включили в середине смены</strong> — запись будет короткой, пропустит первые приёмы.</div>
       <div class="bullet-item"><strong>Дробление записи</strong> — несколько файлов за один день вместо одного. Система ожидает один непрерывный файл.</div>
       <div class="bullet-item"><strong>Бейдж лежал на столе</strong> — запись есть, но взаимодействий почти нет. Не загружать.</div>
-      <div class="bullet-item"><strong>Загрузили плохую запись</strong> — анализ будет некорректным. Если это случилось, добавь заметку с пояснением.</div>
+      <div class="bullet-item"><strong>Загрузили плохую запись</strong> — анализ будет некорректным. Если ошибка уже произошла: добавь заметку с пояснением, а отдельные некачественные взаимодействия можно исключить из расчёта метрик прямо из карточки консультанта (кнопка «Исключить из расчёта» у каждого взаимодействия — с указанием причины).</div>
     </div>
   </div>
 

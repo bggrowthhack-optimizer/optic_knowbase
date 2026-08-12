@@ -246,6 +246,43 @@
   .callout--yellow { background: var(--yellow-bg); border: 1px solid rgba(202,138,4,0.2);   color: #7a4f00; }
   .callout--green  { background: var(--green-bg);  border: 1px solid rgba(22,163,74,0.2);   color: #14532d; }
   .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Summary bar ── */
+  .summary-bar {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 12px; display: flex;
+  }
+  .summary-bar-group { flex: 1; }
+  .summary-bar-label {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text-muted);
+    padding: 7px 12px 3px;
+  }
+  .summary-bar-cells {
+    display: flex; border-top: 1px solid var(--border);
+  }
+  .summary-bar-cell {
+    flex: 1; text-align: center; padding: 8px 6px;
+    border-right: 1px solid var(--border);
+  }
+  .summary-bar-cell:last-child { border-right: none; }
+  .summary-bar-val { font-size: 17px; font-weight: 800; line-height: 1; }
+  .summary-bar-name { font-size: 9px; color: var(--text-muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .summary-bar-divider { width: 4px; background: var(--bg); border-left: 1px solid var(--border); border-right: 1px solid var(--border); flex-shrink: 0; }
+
+  /* ── Sparkline ── */
+  .sparkline {
+    display: flex; align-items: flex-end; gap: 3px;
+    height: 22px; flex-shrink: 0;
+  }
+  .spark-bar {
+    width: 7px; border-radius: 2px 2px 0 0;
+    background: var(--text-muted); opacity: 0.25;
+  }
+  .spark-bar--up   { background: var(--green); opacity: 0.75; }
+  .spark-bar--down { background: var(--red);   opacity: 0.75; }
+  .spark-bar--last-up   { background: var(--green); opacity: 1; }
+  .spark-bar--last-down { background: var(--red);   opacity: 1; }
 </style>
 </head>
 <body>
@@ -307,6 +344,64 @@
       <span class="callout-icon">⚠️</span>
       Генерация доступна только для прошедших недель — система должна иметь полные данные за период.
       Для текущей или будущей недели кнопка неактивна.
+    </div>
+  </div>
+
+  <!-- Сводная строка -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📈</div>
+      Сводная строка по всем РОПам
+    </div>
+    <p style="font-size:14px; color:var(--text-secondary); margin-bottom:14px; line-height:1.6">
+      Над карточками РОПов — агрегированная сводка по всей команде за выбранную неделю. Позволяет оценить общий ритм работы одним взглядом, до того как погружаться в детали каждого РОПа.
+    </p>
+
+    <div class="summary-bar">
+      <div class="summary-bar-group">
+        <div class="summary-bar-label">Прошлая неделя</div>
+        <div class="summary-bar-cells">
+          <div class="summary-bar-cell">
+            <div class="summary-bar-val" style="color:var(--text-primary)">17</div>
+            <div class="summary-bar-name">Всего задач</div>
+          </div>
+          <div class="summary-bar-cell">
+            <div class="summary-bar-val" style="color:var(--green)">11</div>
+            <div class="summary-bar-name">Выполнено</div>
+          </div>
+          <div class="summary-bar-cell">
+            <div class="summary-bar-val" style="color:var(--red)">6</div>
+            <div class="summary-bar-name">Не выполнено</div>
+          </div>
+          <div class="summary-bar-cell">
+            <div class="summary-bar-val" style="color:var(--green)">7 <span style="font-size:11px;font-weight:400;color:var(--text-muted)">/ 11</span></div>
+            <div class="summary-bar-name">↑ Повлияли</div>
+          </div>
+          <div class="summary-bar-cell">
+            <div class="summary-bar-val" style="color:var(--text-muted)">4 <span style="font-size:11px;font-weight:400">/ 11</span></div>
+            <div class="summary-bar-name">→ Без изм.</div>
+          </div>
+        </div>
+      </div>
+      <div class="summary-bar-divider"></div>
+      <div class="summary-bar-group" style="flex:0.5">
+        <div class="summary-bar-label">Эта неделя</div>
+        <div class="summary-bar-cells">
+          <div class="summary-bar-cell">
+            <div class="summary-bar-val" style="color:var(--text-primary)">14</div>
+            <div class="summary-bar-name">Задач в плане</div>
+          </div>
+          <div class="summary-bar-cell">
+            <div class="summary-bar-val" style="color:var(--red)">3</div>
+            <div class="summary-bar-name">Без задачи</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><span><strong>↑ Повлияли</strong> — из выполненных задач, у скольких показатель вырос</span></div>
+      <div class="bullet-item"><span><strong>Без задачи</strong> — сотрудников, на которых нет задачи в плане на текущую неделю. Если больше нуля — есть пробелы в управлении</span></div>
     </div>
   </div>
 
@@ -387,7 +482,14 @@
             <div class="task-result-row">
               <span class="task-metric">% рецепт → заказ</span>
               <span class="result-chip result-chip--up">↑ Растёт</span>
-              <span class="result-text">конверсия выросла с 68% до 76% за неделю</span>
+              <span class="result-text">конверсия выросла с 68% до 76%</span>
+              <div class="sparkline" style="margin-left:auto">
+                <div class="spark-bar spark-bar--up" style="height:35%"></div>
+                <div class="spark-bar spark-bar--up" style="height:45%"></div>
+                <div class="spark-bar spark-bar--up" style="height:50%"></div>
+                <div class="spark-bar spark-bar--up" style="height:65%"></div>
+                <div class="spark-bar spark-bar--last-up" style="height:85%"></div>
+              </div>
             </div>
           </div>
           <div class="task-result-item task-result-item--flat">
@@ -397,6 +499,13 @@
               <span class="task-metric">% рекомендаций ВТЛ</span>
               <span class="result-chip result-chip--flat">→ Без изменений</span>
               <span class="result-text">показатель стабилен, роста нет</span>
+              <div class="sparkline" style="margin-left:auto">
+                <div class="spark-bar" style="height:60%"></div>
+                <div class="spark-bar" style="height:55%"></div>
+                <div class="spark-bar" style="height:65%"></div>
+                <div class="spark-bar" style="height:58%"></div>
+                <div class="spark-bar" style="height:62%"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -485,7 +594,7 @@
         <strong>Анализ филиалов</strong> — по каждому салону: % выполнения плана, зона (зелёная / жёлтая / красная) и AI-объяснение — что именно происходит и почему.
       </div>
       <div class="bullet-item">
-        <strong>Результаты задач — прошлая неделя</strong> — что РОП делал с каждым сотрудником, и дало ли это результат. Четыре статуса: <strong style="color:var(--green)">↑ Растёт</strong>, <strong style="color:var(--red)">↓ Падает</strong>, <strong style="color:var(--text-muted)">→ Без изменений</strong>, <em style="color:var(--text-muted)">∅ Нет данных</em>.
+        <strong>Результаты задач — прошлая неделя</strong> — что РОП делал с каждым сотрудником, и дало ли это результат. Четыре статуса: <strong style="color:var(--green)">↑ Растёт</strong>, <strong style="color:var(--red)">↓ Падает</strong>, <strong style="color:var(--text-muted)">→ Без изменений</strong>, <em style="color:var(--text-muted)">∅ Нет данных</em>. Рядом с каждой задачей — <strong>спарклайн</strong>: мини-график динамики показателя за 5 последних недель с подсказкой при наведении.
       </div>
       <div class="bullet-item">
         <strong>Задачи на эту неделю</strong> — что уже стоит в календаре у РОПа. Для каждого сотрудника: задача, описание и время в расписании (например, «Пн 10:00»).

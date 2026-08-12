@@ -384,7 +384,7 @@
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
             <div style="display:flex;align-items:center;gap:8px;">
               <span style="font-weight:600;color:var(--text-primary)">01 · Воронка продаж</span>
-              <span style="font-size:11px;color:var(--text-muted)">(3 из 5)</span>
+              <span style="font-size:11px;color:var(--text-muted)">(3 из 6)</span>
             </div>
             <div style="display:flex;gap:6px;">
               <span style="font-size:11px;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;">Выбрать все</span>
@@ -397,6 +397,7 @@
             <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">Рецепты</span></label>
             <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" checked disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-primary)">Заказы (наши)</span></label>
             <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">Заказы (чужие)</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">Трафик</span></label>
           </div>
         </div>
 
@@ -404,7 +405,7 @@
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
             <div style="display:flex;align-items:center;gap:8px;">
               <span style="font-weight:600;color:var(--text-primary)">02 · Конверсии воронки</span>
-              <span style="font-size:11px;color:var(--text-muted)">(2 из 6)</span>
+              <span style="font-size:11px;color:var(--text-muted)">(2 из 8)</span>
             </div>
             <div style="display:flex;gap:6px;">
               <span style="font-size:11px;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;">Выбрать все</span>
@@ -418,6 +419,8 @@
             <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% подбор → заказ (наш)</span></label>
             <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% подбор → заказ (итого)</span></label>
             <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% чужих заказов</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% трафик → заказ</span></label>
+            <label style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--surface-2)"><input type="checkbox" disabled style="width:13px;height:13px;accent-color:#5b5ef4"> <span style="color:var(--text-muted)">% трафик → подбор</span></label>
           </div>
         </div>
 
@@ -435,7 +438,16 @@
       <div class="card-icon card-icon--blue">🏢</div>
       Блок результатов по филиалам
     </div>
-    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6">Список всех салонов с раскрывающимися карточками. Каждая карточка — зона, ср. чек, выручка и детальная таблица по пяти блокам (воронка, конверсии, ВТЛ, наши/чужие, итого). Подробно описан в статье <a href="branches.html" style="color:var(--accent);font-weight:600">Результаты по филиалам →</a></p>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">Список всех салонов с раскрывающимися карточками. Каждая карточка показывает зону, ср. чек, выручку и детальную таблицу по блокам: воронка, конверсии, ВТЛ, наши/чужие, итого — плюс отдельный блок <strong style="color:var(--text-primary)">«Поток посетителей»</strong>.</p>
+    <div class="bullet-list" style="margin-bottom:14px">
+      <div class="bullet-item"><span><strong>Поток посетителей</strong> — три метрики с планом и % выполнения: <strong>Трафик</strong>, <strong>% трафик → заказ</strong>, <strong>% трафик → подбор</strong></span></div>
+      <div class="bullet-item"><span><strong>Все филиалы всегда видны</strong> — даже без данных за текущий период. В начале месяца цифры нулевые — это норма, данные появятся после ночного обновления</span></div>
+    </div>
+    <div class="tip" style="margin-bottom:0">
+      <div class="tip-label">Начало месяца</div>
+      В первые дни месяца данных ещё нет — страница по умолчанию открывается на <strong>предыдущем месяце</strong>. Это сделано специально, чтобы не показывать нули в блоке прогресса.
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:14px">Подробно описан в статье <a href="branches.html" style="color:var(--accent);font-weight:600">Результаты по филиалам →</a></p>
   </div>
 
   <!-- Алгоритм -->
