@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Складская аналитика — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --amber: #d97706;
+    --amber-bg: #fef3c7;
+    --blue: #2563eb;
+    --blue-bg: #dbeafe;
+    --purple: #7c3aed;
+    --purple-bg: #ede9fe;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--amber  { background: var(--amber-bg); }
+
+  /* ── Callouts ── */
+  .tip {
+    background: var(--accent-light);
+    border: 1px solid rgba(91,94,244,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  .tip-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 5px;
+  }
+  .warn {
+    background: var(--amber-bg);
+    border: 1px solid rgba(217,119,6,0.25);
+    border-left: 3px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #78350f;
+    line-height: 1.6;
+  }
+  .warn-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 5px;
+  }
+
+  /* ── Bullet list ── */
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%; background: var(--accent);
+    flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Layout diagram ── */
+  .layout-diagram { display: flex; flex-direction: column; gap: 6px; }
+  .layout-row {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface-2);
+  }
+  .layout-row--accent { background: var(--accent-light); border-color: rgba(91,94,244,0.2); }
+  .layout-row--amber  { background: var(--amber-bg);    border-color: rgba(217,119,6,0.2); }
+  .layout-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .layout-num--amber { background: var(--amber); }
+  .layout-label { font-size: 13.5px; font-weight: 600; color: var(--text-primary); flex: 1; }
+  .layout-desc  { font-size: 12.5px; color: var(--text-muted); }
+
+  /* ── KPI demo ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr 1fr; } }
+  .kpi-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .kpi-label {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-size: 20px; font-weight: 600; line-height: 1;
+    color: var(--text-primary); margin-bottom: 4px;
+  }
+  .kpi-value--amber { color: var(--amber); }
+  .kpi-sub { font-size: 10px; color: var(--text-muted); }
+  .kpi-sub--red { color: var(--red); }
+
+  /* ── Status badges ── */
+  .badge {
+    display: inline-block;
+    font-size: 10.5px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; border: 1px solid;
+  }
+  .badge--deficit  { color: var(--red);    background: var(--red-bg);    border-color: rgba(220,38,38,0.3); }
+  .badge--norm     { color: var(--green);  background: var(--green-bg);  border-color: rgba(22,163,74,0.3); }
+  .badge--surplus  { color: var(--amber);  background: var(--amber-bg);  border-color: rgba(217,119,6,0.3); }
+  .badge--confirm  { color: var(--green);  background: var(--green-bg);  border-color: rgba(22,163,74,0.3); }
+  .badge--transit  { color: var(--blue);   background: var(--blue-bg);   border-color: rgba(37,99,235,0.3); }
+  .badge--done     { color: var(--text-muted); background: var(--surface-2); border-color: var(--border); }
+  .badge--simple   { color: var(--blue);   background: var(--blue-bg);   border-color: rgba(37,99,235,0.3); }
+  .badge--multi    { color: var(--purple); background: var(--purple-bg); border-color: rgba(124,58,237,0.3); }
+
+  /* ── Status legend ── */
+  .status-list { display: flex; flex-direction: column; gap: 8px; }
+  .status-item {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 12px; align-items: start;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .status-name { font-size: 13px; font-weight: 600; }
+  .status-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── Branch table demo ── */
+  .table-demo {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    margin-bottom: 12px;
+  }
+  .table-demo table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .table-demo th {
+    font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-muted);
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .table-demo td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    vertical-align: middle;
+  }
+  .table-demo tr:last-child td { border-bottom: none; }
+  .table-demo tr.expanded-row td { background: rgba(91,94,244,0.04); border-bottom: none; }
+  .td-muted { color: var(--text-muted) !important; }
+  .td-amber { color: var(--amber) !important; }
+  .td-green { color: var(--green) !important; }
+  .td-red   { color: var(--red)   !important; }
+  .td-mono  { font-family: ui-monospace, monospace; font-size: 11px; }
+  .chevron-btn {
+    width: 16px; height: 16px;
+    color: var(--text-muted);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+
+  /* ── Branch expand block ── */
+  .branch-expand {
+    background: rgba(91,94,244,0.03);
+    border: 1px solid rgba(91,94,244,0.12);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .expand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .expand-grid { grid-template-columns: 1fr; } }
+  .expand-section-label {
+    font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-muted); margin-bottom: 8px;
+  }
+
+  /* ── Recommendation item ── */
+  .rec-list { display: flex; flex-direction: column; gap: 8px; }
+  .rec-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    background: var(--surface);
+    font-size: 12px;
+  }
+  .rec-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 4px;
+  }
+  .rec-dot--red   { background: var(--red); }
+  .rec-dot--amber { background: var(--amber); }
+  .rec-body { flex: 1; line-height: 1.5; }
+  .rec-hint { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+  .rec-btn {
+    font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    flex-shrink: 0; align-self: center;
+    white-space: nowrap;
+  }
+
+  /* ── Transfer drawer demo ── */
+  .drawer-demo {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .drawer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .drawer-field {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    background: var(--surface);
+  }
+  .drawer-field-label {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-muted); margin-bottom: 3px;
+  }
+  .drawer-field-value { font-size: 13px; font-weight: 500; }
+  .drawer-field-sub   { font-size: 10.5px; margin-top: 2px; }
+  .total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--green-bg);
+    background: rgba(22,163,74,0.05);
+    font-size: 13px; margin-top: 10px;
+  }
+  .total-row-label { color: var(--text-muted); }
+  .total-row-value { font-weight: 700; color: var(--green); }
+
+  /* ── Journal filters demo ── */
+  .filter-bar {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .filter-chip {
+    font-size: 11px; color: var(--text-muted);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 3px 8px; background: var(--surface);
+  }
+  .filter-btn {
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 4px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-secondary);
+  }
+
+  /* ── Tabs demo ── */
+  .tabs-demo {
+    display: flex; gap: 2px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+    width: fit-content;
+    margin-bottom: 12px;
+  }
+  .tab {
+    font-size: 12.5px; font-weight: 500;
+    padding: 6px 14px; border-radius: 4px;
+    color: var(--text-muted); cursor: default;
+  }
+  .tab--active {
+    background: var(--surface);
+    color: var(--text-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+  .tab-count {
+    display: inline-block;
+    font-size: 9.5px;
+    background: rgba(0,0,0,0.07);
+    border-radius: 100px; padding: 0 5px;
+    margin-left: 4px; font-weight: 500;
+  }
+
+  /* ── Steps ── */
+  .steps-list { display: flex; flex-direction: column; gap: 10px; }
+  .step-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Form fields ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .form-field {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 11px 14px;
+  }
+  .form-label {
+    font-size: 11px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px;
+  }
+  .form-value { font-size: 13px; color: var(--text-primary); font-weight: 500; }
+  .form-hint  { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── Access note ── */
+  .access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 520px) { .access-grid { grid-template-columns: 1fr; } }
+  .access-card {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 14px;
+  }
+  .access-role { font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
+  .access-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">Раздел системы</div>
+    <h1>Складская аналитика</h1>
+    <p class="hero-desc">Контроль остатков оправ по филиалам сети: мин. сток, излишки, дефицит — и инструмент для быстрого оформления перемещений между точками.</p>
+  </div>
+
+  <!-- Что нужно для работы -->
+  <div class="warn">
+    <div class="warn-label">Что нужно для работы</div>
+    Данные подгружаются из двух источников: <strong>XML-выгрузка остатков</strong> (Реестры*.xml, загружается вручную) и <strong>Шаблон продаж</strong> (.xlsx — нормы по категориям для расчёта минимального стока). Пока шаблон не загружен, KPI и рекомендации не отображаются. Загрузить шаблон может <strong>Администратор</strong>.
+  </div>
+
+  <!-- Структура страницы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🗂</div>
+      Структура страницы
+    </div>
+    <div class="layout-diagram">
+      <div class="layout-row layout-row--amber">
+        <div class="layout-num layout-num--amber">!</div>
+        <div class="layout-label">Баннер шаблона продаж</div>
+        <div class="layout-desc">Статус загрузки + кнопка обновления (для Администратора)</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-num">1</div>
+        <div class="layout-label">KPI-карточки</div>
+        <div class="layout-desc">5 показателей: сток, сумма, излишек, мин. сток, места</div>
+      </div>
+      <div class="layout-row layout-row--accent">
+        <div class="layout-num">2</div>
+        <div class="layout-label">Обзор</div>
+        <div class="layout-desc">Таблица по точкам · Разбивка по категориям · Рекомендации</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-num">3</div>
+        <div class="layout-label">Журнал перемещений</div>
+        <div class="layout-desc">Активные / Завершённые · фильтры · Excel / печать</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI-карточки -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📊</div>
+      KPI-карточки
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Всего в стоке</div>
+        <div class="kpi-value">1 842</div>
+        <div class="kpi-sub">ед. на сегодня</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Итоговая сумма</div>
+        <div class="kpi-value" style="font-size:16px">4 290 000 ₽</div>
+        <div class="kpi-sub">суммарно по сети</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Избыток (выше мин.)</div>
+        <div class="kpi-value">312</div>
+        <div class="kpi-sub kpi-sub--red">▲ 16.9% от стока</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Минимальный сток</div>
+        <div class="kpi-value kpi-value--amber">940</div>
+        <div class="kpi-sub">ед. порог по сети</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Посадочных мест</div>
+        <div class="kpi-value">2 104</div>
+        <div class="kpi-sub">витринных позиций</div>
+      </div>
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Минимальный сток</strong> — расчётный порог: сколько единиц нужно иметь в запасе (выделен оранжевым).</div>
+      <div class="bullet-item"><strong>Избыток</strong> — сколько единиц превышают мин. сток по сети. Высокий % — сигнал к перераспределению.</div>
+      <div class="bullet-item"><strong>Посадочных мест</strong> — суммарная витринная ёмкость всех точек. Превышение факта над местами выделяется красным в таблице.</div>
+    </div>
+  </div>
+
+  <!-- Вкладка Обзор -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🏪</div>
+      Вкладка «Обзор»: таблица по точкам
+    </div>
+    <div class="table-demo">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:20px"></th>
+            <th>Точка</th>
+            <th>Ср. продажи / мес.</th>
+            <th>Мин. сток</th>
+            <th>Мест</th>
+            <th>Факт</th>
+            <th>Сумма, ₽</th>
+            <th>Дельта к мин.</th>
+            <th>Статус</th>
+            <th>Реком.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="expanded-row">
+            <td><span class="chevron-btn">▼</span></td>
+            <td><strong>Оптика Центральная</strong></td>
+            <td class="td-muted">28.4</td>
+            <td class="td-amber">85</td>
+            <td class="td-green">120</td>
+            <td>78</td>
+            <td class="td-muted">340 200</td>
+            <td class="td-red">−7 (8%)</td>
+            <td><span class="badge badge--deficit">нехватка</span></td>
+            <td class="td-amber" style="text-align:center;font-weight:600">2</td>
+          </tr>
+          <tr>
+            <td><span class="chevron-btn">▶</span></td>
+            <td><strong>Оптика Северная</strong></td>
+            <td class="td-muted">19.1</td>
+            <td class="td-amber">57</td>
+            <td class="td-green">80</td>
+            <td>64</td>
+            <td class="td-muted">228 100</td>
+            <td class="td-green">+7 (12%)</td>
+            <td><span class="badge badge--norm">норма</span></td>
+            <td class="td-muted" style="text-align:center">—</td>
+          </tr>
+          <tr>
+            <td><span class="chevron-btn">▶</span></td>
+            <td><strong>Оптика Западная</strong></td>
+            <td class="td-muted">24.7</td>
+            <td class="td-amber">74</td>
+            <td class="td-green">95</td>
+            <td>112</td>
+            <td class="td-muted">481 600</td>
+            <td class="td-amber">+38 (51%)</td>
+            <td><span class="badge badge--surplus">излишек</span></td>
+            <td class="td-amber" style="text-align:center;font-weight:600">3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Дельта к мин.</strong> — разница между фактом и мин. стоком. Отрицательная = нехватка (красный), положительная = запас (зелёный) или излишек (оранжевый).</div>
+      <div class="bullet-item"><strong>Реком.</strong> — количество рекомендаций по перемещениям для этой точки. Нажмите на строку, чтобы раскрыть детали и рекомендации.</div>
+    </div>
+  </div>
+
+  <!-- Раскрытая строка -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📂</div>
+      Раскрытая строка точки
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px">При нажатии на строку появляется два блока: разбивка по категориям и рекомендации по перемещениям.</p>
+
+    <div class="branch-expand">
+      <div class="expand-grid">
+        <!-- Категории -->
+        <div>
+          <div class="expand-section-label">Разбивка по категориям и гендеру</div>
+          <div class="table-demo" style="margin-bottom:0;background:var(--surface)">
+            <table>
+              <thead>
+                <tr>
+                  <th>Категория / Гендер</th>
+                  <th>Avg / мес.</th>
+                  <th>Мин. сток</th>
+                  <th>Факт</th>
+                  <th>Дельта</th>
+                  <th>Статус</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div style="font-weight:600;font-size:12px">Классика</div>
+                    <div class="td-muted" style="font-size:10px">Мужской</div>
+                  </td>
+                  <td class="td-muted">8.2</td>
+                  <td class="td-amber">25</td>
+                  <td>18</td>
+                  <td class="td-red">−7 (28%)</td>
+                  <td><span class="badge badge--deficit">нехватка</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="font-weight:600;font-size:12px">Авиатор</div>
+                    <div class="td-muted" style="font-size:10px">Женский</div>
+                  </td>
+                  <td class="td-muted">6.4</td>
+                  <td class="td-amber">19</td>
+                  <td>21</td>
+                  <td class="td-green">+2 (11%)</td>
+                  <td><span class="badge badge--norm">норма</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Рекомендации -->
+        <div>
+          <div class="expand-section-label">Рекомендации по перемещениям</div>
+          <div class="rec-list">
+            <div class="rec-item">
+              <div class="rec-dot rec-dot--red"></div>
+              <div class="rec-body">
+                Получить <strong>7 ед.</strong> по «Классика, Мужской»
+                <div class="rec-hint">Дефицит 7 ед. (с учётом уже отправленного)</div>
+              </div>
+              <div class="rec-btn">Подтвердить ↗</div>
+            </div>
+            <div class="rec-item">
+              <div class="rec-dot rec-dot--amber"></div>
+              <div class="rec-body">
+                Переместить <strong>12 ед.</strong> по «Ретро, Женский»
+                <div class="rec-hint">Доступно к перемещению 12 ед.</div>
+              </div>
+              <div class="rec-btn">Подтвердить ↗</div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Рекомендации учитывают уже подтверждённые перемещения — один и тот же сток не предлагается дважды.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Мастер перемещения -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🔄</div>
+      Мастер перемещения
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px">Открывается по кнопке «Подтвердить ↗» из рекомендаций. Выезжает боковая панель справа.</p>
+
+    <div class="drawer-demo">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:8px">Классика · Мужской</p>
+
+      <div class="drawer-grid">
+        <div class="drawer-field">
+          <div class="drawer-field-label">Откуда</div>
+          <div class="drawer-field-value">Оптика Западная</div>
+          <div class="drawer-field-sub td-amber">Излишек: 12 ед.</div>
+        </div>
+        <div class="drawer-field">
+          <div class="drawer-field-label">Куда</div>
+          <div class="drawer-field-value">Оптика Центральная</div>
+          <div class="drawer-field-sub td-red">Дефицит: 7 ед.</div>
+        </div>
+      </div>
+
+      <div class="expand-section-label" style="margin-bottom:8px">Состав перемещения</div>
+      <div class="table-demo" style="margin-bottom:0;background:var(--surface)">
+        <table>
+          <thead>
+            <tr>
+              <th>Бренд</th>
+              <th>Модель</th>
+              <th>Материал</th>
+              <th>Размер</th>
+              <th>В наличии</th>
+              <th style="text-align:right">Переместить</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600">Safilo</td>
+              <td class="td-muted">SA 7025</td>
+              <td class="td-muted">Ацетат</td>
+              <td class="td-muted">52□18</td>
+              <td>5</td>
+              <td style="text-align:right">
+                <span style="font-size:11px;color:var(--text-muted)">−</span>
+                <strong style="margin:0 6px">5</strong>
+                <span style="font-size:11px;color:var(--text-muted)">+</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Silhouette</td>
+              <td class="td-muted">SL 1853</td>
+              <td class="td-muted">Металл</td>
+              <td class="td-muted">54□16</td>
+              <td>4</td>
+              <td style="text-align:right">
+                <span style="font-size:11px;color:var(--text-muted)">−</span>
+                <strong style="margin:0 6px">2</strong>
+                <span style="font-size:11px;color:var(--text-muted)">+</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="total-row">
+        <span class="total-row-label">Итого к перемещению</span>
+        <span class="total-row-value">7 ед. · потребность закрыта ✓</span>
+      </div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Состав по позициям</strong> — система автоматически подставляет количество к перемещению под потребность (распределяет по позициям с наибольшим наличием). Количество можно поправить вручную кнопками − / +.</div>
+      <div class="bullet-item"><strong>Составное перемещение</strong> — если у одной точки дефицит, а нескольких точек есть излишек, система автоматически комбинирует доноров и показывает каждого отдельным блоком.</div>
+      <div class="bullet-item">После нажатия «Подтвердить перемещение» перемещение появляется в журнале со статусом <span class="badge badge--confirm">Подтверждено</span>.</div>
+    </div>
+  </div>
+
+  <!-- Типы и статусы -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🏷</div>
+      Типы и статусы перемещений
+    </div>
+
+    <p style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Типы</p>
+    <div class="status-list" style="margin-bottom:16px">
+      <div class="status-item">
+        <span class="badge badge--simple">Простое</span>
+        <div class="status-desc">Один донор → один получатель. Стандартный случай: перемещение из точки с излишком в точку с дефицитом.</div>
+      </div>
+      <div class="status-item">
+        <span class="badge badge--multi">Составное</span>
+        <div class="status-desc">Несколько доноров → один получатель. Возникает, когда потребность одной точки закрывается из нескольких источников сразу.</div>
+      </div>
+    </div>
+
+    <p style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Статусы</p>
+    <div class="status-list">
+      <div class="status-item">
+        <span class="badge badge--confirm">Подтверждено</span>
+        <div class="status-desc">Перемещение согласовано, товар ещё не отгружен. Статус присваивается сразу при создании.</div>
+      </div>
+      <div class="status-item">
+        <span class="badge badge--transit">В пути</span>
+        <div class="status-desc">Товар отгружен и едет в точку-получатель. Устанавливается вручную из раскрытой карточки в журнале.</div>
+      </div>
+      <div class="status-item">
+        <span class="badge badge--done">Выполнено</span>
+        <div class="status-desc">Товар доставлен и принят. Перемещение уходит на вкладку «Завершённые» и больше не участвует в расчёте доступного стока.</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:12px">Сменить статус можно в раскрытой строке журнала — кнопки «Подтверждено» / «В пути» / «Выполнено» доступны сразу.</p>
+  </div>
+
+  <!-- Журнал перемещений -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📋</div>
+      Журнал перемещений
+    </div>
+
+    <div class="tabs-demo">
+      <div class="tab tab--active">Активные <span class="tab-count">5</span></div>
+      <div class="tab">Завершённые <span class="tab-count">18</span></div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-chip">01.06.2026 — 23.07.2026</div>
+      <div class="filter-chip">Сбросить</div>
+      <div class="filter-chip">Все типы ▾</div>
+      <div style="flex:1"></div>
+      <div class="filter-btn">⬇ Выгрузить в Excel</div>
+      <div class="filter-btn">🖨 Напечатать</div>
+    </div>
+
+    <div class="table-demo">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:28px">☐</th>
+            <th>ID / Дата</th>
+            <th>Тип</th>
+            <th>Маршрут</th>
+            <th>Категория</th>
+            <th>Гендер</th>
+            <th>Кол-во</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>☐</td>
+            <td>
+              <div class="td-mono">TR-0042</div>
+              <div class="td-muted" style="font-size:10px">18.07.2026, 14:22</div>
+            </td>
+            <td><span class="badge badge--simple">Простое</span></td>
+            <td>
+              <div>Оптика Западная <span class="td-muted">→</span> <span class="td-green">Оптика Центральная</span></div>
+            </td>
+            <td class="td-muted">Классика</td>
+            <td class="td-muted">Мужской</td>
+            <td style="font-weight:600">7 ед.</td>
+            <td><span class="badge badge--confirm">Подтверждено</span></td>
+          </tr>
+          <tr>
+            <td>☐</td>
+            <td>
+              <div class="td-mono">TR-0041 💬</div>
+              <div class="td-muted" style="font-size:10px">15.07.2026, 09:05</div>
+            </td>
+            <td><span class="badge badge--multi">Составное</span></td>
+            <td>
+              <div>Сев., Зап. <span class="td-muted">→</span> <span class="td-green">Оптика Восточная</span></div>
+              <div class="td-muted" style="font-size:10px">Северная 4 ед. · Западная 3 ед.</div>
+            </td>
+            <td class="td-muted">Авиатор</td>
+            <td class="td-muted">Женский</td>
+            <td style="font-weight:600">7 ед.</td>
+            <td><span class="badge badge--transit">В пути</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Галочки</strong> — выделите нужные строки, и кнопки «Выгрузить в Excel» и «Напечатать» сработают только по ним. Без выделения — по всему списку.</div>
+      <div class="bullet-item"><strong>💬 значок</strong> рядом с ID — у перемещения есть комментарий. Раскройте строку, чтобы прочитать или изменить его.</div>
+      <div class="bullet-item"><strong>Маршрут составного перемещения</strong> — в строке под маршрутом видны все доноры с количеством от каждого.</div>
+      <div class="bullet-item"><strong>Снять выделение</strong> — кнопка появляется когда хотя бы одна строка отмечена, и сбрасывает все отметки одним нажатием.</div>
+    </div>
+  </div>
+
+  <!-- Раскрытая строка журнала -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">🔍</div>
+      Раскрытая строка журнала
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px">Нажмите на строку перемещения, чтобы увидеть детали, изменить статус или добавить комментарий.</p>
+
+    <div class="branch-expand">
+      <div class="form-grid" style="margin-bottom:12px">
+        <div class="form-field">
+          <div class="form-label">Куда</div>
+          <div class="form-value">Оптика Центральная</div>
+        </div>
+        <div class="form-field">
+          <div class="form-label">Категория</div>
+          <div class="form-value">Классика</div>
+        </div>
+        <div class="form-field">
+          <div class="form-label">Гендер</div>
+          <div class="form-value">Мужской</div>
+        </div>
+        <div class="form-field">
+          <div class="form-label">Всего</div>
+          <div class="form-value">7 ед.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);flex:1">Состав перемещения</span>
+        <span class="badge badge--confirm" style="cursor:default">Подтверждено</span>
+        <span class="badge badge--transit" style="opacity:0.5">В пути</span>
+        <span class="badge badge--done" style="opacity:0.5">Выполнено</span>
+        <span style="font-size:10px;padding:2px 7px;border:1px solid rgba(220,38,38,0.3);border-radius:4px;color:var(--red);background:var(--red-bg)">🗑</span>
+      </div>
+
+      <div class="table-demo" style="margin-bottom:10px;background:var(--surface)">
+        <table>
+          <thead>
+            <tr>
+              <th>Филиал</th>
+              <th>Бренд</th>
+              <th>Модель</th>
+              <th>Материал</th>
+              <th>Размер</th>
+              <th>Кол-во</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-muted">Оптика Западная</td>
+              <td style="font-weight:600">Safilo</td>
+              <td class="td-muted">SA 7025</td>
+              <td>Ацетат</td>
+              <td>52□18</td>
+              <td style="font-weight:600">5</td>
+            </tr>
+            <tr>
+              <td class="td-muted">Оптика Западная</td>
+              <td style="font-weight:600">Silhouette</td>
+              <td class="td-muted">SL 1853</td>
+              <td>Металл</td>
+              <td>54□16</td>
+              <td style="font-weight:600">2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:5px">Комментарий</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;font-size:12.5px;color:var(--text-muted);font-style:italic">Добавьте комментарий к перемещению…</div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item">Статус меняется кнопками прямо внутри раскрытой строки — не нужно переходить в другое место.</div>
+      <div class="bullet-item">Удаление (🗑) возвращает зарезервированный сток в доступный — рекомендации сразу пересчитываются.</div>
+      <div class="bullet-item"><strong>Комментарий</strong> сохраняется кнопкой «Сохранить», которая появляется при изменении текста. Он попадает в выгрузку Excel и в печатную форму.</div>
+    </div>
+  </div>
+
+  <!-- Excel и печать -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--green">📄</div>
+      Выгрузка Excel и печать
+    </div>
+
+    <div class="tip">
+      <div class="tip-label">Как работает выбор строк</div>
+      Если в списке отмечены галочкой отдельные перемещения — выгрузка и печать захватывают <strong>только их</strong>. Кнопки при этом показывают количество: «Выгрузить в Excel (3)». Если ничего не отмечено — выгружается весь список текущей вкладки с учётом фильтров по дате и типу.
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet-item"><strong>Excel-файл</strong> содержит сводную таблицу перемещений + полный состав по позициям (одна строка = одна позиция).</div>
+      <div class="bullet-item"><strong>Печатная форма</strong> содержит шапку с фильтрами и датой, сводку перемещений и детальный состав каждого. Комментарии выводятся под соответствующим перемещением.</div>
+      <div class="bullet-item">Выгрузка недоступна, если журнал пуст — кнопки неактивны.</div>
+    </div>
+  </div>
+
+  <!-- История остатков -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📈</div>
+      История остатков
+    </div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:12px">В нижней части вкладки «Обзор» — линейный график. Фильтры: <strong>Все склады / конкретный склад</strong> и <strong>Все категории / конкретная категория</strong>.</p>
+    <div class="bullet-list">
+      <div class="bullet-item">Точки на графике — по <strong>понедельникам</strong> (остаток на начало недели). Это делает динамику читаемой, а подписи дат не наслаиваются.</div>
+      <div class="bullet-item">Пунктирная линия — <strong>минимальный сток</strong> для выбранного среза. Если факт уходит ниже пунктира — пора смотреть рекомендации.</div>
+      <div class="bullet-item">Если в какую-то неделю выгрузки не было, линия продолжается с последним известным значением — разрывов нет.</div>
+    </div>
+  </div>
+
+  <!-- Доступ -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">🔐</div>
+      Кто видит и что может делать
+    </div>
+    <div class="access-grid">
+      <div class="access-card">
+        <div class="access-role">Коммерческий директор</div>
+        <div class="access-desc">Видит всю страницу: обзор, рекомендации, журнал. Может создавать перемещения и менять статусы.</div>
+      </div>
+      <div class="access-card">
+        <div class="access-role">Администратор</div>
+        <div class="access-desc">Все права КД плюс <strong>загрузка шаблона продаж</strong> (.xlsx) через баннер в верхней части страницы.</div>
+      </div>
+      <div class="access-card">
+        <div class="access-role">РОП</div>
+        <div class="access-desc">Просмотр, создание перемещений и смена статусов. Загрузка шаблона недоступна.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../_sidebar.js"></script>
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Протоколы встреч — Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-2: #f2f3f8;
+    --border: #e5e7ee;
+    --accent: #5b5ef4;
+    --accent-light: rgba(91,94,244,0.08);
+    --text-primary: #18192b;
+    --text-secondary: #6b6f8a;
+    --text-muted: #9ea3b8;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --yellow: #ca8a04;
+    --yellow-bg: #fef9c3;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --amber: #d97706;
+    --amber-bg: #fef3c7;
+    --blue: #2563eb;
+    --blue-bg: #dbeafe;
+    --purple: #7c3aed;
+    --purple-bg: #ede9fe;
+    --info: #0891b2;
+    --info-bg: #e0f2fe;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 32px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  /* ── Section heading ── */
+  .section-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-heading .ver-tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: var(--accent-light);
+    color: var(--accent);
+    margin-left: 4px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .card-icon--blue   { background: var(--accent-light); }
+  .card-icon--green  { background: var(--green-bg); }
+  .card-icon--yellow { background: var(--yellow-bg); }
+  .card-icon--info   { background: var(--info-bg); }
+
+  /* ── Callouts ── */
+  .tip {
+    background: var(--accent-light);
+    border: 1px solid rgba(91,94,244,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  .tip-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 5px;
+  }
+  .info-callout {
+    background: var(--info-bg);
+    border: 1px solid rgba(8,145,178,0.2);
+    border-left: 3px solid var(--info);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #164e63;
+    line-height: 1.6;
+  }
+  .info-callout-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--info); margin-bottom: 5px;
+  }
+
+  /* ── Bullet list ── */
+  .bullet-list { display: flex; flex-direction: column; gap: 8px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+  }
+  .bullet-item::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%; background: var(--accent);
+    flex-shrink: 0; margin-top: 7px;
+  }
+  .bullet-item strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── Layout diagram ── */
+  .layout-diagram { display: flex; flex-direction: column; gap: 6px; }
+  .layout-row {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface-2);
+  }
+  .layout-row--accent { background: var(--accent-light); border-color: rgba(91,94,244,0.2); }
+  .layout-row--sub { background: var(--surface); border-color: var(--border); padding: 8px 14px 8px 40px; }
+  .layout-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .layout-label { font-size: 13.5px; font-weight: 600; color: var(--text-primary); flex: 1; }
+  .layout-desc  { font-size: 12.5px; color: var(--text-muted); }
+  .layout-arrow { color: var(--text-muted); font-size: 13px; flex-shrink: 0; }
+
+  /* ── Status badges ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px; border: 1px solid;
+    white-space: nowrap;
+  }
+  .badge--processing { color: var(--info);   background: var(--info-bg);   border-color: rgba(8,145,178,0.3); }
+  .badge--ready      { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(202,138,4,0.3); }
+  .badge--confirmed  { color: var(--green);  background: var(--green-bg);  border-color: rgba(22,163,74,0.3); }
+  .badge--error      { color: var(--red);    background: var(--red-bg);    border-color: rgba(220,38,38,0.3); }
+  .badge--done-1on1  { color: var(--green);  background: var(--green-bg);  border-color: rgba(22,163,74,0.3); }
+  .badge--from-rec   { color: var(--info);   background: var(--info-bg);   border-color: rgba(8,145,178,0.3); font-weight: 400; font-size: 10px; }
+
+  /* ── Status list ── */
+  .status-list { display: flex; flex-direction: column; gap: 8px; }
+  .status-item {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 12px; align-items: start;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .status-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── Protocol list demo ── */
+  .proto-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .proto-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .proto-item-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+  .proto-item-sub { font-size: 11px; color: var(--text-muted); }
+  .proto-item-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .icon-trash { color: var(--text-muted); font-size: 13px; }
+
+  /* ── Upload dialog demo ── */
+  .dialog-demo {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .dialog-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px; font-weight: 600;
+  }
+  .dialog-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .form-field {}
+  .form-label {
+    font-size: 12px; font-weight: 500;
+    color: var(--text-primary); margin-bottom: 5px;
+    display: block;
+  }
+  .form-input {
+    width: 100%;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px; color: var(--text-secondary);
+    background: var(--surface);
+    font-family: inherit;
+  }
+  .dropzone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 24px 16px;
+    text-align: center;
+    background: var(--surface-2);
+  }
+  .dropzone-icon { font-size: 22px; margin-bottom: 6px; }
+  .dropzone-text { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+  .dropzone-formats { font-size: 11px; color: var(--text-muted); }
+  .dialog-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+  .btn {
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    font-size: 13px; font-weight: 500;
+    border: 1px solid transparent;
+    font-family: inherit;
+    cursor: default;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn--outline { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
+  .btn--primary { background: var(--accent); color: white; }
+
+  /* ── Protocol viewer demo ── */
+  .viewer-demo {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .viewer-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .viewer-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .viewer-body { padding: 16px 20px; }
+  .md-preview { font-size: 13px; color: var(--text-primary); line-height: 1.65; }
+  .md-preview h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin: 12px 0 5px; }
+  .md-preview p { margin-bottom: 8px; }
+  .md-preview ul { margin-left: 16px; margin-bottom: 8px; }
+  .md-preview li { margin-bottom: 3px; }
+  .viewer-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+
+  /* ── 1:1 filter bar ── */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .filter-input {
+    flex: 1; min-width: 200px;
+    padding: 7px 12px 7px 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px; color: var(--text-secondary);
+    background: var(--surface);
+    font-family: inherit;
+    position: relative;
+  }
+  .filter-input-wrap { position: relative; flex: 1; min-width: 200px; }
+  .filter-search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 13px;
+  }
+  .filter-date-wrap { display: flex; flex-direction: column; gap: 3px; }
+  .filter-date-label { font-size: 10px; color: var(--text-muted); }
+  .filter-date {
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px; color: var(--text-secondary);
+    background: var(--surface);
+    font-family: inherit;
+  }
+
+  /* ── 1:1 detail dialog ── */
+  .ai-comment {
+    background: var(--info-bg);
+    border: 1px solid rgba(8,145,178,0.2);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-top: 10px;
+  }
+  .ai-comment-header {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 10px;
+    font-size: 13px; font-weight: 600; color: #164e63;
+  }
+  .ai-comment-icon { font-size: 14px; }
+  .ai-block { margin-bottom: 8px; }
+  .ai-block-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--info); margin-bottom: 3px;
+  }
+  .ai-block-text { font-size: 13px; color: #164e63; line-height: 1.5; }
+
+  /* ── Transcript toggle ── */
+  .transcript-toggle {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 13px; color: var(--text-muted);
+    border: none; background: none; padding: 0;
+    cursor: default; font-family: inherit;
+  }
+
+  /* ── Roles table ── */
+  .roles-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .roles-table th {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .roles-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+  .roles-table tr:last-child td { border-bottom: none; }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* ── Checklist icon ── */
+  .check { color: var(--green); font-size: 13px; }
+  .dash  { color: var(--text-muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">Раздел с версии 1.34.0</div>
+    <h1>Протоколы встреч</h1>
+    <p class="hero-desc">
+      Загрузите аудиозапись планёрки — система расшифрует её и подготовит структурированный отчёт для собственника.
+      Со&nbsp;временем в разделе появился и архив разборов встреч 1:1 руководителей с&nbsp;сотрудниками.
+    </p>
+  </div>
+
+  <!-- Структура раздела -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📋</div>
+      Структура раздела
+    </div>
+    <div class="layout-diagram">
+      <div class="layout-row layout-row--accent">
+        <div class="layout-num">1</div>
+        <div class="layout-label">Планёрки</div>
+        <div class="layout-desc">Аудио → готовый протокол для собственника</div>
+      </div>
+      <div class="layout-row layout-row--sub">
+        <div class="layout-arrow">↳</div>
+        <div class="layout-label" style="font-weight:400;font-size:13px;">Загружаете запись → система расшифровывает и формирует отчёт</div>
+      </div>
+      <div class="layout-row layout-row--accent">
+        <div class="layout-num">2</div>
+        <div class="layout-label">Встречи 1:1 РОП</div>
+        <div class="layout-desc">Архив разборов встреч, добавлено в 1.38.0</div>
+      </div>
+      <div class="layout-row layout-row--sub">
+        <div class="layout-arrow">↳</div>
+        <div class="layout-label" style="font-weight:400;font-size:13px;">Запись грузится прямо в задаче «Развитие» → результат и комментарий помощника</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ════ РАЗДЕЛ 1: ПЛАНЁРКИ ════ -->
+  <div class="section-heading">
+    📢 Планёрки
+    <span class="ver-tag">с 1.34.0</span>
+  </div>
+
+  <!-- Как это работает -->
+  <div class="tip">
+    <div class="tip-label">Как это работает</div>
+    Нажмите кнопку <strong>«Загрузить запись»</strong> в правом верхнем углу страницы → заполните форму → система расшифрует аудио и сформирует структурированный протокол.
+    Пока идёт обработка, в списке виден статус <strong>«В обработке»</strong> — страница сама обновляется каждые 5 секунд, когда отчёт готов.
+  </div>
+
+  <!-- Upload dialog demo -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">⬆️</div>
+      Загрузка записи — форма
+    </div>
+    <div class="dialog-demo">
+      <div class="dialog-header">Загрузить запись встречи</div>
+      <div class="dialog-body">
+        <div class="form-field">
+          <label class="form-label">Название встречи</label>
+          <input class="form-input" type="text" value="Кристалл — планёрка" readonly>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Дата встречи</label>
+          <input class="form-input" type="text" value="12.08.2026" readonly>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Аудиозапись</label>
+          <div class="dropzone">
+            <div class="dropzone-icon">🎙️</div>
+            <div class="dropzone-text">Перетащите файл или нажмите</div>
+            <div class="dropzone-formats">mp3 · m4a · wav · ogg</div>
+          </div>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <div class="btn btn--outline">Отмена</div>
+        <div class="btn btn--primary">⬆️ Сформировать протокол</div>
+      </div>
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item">Поддерживаемые форматы: <strong>mp3, m4a, wav, ogg</strong></div>
+      <div class="bullet-item">Тип встречи фиксируется как «планёрка» автоматически</div>
+      <div class="bullet-item">После отправки можно закрыть страницу — обработка продолжится в фоне</div>
+    </div>
+  </div>
+
+  <!-- Protocol list demo -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">📋</div>
+      Список протоколов
+    </div>
+    <div class="proto-list">
+      <div class="proto-item">
+        <div>
+          <div class="proto-item-title">Кристалл — планёрка</div>
+          <div class="proto-item-sub">12.08.2026 · планёрка</div>
+        </div>
+        <div class="proto-item-right">
+          <span class="badge badge--confirmed">✓ Подтверждён</span>
+          <span class="icon-trash">🗑</span>
+        </div>
+      </div>
+      <div class="proto-item">
+        <div>
+          <div class="proto-item-title">Оптик Плюс — планёрка</div>
+          <div class="proto-item-sub">05.08.2026 · планёрка</div>
+        </div>
+        <div class="proto-item-right">
+          <span class="badge badge--ready">Готов к проверке</span>
+          <span class="icon-trash">🗑</span>
+        </div>
+      </div>
+      <div class="proto-item" style="opacity:0.7;">
+        <div>
+          <div class="proto-item-title">Призма — планёрка</div>
+          <div class="proto-item-sub">12.08.2026 · планёрка</div>
+        </div>
+        <div class="proto-item-right">
+          <span class="badge badge--processing">⟳ В обработке</span>
+          <span class="icon-trash">🗑</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Статусы -->
+    <div class="section-heading" style="font-size:13px;font-weight:700;border-bottom:none;padding-bottom:0;margin-bottom:10px;">Статусы протокола</div>
+    <div class="status-list">
+      <div class="status-item">
+        <span class="badge badge--processing">⟳ В обработке</span>
+        <div class="status-desc">Аудио загружено, система расшифровывает и формирует текст. Страница обновляется автоматически.</div>
+      </div>
+      <div class="status-item">
+        <span class="badge badge--ready">Готов к проверке</span>
+        <div class="status-desc">Протокол готов — откройте, просмотрите, при необходимости отредактируйте и нажмите «Подтверждено».</div>
+      </div>
+      <div class="status-item">
+        <span class="badge badge--confirmed">✓ Подтверждён</span>
+        <div class="status-desc">Протокол проверен и принят. Можно снять подтверждение, если нужно внести правки.</div>
+      </div>
+      <div class="status-item">
+        <span class="badge badge--error">Ошибка</span>
+        <div class="status-desc">Что-то пошло не так при обработке. Если запись была расшифрована, доступна кнопка «Повторить».</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Protocol viewer demo -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--yellow">📄</div>
+      Просмотр и подтверждение протокола
+    </div>
+    <div class="viewer-demo">
+      <div class="viewer-header">
+        <div class="viewer-title">Кристалл — планёрка</div>
+        <span class="badge badge--ready">Готов к проверке</span>
+      </div>
+      <div class="viewer-body">
+        <div class="md-preview">
+          <h3>О чём говорили</h3>
+          <p>Обсуждали динамику продаж за июль, разбирали показатели по трём консультантам. Отметили рост трафика в последние две недели.</p>
+          <h3>Новые задачи</h3>
+          <ul>
+            <li>Провести 1:1 с Ивановой Е. по показателю «% рецепт→заказ» до 18.08</li>
+            <li>Проверить выкладку у стенда с линзами до конца недели</li>
+          </ul>
+          <h3>Итог для собственника</h3>
+          <p>Команда работает стабильно, план по заказам выполнен на 94%. Требует внимания конверсия у двух новых сотрудников.</p>
+        </div>
+      </div>
+      <div class="viewer-footer">
+        <div class="btn btn--outline">✏️ Редактировать</div>
+        <div class="btn btn--primary">✓ Подтверждено</div>
+      </div>
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item">Протокол формируется в формате Markdown — отображается структурированным текстом</div>
+      <div class="bullet-item"><strong>«Редактировать»</strong> — открывает текстовое поле для правки; изменения сохраняются кнопкой «Сохранить»</div>
+      <div class="bullet-item"><strong>«Подтверждено»</strong> — фиксирует статус; после этого доступна кнопка «Снять подтверждение» для возврата к правкам</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ════ РАЗДЕЛ 2: ВСТРЕЧИ 1:1 ════ -->
+  <div class="section-heading">
+    🤝 Встречи 1:1 РОП
+    <span class="ver-tag">с 1.38.0</span>
+  </div>
+
+  <div class="info-callout">
+    <div class="info-callout-label">Откуда берутся данные</div>
+    Записи загружаются не здесь, а прямо в задаче типа <strong>«Развитие»</strong> — между блоком «План работы» и «Результатом».
+    Система расшифровывает аудио, подставляет черновик в поле «Результат» и формирует комментарий помощника.
+    После этого разбор автоматически появляется в архиве «Встречи 1:1 РОП».
+  </div>
+
+  <!-- Filters demo -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🔍</div>
+      Фильтры и список встреч
+    </div>
+    <div class="filter-bar">
+      <div class="filter-input-wrap">
+        <span class="filter-search-icon">🔍</span>
+        <input class="form-input" style="padding-left:30px;" type="text" placeholder="Поиск по РОПу, сотруднику, показателю" readonly>
+      </div>
+      <div class="filter-date-wrap">
+        <span class="filter-date-label">С даты</span>
+        <input class="filter-date" type="text" value="01.08.2026" readonly>
+      </div>
+      <div class="filter-date-wrap">
+        <span class="filter-date-label">По дату</span>
+        <input class="filter-date" type="text" value="12.08.2026" readonly>
+      </div>
+    </div>
+    <div class="proto-list">
+      <div class="proto-item">
+        <div>
+          <div class="proto-item-title">Иванова Елена</div>
+          <div class="proto-item-sub">11.08.2026 · РОП: Смирнов А. · % рецепт→заказ</div>
+        </div>
+        <div class="proto-item-right">
+          <span class="badge badge--done-1on1">✓ Готов</span>
+        </div>
+      </div>
+      <div class="proto-item">
+        <div>
+          <div class="proto-item-title">Петров Дмитрий</div>
+          <div class="proto-item-sub">08.08.2026 · РОП: Смирнов А. · Трафик</div>
+        </div>
+        <div class="proto-item-right">
+          <span class="badge badge--done-1on1">✓ Готов</span>
+        </div>
+      </div>
+      <div class="proto-item" style="opacity:0.7;">
+        <div>
+          <div class="proto-item-title">Кузнецова Мария</div>
+          <div class="proto-item-sub">12.08.2026 · РОП: Соколова О. · Средний чек</div>
+        </div>
+        <div class="proto-item-right">
+          <span class="badge badge--processing">⟳ В обработке</span>
+        </div>
+      </div>
+    </div>
+    <div class="bullet-list">
+      <div class="bullet-item">Поиск работает по имени сотрудника, имени РОПа и названию показателя одновременно</div>
+      <div class="bullet-item"><strong>РОП</strong> видит только свои встречи; <strong>коммерческий директор</strong> — все</div>
+      <div class="bullet-item">Строки в статусе «В обработке» нельзя открыть — данные появятся после готовности</div>
+    </div>
+  </div>
+
+  <!-- 1:1 detail dialog demo -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--info">✨</div>
+      Детальный просмотр встречи
+    </div>
+    <div class="viewer-demo">
+      <div class="viewer-header">
+        <div class="viewer-title">Встреча 1:1 · Иванова Елена</div>
+      </div>
+      <div class="viewer-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div style="font-size:12px;color:var(--text-muted);">
+          11.08.2026 · РОП: Смирнов А. · Показатель: % рецепт→заказ
+        </div>
+
+        <div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;">
+            План работы
+          </div>
+          <div style="font-size:13px;color:var(--text-primary);">
+            Разобрать причины низкой конверсии по рецептам. Отработать скрипт предложения очков по рецепту, обсудить с сотрудником — что мешает.
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+            Итоговый результат
+            <span class="badge badge--from-rec">из записи</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-primary);">
+            Обсудили три ситуации из недели. Сотрудник понял, где теряет клиента. Договорились попробовать новый скрипт на следующей неделе и разобрать на планёрке.
+          </div>
+        </div>
+
+        <div class="ai-comment">
+          <div class="ai-comment-header">
+            <span class="ai-comment-icon">✨</span>
+            Комментарий помощника
+          </div>
+          <div class="ai-block">
+            <div class="ai-block-label">Что получилось</div>
+            <div class="ai-block-text">РОП задавал открытые вопросы, дал сотруднику высказаться и самостоятельно прийти к выводам. Разбор был конкретным — без общих слов.</div>
+          </div>
+          <div class="ai-block">
+            <div class="ai-block-label">Что не сработало</div>
+            <div class="ai-block-text">Договорённость о следующем шаге прозвучала нечётко — нет конкретного срока для отработки скрипта.</div>
+          </div>
+          <div class="ai-block" style="margin-bottom:0;">
+            <div class="ai-block-label">Что попробовать в следующий раз</div>
+            <div class="ai-block-text">В конце встречи явно зафиксировать: что именно попробует сотрудник, в какой ситуации и когда разберёте результат.</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="transcript-toggle">📄 Показать расшифровку</div>
+        </div>
+      </div>
+      <div class="viewer-footer">
+        <div class="btn btn--outline">Закрыть</div>
+      </div>
+    </div>
+    <div class="bullet-list" style="margin-top:8px;">
+      <div class="bullet-item"><strong>«из записи»</strong> рядом с результатом означает, что текст сформирован AI из расшифровки — его можно редактировать в задаче перед сохранением</div>
+      <div class="bullet-item"><strong>Комментарий помощника</strong> виден только РОПу и коммерческому директору; в отчёты не попадает</div>
+      <div class="bullet-item"><strong>«Показать расшифровку»</strong> — полный текст разговора, если нужно сверить детали</div>
+    </div>
+  </div>
+
+  <!-- Из задачи в архив -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">🔗</div>
+      Как запись попадает в архив
+    </div>
+    <div class="layout-diagram">
+      <div class="layout-row">
+        <div class="layout-num">1</div>
+        <div class="layout-label">Задача «Развитие»</div>
+        <div class="layout-desc">РОП открывает задачу сотрудника</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-num">2</div>
+        <div class="layout-label">Загрузка записи</div>
+        <div class="layout-desc">Между «Планом работы» и «Результатом» — поле загрузки (mp3, m4a, wav, до 60 минут)</div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-num">3</div>
+        <div class="layout-label">Обработка</div>
+        <div class="layout-desc">Система расшифровывает аудио и формирует черновик результата</div>
+      </div>
+      <div class="layout-row layout-row--accent">
+        <div class="layout-num">4</div>
+        <div class="layout-label">Архив «Встречи 1:1 РОП»</div>
+        <div class="layout-desc">Разбор автоматически появляется в архиве с результатом и комментарием помощника</div>
+      </div>
+    </div>
+    <div class="tip" style="margin-top:12px;margin-bottom:0;">
+      <div class="tip-label">Важно знать</div>
+      Результаты, сформированные из записи, учитываются в недельном отчёте отдельно и <strong>не завышают оценку качества разбора</strong> РОПа.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Доступ по ролям -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-icon card-icon--blue">👤</div>
+      Доступ по ролям
+    </div>
+    <div class="table-demo" style="overflow-x:auto;">
+      <table class="roles-table">
+        <thead>
+          <tr>
+            <th>Роль</th>
+            <th>Планёрки</th>
+            <th>Встречи 1:1 РОП</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Собственник</strong></td>
+            <td><span class="check">✓</span> Все протоколы, все действия</td>
+            <td><span class="check">✓</span> Все встречи</td>
+          </tr>
+          <tr>
+            <td><strong>Коммерческий директор</strong></td>
+            <td><span class="check">✓</span> Все протоколы, все действия</td>
+            <td><span class="check">✓</span> Все встречи, с комментарием помощника</td>
+          </tr>
+          <tr>
+            <td><strong>РОП</strong></td>
+            <td><span class="dash">—</span> Нет доступа</td>
+            <td><span class="check">✓</span> Только свои встречи, с комментарием помощника</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
