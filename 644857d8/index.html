@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>План роста Семейной оптики</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --sans:'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace;
+  --ground:#E8EBEF; --bg:#F5F7F9; --card:#FFFFFF;
+  --ink:#0D121B; --muted:#646972; --soft:#F3F5F9;
+  --primary:#2B62EF; --border:#DBDEE5; --border-strong:#BFC4CD;
+  --good:#00A245; --good-t:#00892C; --good-bg:#E6F6EC;
+  --warn:#ED990E; --warn-t:#B16100; --warn-bg:#FDF5E7;
+  --bad:#DF202E;  --bad-t:#DF202E;  --bad-bg:#FCE9EA;
+  --info:#0095D3; --info-t:#007DBA; --info-bg:#E6F4FB;
+  --c1:#4076F5; --c3:#A46BF5;
+  --reserve:90px;
+}
+*{box-sizing:border-box}
+html,body{height:auto}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);margin:0;
+  line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+.stage{min-height:100svh;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;gap:14px;padding:16px}
+.stage>.viewport{margin-top:auto}
+.stage>:last-child{margin-bottom:auto}
+.viewport{position:relative;flex:none;aspect-ratio:16/9;
+  width:min(1280px, 94vw, calc((100svh - var(--reserve)) * 16 / 9))}
+.slide{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left;
+  transform:scale(var(--k,1));background:var(--bg);border:1px solid var(--border);
+  border-radius:16px;padding:48px;display:none;flex-direction:column;overflow:hidden;
+  font-size:16px;box-shadow:0 1px 3px rgb(0 0 0 / .08)}
+.slide.on{display:flex}
+.slide>*{min-height:0}
+h1,h2,h3{margin:0;text-wrap:balance}
+.eyebrow{font-size:.875em;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--primary)}
+h2{font-size:2.125em;font-weight:700;letter-spacing:-.025em;line-height:1.2}
+.dek{font-size:1.125em;color:var(--muted);margin-top:.4em;max-width:72ch}
+.head{border-bottom:1px solid var(--border);padding-bottom:.9em;margin-bottom:1em}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:.95em;min-height:0}
+.foot{margin-top:1em;font-size:.8125em;color:var(--muted);display:flex;justify-content:space-between;gap:2em}
+.num{position:absolute;top:48px;right:48px;font-size:.8125em;color:var(--border-strong);font-weight:600;font-variant-numeric:tabular-nums}
+.tnum{font-variant-numeric:tabular-nums}
+
+.nav{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--muted)}
+.nav button{width:34px;height:34px;border-radius:999px;border:1px solid var(--border-strong);
+  background:var(--card);color:var(--ink);font-size:15px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.nav button:hover{border-color:var(--primary);color:var(--primary)}
+.nav button:disabled{opacity:.35;cursor:default;border-color:var(--border)}
+.nav button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.dots{display:flex;gap:6px}
+.dots i{width:7px;height:7px;border-radius:999px;background:var(--border-strong);cursor:pointer;display:block}
+.dots i.on{background:var(--primary);width:20px}
+.counter{font-variant-numeric:tabular-nums;min-width:56px;text-align:center;font-weight:600;color:var(--ink)}
+.mobhint{display:none;font-size:12px;line-height:1.3;margin:0;color:var(--muted);text-align:center;max-width:32em}
+
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1em}
+.tile{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1em}
+.tile .k{font-size:.8125em;color:var(--muted);font-weight:500}
+.tile .v{font-size:2.25em;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.2}
+.tile .u{font-size:.8125em;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{font-size:.8125em;font-weight:600;color:var(--muted);text-align:right;padding:.45em .6em;border-bottom:1px solid var(--border-strong)}
+th:first-child{text-align:left}
+td{padding:.45em .6em;text-align:right;border-bottom:1px solid var(--border)}
+td:first-child{text-align:left;font-weight:500}
+tr:last-child td{border-bottom:none}
+tr.net td{border-top:2px solid var(--border-strong);font-weight:600;color:var(--muted)}
+tr.pick td{background:#EEF3FE}
+tr.pick td:first-child{font-weight:700}
+table.nw td:first-child,table.nw th:first-child{white-space:nowrap}
+.delta{font-weight:600}
+.up{color:var(--good-t)} .down{color:var(--bad-t)} .flat{color:var(--warn-t)}
+.callout{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--primary);
+  border-radius:10px;padding:.95em 1.15em;font-size:1.0625em}
+.callout b{font-weight:600}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:1.2em;align-items:stretch}
+.split-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1em;align-items:stretch}
+.split>*,.split-3>*{min-width:0}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1em 1.2em;display:flex;flex-direction:column}
+.panel h3{font-size:1.0625em;font-weight:600;margin-bottom:.45em}
+.panel p{margin:0;color:var(--muted);font-size:.9375em}
+ul{margin:.35em 0 0;padding-left:1.05em;color:var(--muted);font-size:.9375em}
+li{margin:.25em 0}
+.chip{display:inline-block;padding:.2em .6em;border-radius:999px;font-size:.8125em;font-weight:600}
+.chip.g{background:var(--good-bg);color:var(--good-t)}
+.chip.w{background:var(--warn-bg);color:var(--warn-t)}
+.chip.b{background:var(--bad-bg);color:var(--bad-t)}
+.mono{font-family:var(--mono);font-size:.8125em;color:var(--muted)}
+.barwrap{display:flex;align-items:center;gap:.55em;justify-content:flex-end}
+.barwrap .n{min-width:3.4em;text-align:right}
+.bar{height:7px;border-radius:999px;background:var(--soft);position:relative;flex:none;border:1px solid var(--border)}
+.bar i{position:absolute;top:0;bottom:0;left:0;border-radius:999px;display:block}
+.defn{display:inline-block;background:var(--soft);border:1px solid var(--border);border-radius:6px;
+  padding:.2em .6em;font-size:.8125em;color:var(--muted);font-weight:500}
+.defn b{color:var(--ink);font-weight:600}
+.cover{justify-content:center;background:var(--card)}
+.cover h1{font-size:3.75em;font-weight:700;letter-spacing:-.03em;line-height:1.14}
+.cover .sub{font-size:1.25em;color:var(--muted);margin-top:.6em}
+.cover .rule{width:64px;height:4px;background:var(--primary);border-radius:2px;margin:1.3em 0}
+.cover .meta{font-size:.9375em;color:var(--muted);margin-top:1.8em;display:flex;gap:1.4em;flex-wrap:wrap}
+.chartbox{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.8em;display:flex;flex-direction:column}
+.chartbox .ct{font-size:.9375em;font-weight:600}
+.chartbox .cs{font-size:.8125em;color:var(--muted);margin:.1em 0 .4em}
+svg{display:block;width:100%;height:auto}
+.strip3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1em}
+.strip3 div{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.6em .9em}
+.strip3 .k{font-size:.8125em;color:var(--muted);font-weight:500}
+.strip3 .v{font-size:1.375em;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.25}
+.strip3 .u{font-size:.8125em;color:var(--muted)}
+
+.model{display:grid;grid-template-columns:1fr 1.05fr;gap:1.2em;flex:1;min-height:0;align-content:start}
+.controls{display:flex;flex-direction:column;gap:.9em}
+.ctl label{display:flex;justify-content:space-between;align-items:baseline;gap:.6em;font-size:.9375em;font-weight:500;margin-bottom:.3em}
+.ctl label b{font-size:1.25em;font-weight:700;font-variant-numeric:tabular-nums;color:var(--primary)}
+.ctl label .note{font-weight:400;color:var(--muted);font-size:.8125em;margin-left:auto;margin-right:.6em}
+input[type=range]{width:100%;accent-color:var(--primary);margin:0;height:1.35em;display:block}
+input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+.ticks{position:relative;height:2.2em;font-size:.75em;color:var(--muted);margin-top:.1em}
+.ticks span{position:absolute;top:0;white-space:nowrap;transform:translateX(-50%)}
+.ticks span.s{transform:none;left:0}
+.ticks span.e{transform:translateX(-100%)}
+.ticks span::before{content:"";display:block;width:1px;height:5px;background:var(--border-strong);margin:0 auto 3px}
+.ticks span.s::before{margin-left:0}
+.ticks span.e::before{margin-right:0}
+.presets{display:flex;flex-wrap:wrap;gap:.45em}
+.branches{display:flex;flex-wrap:wrap;gap:.45em}
+.branches label{display:flex;align-items:center;gap:.4em;background:var(--card);border:1px solid var(--border);
+  border-radius:999px;padding:.32em .68em;font-size:.8125em;cursor:pointer;user-select:none;white-space:nowrap}
+.branches label:has(input:checked){border-color:var(--primary);background:#EEF3FE;color:var(--primary);font-weight:600}
+.branches input{accent-color:var(--primary);margin:0}
+.arith{font-family:var(--mono);font-size:.8125em;color:var(--muted);background:var(--soft);
+  border:1px solid var(--border);border-radius:8px;padding:.7em .9em;line-height:1.55}
+.arith b{color:var(--ink);font-weight:600}
+.preset{background:var(--soft);border:1px solid var(--border-strong);border-radius:999px;
+  padding:.32em .78em;font:inherit;font-size:.8125em;font-weight:500;color:var(--ink);cursor:pointer;white-space:nowrap}
+.preset:hover{border-color:var(--primary);color:var(--primary)}
+.preset:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.out{display:flex;flex-direction:column;gap:.75em;min-height:0}
+.bignum{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9em 1.1em}
+.bignum .k{font-size:.8125em;color:var(--muted);font-weight:500}
+.bignum .v{font-size:2.375em;font-weight:700;letter-spacing:-.025em;font-variant-numeric:tabular-nums;line-height:1.2}
+.bignum .u{font-size:.8125em;color:var(--muted)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:.75em}
+.pair .bignum .v{font-size:1.625em}
+
+.weeks{display:flex;flex-direction:column;gap:.45em;flex:1;min-height:0;justify-content:center}
+.week{display:grid;grid-template-columns:7.5em 1fr;gap:.9em;background:var(--card);
+  border:1px solid var(--border);border-radius:10px;padding:.58em .9em;align-items:start}
+.week .w{font-size:.8125em;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.04em;padding-top:.15em}
+.week .t{font-size:.875em;line-height:1.45}
+.week .t b{font-weight:600}
+.kpe{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--good);
+  border-radius:10px;padding:.7em 1em;font-size:.8125em;line-height:1.45}
+.kpe b{font-weight:600}
+
+@media (hover:none) and (pointer:coarse){
+  :root{--reserve:135px}
+  .stage{padding:14px 10px 22px;gap:12px}
+  .mobhint{display:block}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="viewport" id="vp">
+
+<!-- 0 -->
+<section class="slide cover on">
+  <div class="eyebrow">План роста продаж очков для зрения</div>
+  <h1>Семейная оптика</h1>
+  <div class="rule"></div>
+  <div class="sub">Какие три салона берём в работу, почему именно их<br>и сколько это добавит к выручке</div>
+  <div class="meta">
+    <span>Пять массовых салонов, Орёл</span><span>12 месяцев по 16.09.2026</span>
+    <span>7 991 заказ</span><span>Источник: выгрузка продаж ИТИГРИС</span>
+  </div>
+</section>
+
+<!-- 1 -->
+<section class="slide">
+  <div class="num">01</div>
+  <div class="head"><div class="eyebrow">Шаг 1 · периметр</div><h2>Что и за какой период сравниваем</h2></div>
+  <div class="body">
+    <div class="tiles">
+      <div class="tile"><div class="k">Салонов в расчёте</div><div class="v">5</div><div class="u">массовых, без BRAND и клиники</div></div>
+      <div class="tile"><div class="k">Заказов очков для зрения</div><div class="v">7 991</div><div class="u">линза или оправа в заказе</div></div>
+      <div class="tile"><div class="k">Выручка по ним</div><div class="v">62,5</div><div class="u">млн ₽ по фактическим ценам</div></div>
+      <div class="tile"><div class="k">Средний чек</div><div class="v">7 827</div><div class="u">₽ за заказ</div></div>
+    </div>
+    <div class="split">
+      <div class="callout">Сравниваем два <b>непересекающихся года</b>: 17.09.2024&nbsp;—&nbsp;16.09.2025 против 17.09.2025&nbsp;—&nbsp;16.09.2026. Календарные годы не берём: они перекрываются с последними двенадцатью месяцами и завышают динамику.</div>
+      <div class="panel"><h3>Что исключено и почему</h3>
+        <ul><li>BRAND и офтальмологическая клиника — другой формат и другой чек</li>
+        <li>Салон на Машкарина, 12 — закрыт 25.02.2024, в сравнении годов участвовать не может</li>
+        <li>Солнцезащитные очки, контактные линзы, аксессуары — не очки для зрения</li></ul></div>
+    </div>
+  </div>
+  <div class="foot"><span>Из сравнения исключён салон на Машкарина, 12 — закрыт 25.02.2024</span><span>Методика та же, что в аудите 2023–24</span></div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="num">02</div>
+  <div class="head"><div class="eyebrow">Шаг 2 · сравнение</div><h2>Пять филиалов за последние 12 месяцев</h2></div>
+  <div class="body">
+    <table>
+      <thead><tr><th>Филиал</th><th>Заказы</th><th>Выручка</th><th>Чек, ₽</th><th>Доля ВТЛ</th><th>Дорогих в ВТЛ</th><th>Выручка г/г</th></tr></thead>
+      <tbody>
+        <tr><td>Дубровинского</td><td class="tnum">2 018</td><td class="tnum">16,8 млн</td><td class="tnum">8 309</td><td class="tnum">14,5%</td><td class="tnum">11,3%</td><td class="tnum down">−2,6%</td></tr>
+        <tr><td>Горького</td><td class="tnum">2 046</td><td class="tnum">16,5 млн</td><td class="tnum">8 041</td><td class="tnum">14,9%</td><td class="tnum">24,9%</td><td class="tnum down">−2,5%</td></tr>
+        <tr><td>Гуртьева</td><td class="tnum">1 299</td><td class="tnum">11,3 млн</td><td class="tnum">8 701</td><td class="tnum">24,5%</td><td class="tnum">9,1%</td><td class="tnum up">+1,3%</td></tr>
+        <tr><td>Карачевское</td><td class="tnum">1 234</td><td class="tnum">9,3 млн</td><td class="tnum">7 563</td><td class="tnum">17,7%</td><td class="tnum">16,0%</td><td class="tnum down">−5,6%</td></tr>
+        <tr><td>Раздольная</td><td class="tnum">1 394</td><td class="tnum">8,7 млн</td><td class="tnum">6 238</td><td class="tnum">8,5%</td><td class="tnum">10,2%</td><td class="tnum down">−4,0%</td></tr>
+        <tr class="net"><td>Сеть</td><td class="tnum">7 991</td><td class="tnum">62,5 млн</td><td class="tnum">7 827</td><td class="tnum">15,7%</td><td class="tnum">14,8%</td><td class="tnum">−2,5%</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">Выручка снизилась у четырёх салонов из пяти. Средний чек при этом вырос везде, от 2,5% до 12%. Значит дело не в цене, и следующий шаг — понять, какой показатель создаёт разрыв.</div>
+    <div class="split" style="gap:1em">
+      <div class="panel" style="padding:.75em 1em;border-left:3px solid var(--c1)">
+        <div style="font-size:.9375em;line-height:1.45"><b style="font-weight:600">ВТЛ — высокотехнологичные линзы.</b> <span style="color:var(--muted)">Прогрессивные, офисные и бифокальные линзы, фотохром и покрытия BlueGuard. Всё, что дороже и сложнее обычной однофокальной линзы.</span></div>
+      </div>
+      <div class="panel" style="padding:.75em 1em;border-left:3px solid var(--c3)">
+        <div style="font-size:.9375em;line-height:1.45"><b style="font-weight:600">Дорогие линзы — бренд ODV внутри ВТЛ.</b> <span style="color:var(--muted)">Линейки Mono, Lux DRP, Standart SP, Premium DRP2, Camber, Bifocal DRS. Средняя цена 12 045 ₽ против 5 499 ₽ у покрытий.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Данные за 12 месяцев по 16.09.2026</span><span>Выручка по фактическим ценам, со скидкой</span></div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="num">03</div>
+  <div class="head"><div class="eyebrow">Шаг 3 · где источник отставания</div>
+    <h2>Шесть показателей из семи у салонов совпадают</h2></div>
+  <div class="body">
+    <div class="split" style="grid-template-columns:1.55fr 1fr">
+      <table class="nw">
+        <thead><tr><th style="white-space:nowrap">Показатель</th><th style="white-space:nowrap">Разброс</th><th style="text-align:left">Что это значит</th></tr></thead>
+        <tbody>
+          <tr><td>Динамика заказов</td><td class="tnum">−8,0% … −11,5%</td><td style="text-align:left;font-weight:400;color:var(--muted)">поток снизился у всех одинаково</td></tr>
+          <tr><td>Заказов на клиента</td><td class="tnum">1,14 … 1,20</td><td style="text-align:left;font-weight:400;color:var(--muted)">различий нет</td></tr>
+          <tr><td>Заказов на продавца</td><td class="tnum">617 … 697</td><td style="text-align:left;font-weight:400;color:var(--muted)">нагрузка ровная</td></tr>
+          <tr class="pick"><td>Доля ВТЛ</td><td class="tnum">8,5% … 24,5%</td><td style="text-align:left;font-weight:600">разница почти в три раза</td></tr>
+        </tbody>
+      </table>
+      <div style="display:flex;flex-direction:column;gap:.9em">
+        <div class="panel"><h3>Поток не объясняет разницу</h3><p>Заказы снизились во всех пяти салонах в пределах трёх пунктов друг от друга. Это общерыночное движение, и оно одинаково давит на всех.</p></div>
+        <div class="panel"><h3>Средний чек идёт следом за ВТЛ</h3><p>Самый низкий чек у Раздольной, 6 238 ₽ при доле ВТЛ 8,5%. Самый высокий у Гуртьевой, 8 701 ₽ при доле 24,5%.</p></div>
+        <div class="callout" style="border-left-color:var(--good)">Мы проверили семь показателей. Шесть у салонов близкие. Разрыв создаёт один — доля ВТЛ в заказах.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Данные за 12 месяцев по 16.09.2026</span><span><span class="defn">ВТЛ — прогрессивные, офисные, бифокальные линзы, фотохром и покрытия BlueGuard</span></span></div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="num">04</div>
+  <div class="head"><div class="eyebrow">Шаг 3 · почему именно доля ВТЛ</div>
+    <h2>Доля ВТЛ по сети выросла, доля дорогих линз внутри неё снизилась</h2></div>
+  <div class="body" style="gap:.6em">
+    <div class="split">
+      <div class="chartbox" style="padding:.65em">
+        <div class="ct">Доля заказов с ВТЛ, вся сеть</div>
+        <div class="cs">от всех заказов очков для зрения</div>
+        <svg viewBox="0 0 320 150" role="img" aria-label="Доля ВТЛ выросла с 11,1 до 15,7 процента">
+          <line x1="44" y1="12" x2="44" y2="116" stroke="#DBDEE5"/><line x1="44" y1="116" x2="310" y2="116" stroke="#DBDEE5"/>
+          <text x="39" y="16" font-size="8" fill="#646972" text-anchor="end" font-family="Inter">20%</text>
+          <text x="39" y="119" font-size="8" fill="#646972" text-anchor="end" font-family="Inter">0</text>
+          <rect x="96" y="58" width="62" height="58" fill="#4076F5" rx="2"/>
+          <text x="127" y="52" font-size="13" fill="#0D121B" text-anchor="middle" font-weight="700" font-family="Inter">11,1%</text>
+          <rect x="196" y="35" width="62" height="81" fill="#4076F5" rx="2"/>
+          <text x="227" y="29" font-size="13" fill="#0D121B" text-anchor="middle" font-weight="700" font-family="Inter">15,7%</text>
+          <text x="127" y="130" font-size="9" fill="#646972" text-anchor="middle" font-family="Inter">24/25</text>
+          <text x="227" y="130" font-size="9" fill="#646972" text-anchor="middle" font-family="Inter">25/26</text>
+          <text x="177" y="145" font-size="11" fill="#00892C" text-anchor="middle" font-weight="700" font-family="Inter">+4,6 пп</text>
+        </svg>
+      </div>
+      <div class="chartbox" style="padding:.65em">
+        <div class="ct">Доля дорогих линз внутри ВТЛ</div>
+        <div class="cs">сколько проданных ВТЛ оказались премиальными</div>
+        <svg viewBox="0 0 320 150" role="img" aria-label="Доля дорогих линз внутри ВТЛ снизилась с 20,1 до 14,8 процента">
+          <line x1="44" y1="12" x2="44" y2="116" stroke="#DBDEE5"/><line x1="44" y1="116" x2="310" y2="116" stroke="#DBDEE5"/>
+          <text x="39" y="16" font-size="8" fill="#646972" text-anchor="end" font-family="Inter">25%</text>
+          <text x="39" y="119" font-size="8" fill="#646972" text-anchor="end" font-family="Inter">0</text>
+          <rect x="96" y="33" width="62" height="83" fill="#A46BF5" rx="2"/>
+          <text x="127" y="27" font-size="13" fill="#0D121B" text-anchor="middle" font-weight="700" font-family="Inter">20,1%</text>
+          <rect x="196" y="55" width="62" height="61" fill="#A46BF5" rx="2"/>
+          <text x="227" y="49" font-size="13" fill="#0D121B" text-anchor="middle" font-weight="700" font-family="Inter">14,8%</text>
+          <text x="127" y="130" font-size="9" fill="#646972" text-anchor="middle" font-family="Inter">24/25</text>
+          <text x="227" y="130" font-size="9" fill="#646972" text-anchor="middle" font-family="Inter">25/26</text>
+          <text x="177" y="145" font-size="11" fill="#DF202E" text-anchor="middle" font-weight="700" font-family="Inter">−5,3 пп</text>
+        </svg>
+      </div>
+    </div>
+    <div class="split">
+      <div class="panel" style="padding:.85em 1.1em"><h3>Что выросло</h3><p>Покрытия Zeiss BlueGuard: 901 линза за прошлый год, 1 320 за этот, средняя цена снизилась с 6 206 до 5 499 ₽. Покрытие ставится на любой рецепт и не требует замеров.</p></div>
+      <div class="panel" style="padding:.85em 1.1em"><h3>Что снизилось</h3><p>Дорогие линзы ODV: 395 штук против 370, минус 6%. Им нужны межцентровое расстояние, высота установки и рабочие дистанции.</p><p style="margin-top:.5em;color:var(--ink)">Цена не изменилась, 12 045 ₽: спрос сохраняется, снизилось число предложений.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Количество линз, не заказов</span><span>Два непересекающихся 12-месячных периода</span></div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="num">05</div>
+  <div class="head"><div class="eyebrow">Шаг 4 · выбор филиалов</div>
+    <h2>Три филиала продают меньше ВТЛ, чем позволяет их покупатель</h2>
+    <div class="dek">Сравнили долю ВТЛ с тем, какую оправу в салоне покупают. На Дубровинского оправа 3 408 ₽, на Раздольной 2 179 ₽ — это разные покупатели, требовать от них одинаковой доли ВТЛ нельзя.</div></div>
+  <div class="body">
+    <table>
+      <thead><tr><th>Филиал</th><th>Средняя оправа</th><th>Доля ВТЛ</th><th>Ожидаемо при таком покупателе</th><th>Разрыв</th><th>Выручка на столе, в год</th></tr></thead>
+      <tbody>
+        <tr class="pick"><td>Дубровинского</td><td class="tnum">3 408 ₽</td><td class="tnum">14,5%</td><td class="tnum">18,7%</td><td class="tnum down"><b>−4,2 пп</b></td><td class="tnum"><b>3,36 млн</b></td></tr>
+        <tr class="pick"><td>Горького</td><td class="tnum">3 321 ₽</td><td class="tnum">14,9%</td><td class="tnum">18,2%</td><td class="tnum down"><b>−3,3 пп</b></td><td class="tnum"><b>2,77 млн</b></td></tr>
+        <tr class="pick"><td>Раздольная</td><td class="tnum">2 179 ₽</td><td class="tnum">8,5%</td><td class="tnum">10,9%</td><td class="tnum down"><b>−2,4 пп</b></td><td class="tnum"><b>3,37 млн</b></td></tr>
+        <tr><td>Карачевское</td><td class="tnum">2 860 ₽</td><td class="tnum">17,7%</td><td class="tnum">15,2%</td><td class="tnum up">+2,5 пп</td><td class="tnum">1,43 млн</td></tr>
+        <tr><td>Гуртьева</td><td class="tnum">3 156 ₽</td><td class="tnum">24,5%</td><td class="tnum">17,1%</td><td class="tnum up">+7,4 пп</td><td class="tnum">0,65 млн</td></tr>
+      </tbody>
+    </table>
+    <div class="split">
+      <div class="callout">В пилот берём <b>Дубровинского, Горького и Раздольную</b>. У Дубровинского и Горького покупатель берёт оправу за 3,3–3,4 тысячи, а линзу получает простую. У Раздольной причина проще: <b>самая низкая доля ВТЛ в сети, 8,5%</b>. Вместе три салона дают <b>9,50 млн выручки в год</b>.</div>
+      <div class="callout" style="border-left-color:var(--good)">Карачевское и Гуртьева продают больше ВТЛ, чем можно ожидать от их покупателя. Им нужен не пилот, а сохранение того, что уже работает.</div>
+    </div>
+  </div>
+  <div class="foot"><span>Тройка не меняется при любом способе постановки цели: единый потолок, норма 50% или поправка на покупателя</span><span>Посчитано при доведении до лучшего результата сети — 24,5% ВТЛ и 24,9% дорогих внутри</span></div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="num">06</div>
+  <div class="head"><div class="eyebrow">Шаг 5 · рычагом можно управлять</div>
+    <h2>Доля ВТЛ у продавцов различается втрое</h2>
+    <div class="dek">Восемь продавцов трёх филиалов пилота, у каждого от 500 заказов за год.</div></div>
+  <div class="body">
+    <table style="font-size:.9375em">
+      <thead><tr><th>Сотрудник</th><th style="text-align:left">Филиал</th><th>Заказов</th><th>Дорогих в ВТЛ</th><th>Доля ВТЛ</th></tr></thead>
+      <tbody>
+        <tr><td>Королева Е. Е.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Дубровинского</td><td class="tnum">755</td><td class="tnum">8,9%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:97%;background:#2B62EF"></i></div><span class="n" style="font-weight:700">19,3%</span></div></td></tr>
+        <tr><td>Тинякова О. В.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Горького</td><td class="tnum">731</td><td class="tnum">24,6%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:81%;background:#2B62EF"></i></div><span class="n" style="font-weight:700">16,1%</span></div></td></tr>
+        <tr><td>Якунина Л. И.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Дубровинского</td><td class="tnum">533</td><td class="tnum">12,9%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:80%;background:#4076F5"></i></div><span class="n" style="font-weight:700">15,9%</span></div></td></tr>
+        <tr><td>Васильева Е. Г.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Горького</td><td class="tnum">668</td><td class="tnum">28,6%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:74%;background:#4076F5"></i></div><span class="n" style="font-weight:700">14,7%</span></div></td></tr>
+        <tr><td>Корж Г. А.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Горького</td><td class="tnum">647</td><td class="tnum">21,3%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:70%;background:#4076F5"></i></div><span class="n" style="font-weight:700">13,8%</span></div></td></tr>
+        <tr><td>Алексеева Г. Ю.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Раздольная</td><td class="tnum">573</td><td class="tnum">7,5%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:59%;background:#A0BAF8"></i></div><span class="n" style="font-weight:700">11,7%</span></div></td></tr>
+        <tr><td>Симушкина О. В.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Дубровинского</td><td class="tnum">730</td><td class="tnum">14,8%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:42%;background:#A0BAF8"></i></div><span class="n" style="font-weight:700">8,4%</span></div></td></tr>
+        <tr><td>Лосева В. И.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Раздольная</td><td class="tnum">821</td><td class="tnum">13,7%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:31%;background:#A0BAF8"></i></div><span class="n" style="font-weight:700">6,2%</span></div></td></tr>
+      </tbody>
+    </table>
+    <div class="split" style="grid-template-columns:1.15fr .85fr">
+      <div class="callout">На Дубровинского два продавца из трёх работают с ВТЛ вдвое лучше третьего, при одинаковом покупателе и одном ассортименте. Разницу создаёт порядок работы, и его можно описать и передать.</div>
+      <div class="panel" style="border-left:3px solid var(--bad);padding:.9em 1.1em">
+        <div style="font-size:.9375em;line-height:1.45"><b style="font-weight:600">Одного показателя для управления не хватает.</b> <span style="color:var(--muted)">Доля своих рецептов не считается: в ИТИГРИСЕ нет связи заказа с рецептом. То же было отмечено в аудите 2023–24 и не изменилось. Включаем на первых неделях пилота.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Данные за 12 месяцев по 16.09.2026</span><span>Алексеева Г. Ю. работает в нескольких салонах, показаны заказы на Раздольной</span></div>
+</section>
+
+<!-- 10 · ФИНМОДЕЛЬ -->
+<section class="slide">
+  <div class="num">07</div>
+  <div class="head"><div class="eyebrow">Шаг 6 · финансовый эффект · двигайте ползунки</div><h2>Сколько стоит каждый пункт</h2></div>
+  <div class="model">
+    <div class="controls">
+      <div class="ctl">
+        <label for="sv">Доля ВТЛ в заказах <span class="note">сейчас по сети 15,7%</span> <b id="svv">24,5%</b></label>
+        <input type="range" id="sv" min="8" max="50" value="24.5" step="0.5">
+        <div class="ticks">
+          <span class="s" style="left:0">8%</span>
+          <span style="left:39%">Гуртьева 24,5%</span>
+          <span class="e" style="left:100%">норма 50%</span>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="sp">Доля дорогих линз внутри ВТЛ <span class="note">сейчас по сети 14,8%</span> <b id="spv">24,9%</b></label>
+        <input type="range" id="sp" min="5" max="40" value="24.9" step="0.1">
+        <div class="ticks">
+          <span class="s" style="left:0">5%</span>
+          <span style="left:57%">Горького 24,9%</span>
+          <span class="e" style="left:100%">40%</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.9375em;font-weight:500;margin-bottom:.45em">Сценарий и филиалы</div>
+        <div class="presets" style="margin-bottom:.45em">
+          <button type="button" class="preset" data-v="24.5" data-d="24.9">Лучшее в сети</button>
+          <button type="button" class="preset" data-v="19.5" data-d="17.5">Половина пути</button>
+          <button type="button" class="preset" data-v="50" data-d="24.9">Норма стандарта</button>
+        </div>
+        <div class="branches" id="br"></div>
+      </div>
+      <div class="arith" id="arith"></div>
+    </div>
+    <div class="out">
+      <div class="bignum" style="border-left:3px solid var(--primary)">
+        <div class="k">Прирост выручки, в год</div>
+        <div class="v" id="rev">—</div>
+        <div class="u" id="gpu">на выбранных салонах при достижении цели</div>
+      </div>
+      <div class="pair">
+        <div class="bignum"><div class="k">За пилот, 3 месяца</div><div class="v" id="pil">—</div><div class="u">выручки, с учётом разгона</div></div>
+        <div class="bignum"><div class="k">Заказов с ВТЛ дополнительно</div><div class="v" id="gp">—</div><div class="u">в год</div></div>
+      </div>
+      <div class="panel" style="padding:.75em .95em">
+        <div style="font-size:.875em;color:var(--muted);line-height:1.5">
+          <b style="color:var(--ink)">По умолчанию — «Лучшее в сети»:</b> каждый филиал дотягивается до результата, который уже есть у вас. Это не наш норматив, а ваши собственные цифры: 24,5% ВТЛ у Гуртьевой и 24,9% дорогих линз у Горького.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Средний чек: 5 822 ₽ без ВТЛ · 16 713 ₽ с ВТЛ · 29 631 ₽ с дорогой линзой</span><span>Дорогие линзы считаются долей внутри ВТЛ</span></div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <div class="num">09</div>
+  <div class="head"><div class="eyebrow">Шаг 7 · что получится за три месяца</div><h2>Прогноз роста выручки</h2></div>
+  <div class="body">
+    <div class="split" style="grid-template-columns:.85fr 1.15fr">
+      <div class="panel">
+        <h3>Что значат два прогноза</h3>
+        <p><b style="color:var(--ink);font-weight:600">Оптимистичный</b> — три салона догоняют лучший результат сети: долю ВТЛ 24,5%, как на Гуртьева, и долю дорогих линз 24,9%, как на Горького.</p>
+        <p style="margin-top:.6em"><b style="color:var(--ink);font-weight:600">Пессимистичный</b> — проходят половину этого пути.</p>
+        <p style="margin-top:auto;padding-top:.6em">Результат нарастает: в первый месяц треть, во второй две трети, в третий полностью. Люди не меняют привычку за неделю.</p>
+      </div>
+      <div class="panel" style="border-left:3px solid var(--primary)">
+        <h3>Сколько добавится к выручке</h3>
+        <table style="margin-top:.2em">
+          <thead><tr><th>Накопленным итогом</th><th>Месяц 1</th><th>Месяц 2</th><th>Месяц 3</th></tr></thead>
+          <tbody>
+            <tr><td><b>Оптимистичный прогноз</b></td><td class="tnum up"><b>264 тыс</b></td><td class="tnum up"><b>792 тыс</b></td><td class="tnum up"><b>1 584 тыс</b></td></tr>
+            <tr><td><b>Пессимистичный прогноз</b></td><td class="tnum">139 тыс</td><td class="tnum">418 тыс</td><td class="tnum">836 тыс</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:.8em">Это дополнительная выручка трёх салонов сверх сегодняшней — не вся выручка, а только прирост.</p>
+      </div>
+    </div>
+    <div class="strip3">
+      <div style="border-left:3px solid var(--good)"><div class="k">За три месяца пилота</div><div class="v">1,58 млн ₽</div><div class="u">дополнительной выручки. Пессимистично — 836 тыс</div></div>
+      <div><div class="k">Дальше, за следующий год</div><div class="v">9,50 млн ₽</div><div class="u">салоны продолжат так работать</div></div>
+      <div><div class="k">Куда можно прийти</div><div class="v">29,14 млн ₽</div><div class="u">если довести долю ВТЛ до 50%, как в сетях, работающих по стандартам</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Три салона: Дубровинского, Горького, Раздольная</span><span>Выручка по фактическим ценам, со скидкой</span></div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <div class="num">09</div>
+  <div class="head"><div class="eyebrow">Шаг 7 · пилот, месяц 1 из 3</div><h2>Настраиваем работу управляющей с Оптимайзером и получаем первый результат</h2></div>
+  <div class="weeks">
+    <div class="week"><div class="w">Неделя 1</div><div class="t"><b>Установочная встреча.</b> Собственник, управляющая, заведующие салонами и мы. Договариваемся, за какие три филиала беремся, кто что делает и как часто встречаемся.</div></div>
+    <div class="week"><div class="w">Недели 1–2</div><div class="t"><b>Настройка данных.</b> Включаем связь заказа с рецептом в ИТИГРИСЕ — этого нет с прошлого аудита. Плюс единый список ВТЛ у нас, у вас и у вашего специалиста.</div></div>
+    <div class="week"><div class="w">Неделя 2</div><div class="t"><b>Учимся ставить задачу так, чтобы её можно было проверить.</b> В задаче всегда шесть вещей: показатель, сотрудник, причина, действие, срок и способ проверки.</div></div>
+    <div class="week"><div class="w">Недели 2–3</div><div class="t"><b>Проходим первый круг целиком.</b> Посмотрели цифры, поставили задачу, поработали с продавцом, проверили результат. Планёрку ведёт управляющая, мы сидим рядом и молчим.</div></div>
+    <div class="week"><div class="w">Неделя 4</div><div class="t"><b>Тот же круг управляющая проходит без нас.</b> Мы смотрим результат уже после и говорим, что можно сделать лучше.</div></div>
+  </div>
+  <div class="kpe" style="margin-top:.6em"><b>Что должно получиться к концу месяца:</b> пройдено минимум два полных круга, один из них — без нас · задачи ставятся по реальным отклонениям, а не наугад · ни одна еженедельная встреча не потеряна.</div>
+  <div class="foot"><span>Фокус-трек: рекомендации ВТЛ</span><span>Полный план внедрения — 42 задачи, 6 блоков</span></div>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <div class="num">10</div>
+  <div class="head"><div class="eyebrow">Шаг 7 · пилот, месяц 2 из 3</div><h2>Управляющая работает с Оптимайзером сама, мы помогаем</h2></div>
+  <div class="weeks">
+    <div class="week"><div class="w">Недели 5–8</div><div class="t"><b>Цифры смотрит управляющая, не мы.</b> Раз в неделю 30–45 минут: она рассказывает, что увидела, мы задаём вопросы. Что делать дальше — решает она.</div></div>
+    <div class="week"><div class="w">Еженедельно</div><div class="t"><b>Ловим задачи, закрытые для галочки.</b> Если результата не видно, разбираем почему. Повторилось у одного человека две недели подряд — подключаемся плотнее.</div></div>
+    <div class="week"><div class="w">Еженедельно</div><div class="t"><b>Разбираем, где теряется дорогая линза.</b> Четыре случая: не предложили, предложили без объяснения, предложили и не продали, продали простую вместо дорогой.</div></div>
+    <div class="week"><div class="w">Неделя 6</div><div class="t"><b>Середина пилота: смотрим, сдвинулось ли.</b> Сдвинулось — подключаем больше сотрудников. Нет — разбираемся, дело в данных, в способе работы или в самом показателе.</div></div>
+    <div class="week"><div class="w">Недели 7–8</div><div class="t"><b>Расширяем круг.</b> Подключаем остальных продавцов этих филиалов или берём следующий показатель.</div></div>
+  </div>
+  <div class="kpe" style="margin-top:.6em"><b>Что должно получиться к концу месяца:</b> недельный круг идёт без наших напоминаний · все отстающие продавцы в работе · доля ВТЛ сдвинулась, либо понятно, почему не сдвинулась.</div>
+  <div class="foot"><span>Если две недели подряд срывается — подключается Руслан и разговор идёт с собственником</span><span>Полный план — 42 задачи</span></div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <div class="num">11</div>
+  <div class="head"><div class="eyebrow">Шаг 7 · пилот, месяц 3 из 3</div><h2>Управляющая работает самостоятельно</h2></div>
+  <div class="weeks">
+    <div class="week"><div class="w">Недели 9–10</div><div class="t"><b>Мы почти уходим.</b> Появляемся на планёрке не чаще раза в две недели и только слушаем.</div></div>
+    <div class="week"><div class="w">Неделя 11</div><div class="t"><b>На планёрке нас нет вообще.</b> Встречаемся с управляющей только до неё и смотрим, справляется ли она сама.</div></div>
+    <div class="week"><div class="w">Неделя 11</div><div class="t"><b>Считаем результат.</b> Сравниваем с тем же периодом прошлого года, а не с прошлым кварталом: октябрь–декабрь всегда слабее лета на 16%, и квартал к кварталу показал бы минус даже при хорошей работе.</div></div>
+    <div class="week"><div class="w">Неделя 11</div><div class="t"><b>Проверяем по списку, что процесс держится.</b> Четыре недели подряд управляющая сама смотрела цифры, сама ставила задачи и сама меняла подход там, где не получалось.</div></div>
+    <div class="week"><div class="w">Неделя 12</div><div class="t"><b>Итоговая встреча.</b> Показываем, что выросло и что мешало. Вы даёте письменную оценку, и вместе решаем, как работаем дальше.</div></div>
+  </div>
+  <div class="kpe" style="margin-top:.6em"><b>Что должно получиться к концу месяца:</b> четыре недели подряд всё работает без нас · ни один отстающий продавец не забыт · результат посчитан · решено, как работаем дальше.</div>
+  <div class="foot"><span>Результат считаем только год к году</span><span>Если список не выполнен — продлеваем на месяц или меняем формат</span></div>
+</section>
+
+<!-- ИТОГ -->
+<section class="slide">
+  <div class="num">12</div>
+  <div class="head"><div class="eyebrow">Итог</div><h2>Что вы получаете за три месяца</h2></div>
+  <div class="body">
+    <div class="split">
+      <div class="panel">
+        <h3>Что изменится в продажах</h3>
+        <div style="font-size:2.5em;font-weight:700;letter-spacing:-.025em;line-height:1.2;font-variant-numeric:tabular-nums">+621 заказ</div>
+        <p style="margin-top:.4em">Столько заказов с ВТЛ три салона добавят за год. Из них 212 — с дорогой линзой.<br>Новых покупателей для этого не нужно: те же люди уходят с лучшими очками.</p>
+      </div>
+      <div class="panel" style="border-left:3px solid var(--good)">
+        <h3>Прогноз роста выручки</h3>
+        <div style="font-size:2.5em;font-weight:700;letter-spacing:-.025em;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--good-t)">1 584 000 ₽</div>
+        <p style="margin-top:.4em">Столько салоны добавят к выручке за три месяца пилота, если всё пойдёт хорошо. Если пойдёт плохо — 836 000 ₽.</p>
+        <p style="margin-top:auto;padding-top:.5em;color:var(--ink);font-weight:500">После пилота салоны продолжат так работать. За год это 9,50 млн ₽.</p>
+      </div>
+    </div>
+    <div class="split">
+      <div class="panel" style="border-left:3px solid var(--primary)">
+        <h3>Чем будете пользоваться</h3>
+        <p style="color:var(--ink)">Оптимайзер. В нём видно, сколько ВТЛ продал каждый салон и каждый продавец, и на каком шаге теряется дорогая линза.</p>
+        <p style="margin-top:.4em">Три бейджа, по одному на салон. Они записывают разговор с покупателем, и слышно, что продавец сказал про линзы, а что не сказал.</p>
+        <p style="margin-top:.4em">В ИТИГРИСЕ заработает связь заказа с рецептом — этого не было с прошлого аудита.</p>
+      </div>
+      <div class="panel" style="border-left:3px solid var(--primary)">
+        <h3>Как будет устроена работа</h3>
+        <p style="color:var(--ink)">Раз в неделю управляющая открывает Оптимайзер, смотрит, у кого просела доля ВТЛ, разбирается почему и даёт продавцу конкретное задание. Через неделю проверяет, что изменилось.</p>
+        <p style="margin-top:.4em">В третьем месяце она делает это четыре недели подряд без нас. Так мы убеждаемся, что работа не развалится, когда мы уйдём.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Все суммы — выручка по фактическим ценам</span><span>Три салона: Дубровинского, Горького, Раздольная</span></div>
+</section>
+
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="Предыдущий слайд">‹</button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">1 / 13</span>
+  <button id="next" aria-label="Следующий слайд">›</button>
+</div>
+<p class="mobhint">Разведите пальцами, чтобы увеличить таблицы</p>
+</div>
+
+<script>
+(function(){
+  var S=[].slice.call(document.querySelectorAll('.slide')), i=0;
+  var vp=document.getElementById('vp');
+  function fit(){ var w=vp.clientWidth; if(w) vp.style.setProperty('--k',(w/1280).toFixed(5)); }
+  if(window.ResizeObserver){ new ResizeObserver(fit).observe(vp); }
+  window.addEventListener('resize',fit);
+  document.fonts&&document.fonts.ready.then(fit);
+  fit();
+
+  var dots=document.getElementById('dots'), counter=document.getElementById('counter');
+  var prev=document.getElementById('prev'), next=document.getElementById('next');
+  S.forEach(function(_,k){
+    var d=document.createElement('i'); d.setAttribute('role','button');
+    d.setAttribute('aria-label','Слайд '+(k+1)); d.tabIndex=0;
+    d.addEventListener('click',function(){go(k)});
+    d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go(k)}});
+    dots.appendChild(d);
+  });
+  function go(k){
+    i=Math.max(0,Math.min(S.length-1,k));
+    S.forEach(function(s,n){s.classList.toggle('on',n===i)});
+    [].forEach.call(dots.children,function(d,n){d.classList.toggle('on',n===i)});
+    counter.textContent=(i+1)+' / '+S.length;
+    prev.disabled=i===0; next.disabled=i===S.length-1;
+    if(location.hash!=='#'+i) history.replaceState(null,'','#'+i);
+  }
+  prev.addEventListener('click',function(){go(i-1)});
+  next.addEventListener('click',function(){go(i+1)});
+  document.addEventListener('keydown',function(e){
+    if(e.target.type==='range'&&(e.key==='ArrowLeft'||e.key==='ArrowRight')) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')      {e.preventDefault();go(i+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp')                 {e.preventDefault();go(i-1)}
+    else if(e.key==='Home'){e.preventDefault();go(0)}
+    else if(e.key==='End'){e.preventDefault();go(S.length-1)}
+  });
+  var x0=null;
+  document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(x0===null) return; var dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>60) go(i+(dx<0?1:-1)); x0=null;
+  },{passive:true});
+  go(parseInt((location.hash||'#0').slice(1),10)||0);
+
+  // ---------- финмодель ----------
+  var B=[
+    {n:"Дубровинского", o:2018, v:14.5, d:11.3, on:true},
+    {n:"Горького",      o:2046, v:14.9, d:24.9, on:true},
+    {n:"Раздольная",    o:1394, v:8.5,  d:10.2, on:true},
+    {n:"Карачевское",   o:1234, v:17.7, d:16.0, on:false},
+    {n:"Гуртьева",      o:1299, v:24.5, d:9.1,  on:false}
+  ];
+  var GP0=3820, GP1=10783, GP2=16930;
+  var RV0=5822, RV1=16713, RV2=29631;
+  var sv=document.getElementById('sv'), sp=document.getElementById('sp');
+  var svv=document.getElementById('svv'), spv=document.getElementById('spv'), wrap=document.getElementById('br');
+  var fmt=new Intl.NumberFormat('ru-RU');
+  var f1=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
+  var f2=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
+  B.forEach(function(b){
+    var l=document.createElement('label');
+    l.innerHTML='<input type="checkbox" '+(b.on?'checked':'')+'> '+b.n;
+    l.querySelector('input').addEventListener('change',function(e){b.on=e.target.checked;calc()});
+    wrap.appendChild(l);
+  });
+  function calc(){
+    var tv=parseFloat(sv.value), td=parseFloat(sp.value);
+    svv.textContent=f1.format(tv)+'%'; spv.textContent=f1.format(td)+'%';
+    var gp=0, rev=0, nOrd=0, addC=0, addP=0;
+    B.forEach(function(b){
+      if(!b.on) return;
+      var nv=Math.max(b.v,tv), nd=Math.max(b.d,td);
+      var pOld=b.o*b.v/100*b.d/100,  pNew=b.o*nv/100*nd/100;
+      var cOld=b.o*b.v/100-pOld,     cNew=b.o*nv/100-pNew;
+      gp  += (cNew-cOld)*(GP1-GP0) + (pNew-pOld)*(GP2-GP0);
+      rev += (cNew-cOld)*(RV1-RV0) + (pNew-pOld)*(RV2-RV0);
+      nOrd+=b.o; addC+=cNew-cOld; addP+=pNew-pOld;
+    });
+    document.getElementById('rev').textContent = rev>0 ? f2.format(rev/1e6)+' млн ₽' : '—';
+    document.getElementById('pil').textContent = rev>0 ? fmt.format(Math.round(rev/6/1000))+' тыс' : '—';
+    document.getElementById('gp').textContent  = (addC+addP)>0 ? fmt.format(Math.round(addC+addP)) : '—';
+    document.getElementById('gpu').textContent = nOrd ? fmt.format(nOrd)+' заказов в год на выбранных салонах' : 'выберите салоны';
+    document.getElementById('arith').innerHTML =
+      '+<b>'+fmt.format(Math.round(addC))+'</b> заказов в обычный ВТЛ × <b>'+fmt.format(RV1-RV0)+' ₽</b><br>'+
+      '+<b>'+fmt.format(Math.round(addP))+'</b> заказов в дорогой ВТЛ × <b>'+fmt.format(RV2-RV0)+' ₽</b><br>'+
+      'за пилот — шестая часть года: разгон 1/3 → 2/3 → полный';
+  }
+  document.querySelectorAll('.preset').forEach(function(btn){
+    btn.addEventListener('click',function(){ sv.value=btn.dataset.v; sp.value=btn.dataset.d; calc(); });
+  });
+  sv.addEventListener('input',calc); sp.addEventListener('input',calc); calc();
+})();
+</script>
+
+</body>
+</html>
