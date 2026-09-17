@@ -60,7 +60,7 @@ h2{font-size:2.25em;font-weight:700;letter-spacing:-.025em;line-height:1.18}
 .dots i{width:7px;height:7px;border-radius:999px;background:var(--border-strong);cursor:pointer;display:block}
 .dots i.on{background:var(--primary);width:20px}
 .counter{font-variant-numeric:tabular-nums;min-width:52px;text-align:center;font-weight:600;color:var(--ink)}
-.hint{display:none;font-size:12px;line-height:1.4;color:var(--muted);text-align:center;max-width:32em}
+.mobhint{display:none;font-size:12px;line-height:1.4;color:var(--muted);text-align:center;max-width:32em}
 
 /* блоки */
 .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1em}
@@ -169,8 +169,12 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 @media (max-width:860px){
   html,body{height:auto}
   body{overflow:visible}
-  .stage{height:auto;min-height:100svh;padding:10px}
-  .hint{display:block}
+  /* justify-content:center при содержимом выше контейнера срезает верх:
+     переполнение уходит за начало прокрутки вместе с верхним отступом.
+     Поэтому прижимаем к началу, а центрируем уже запасом снизу. */
+  .stage{height:auto;min-height:100svh;justify-content:flex-start;
+    padding:14px 10px 24px;gap:12px}
+  .mobhint{display:block}
 }
 </style>
 </head>
@@ -551,7 +555,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
   <span class="counter" id="counter">1 / 13</span>
   <button id="next" aria-label="Следующий слайд">›</button>
 </div>
-<p class="hint">Слайд показан целиком. Разведите пальцами, чтобы увеличить и читать таблицы —<br>или поверните телефон горизонтально.</p>
+<p class="mobhint">Слайд показан целиком. Разведите пальцами, чтобы увеличить и читать таблицы —<br>или поверните телефон горизонтально.</p>
 </div>
 
 <script>
