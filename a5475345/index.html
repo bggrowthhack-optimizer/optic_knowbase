@@ -129,6 +129,14 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 .ticks span.s::before{margin-left:0}
 .ticks span.e::before{margin-right:0}
 .presets{display:flex;flex-wrap:wrap;gap:.45em}
+.branches{display:flex;flex-wrap:wrap;gap:.45em}
+.branches label{display:flex;align-items:center;gap:.4em;background:var(--card);border:1px solid var(--border);
+  border-radius:999px;padding:.32em .68em;font-size:.8125em;cursor:pointer;user-select:none;white-space:nowrap}
+.branches label:has(input:checked){border-color:var(--primary);background:#EEF3FE;color:var(--primary);font-weight:600}
+.branches input{accent-color:var(--primary);margin:0}
+.arith{font-family:var(--mono);font-size:.8125em;color:var(--muted);background:var(--soft);
+  border:1px solid var(--border);border-radius:8px;padding:.7em .9em;line-height:1.55}
+.arith b{color:var(--ink);font-weight:600}
 .preset{background:var(--soft);border:1px solid var(--border-strong);border-radius:999px;
   padding:.32em .78em;font:inherit;font-size:.8125em;font-weight:500;color:var(--ink);cursor:pointer;white-space:nowrap}
 .preset:hover{border-color:var(--primary);color:var(--primary)}
@@ -186,16 +194,11 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
       <div class="tile"><div class="k">Валовая прибыль</div><div class="v">40,4</div><div class="u">млн ₽, маржа 64,6%</div></div>
     </div>
     <div class="split">
-      <div class="panel">
-        <h3>Девять показателей по каждому филиалу</h3>
-        <p>Заказы, выручка, средний чек, валовая прибыль, маржа, комплектность заказа, доля ВТЛ, доля дорогих линз внутри ВТЛ, заказов на клиента. Плюс динамика год к году по каждому из них.</p>
-        <p style="margin-top:.6em">Сравниваем два непересекающихся года: 17.09.2024&nbsp;—&nbsp;16.09.2025 против 17.09.2025&nbsp;—&nbsp;16.09.2026. Календарные годы не берём, они перекрываются с последними двенадцатью месяцами.</p>
-      </div>
-      <div class="panel" style="border-left:3px solid var(--bad)">
-        <h3>Трёх показателей в данных нет</h3>
-        <p>Количество подборов, конверсия подбор&nbsp;→&nbsp;рецепт и конверсия рецепт&nbsp;→&nbsp;заказ не считаются: поля офтальмолога и даты рецепта пустые во всех 115 341 строке выгрузки, а услуги подбора в номенклатуре нет ни одной из 47.</p>
-        <p style="margin-top:auto;padding-top:.6em;color:var(--ink);font-weight:500">Это отдельный результат аудита. Вернёмся к нему на слайде 9.</p>
-      </div>
+      <div class="callout">Сравниваем два <b>непересекающихся года</b>: 17.09.2024&nbsp;—&nbsp;16.09.2025 против 17.09.2025&nbsp;—&nbsp;16.09.2026. Календарные годы не берём: они перекрываются с последними двенадцатью месяцами и завышают динамику.</div>
+      <div class="panel"><h3>Что исключено и почему</h3>
+        <ul><li>BRAND и офтальмологическая клиника — другой формат и другой чек</li>
+        <li>Салон на Машкарина, 12 — закрыт 25.02.2024, в сравнении годов участвовать не может</li>
+        <li>Солнцезащитные очки, контактные линзы, аксессуары — не очки для зрения</li></ul></div>
     </div>
   </div>
   <div class="foot"><span>Из сравнения исключён салон на Машкарина, 12 — закрыт 25.02.2024</span><span>Методика та же, что в аудите 2023–24</span></div>
@@ -207,26 +210,26 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
   <div class="head"><div class="eyebrow">Шаг 2 · сравнение</div><h2>Пять филиалов за последние 12 месяцев</h2></div>
   <div class="body">
     <table>
-      <thead><tr><th>Филиал</th><th>Заказы</th><th>Выручка</th><th>Чек, ₽</th><th>Валовая</th><th>Маржа</th><th>Комплект</th><th>Доля ВТЛ</th><th>Дорогих в ВТЛ</th><th>Валовая г/г</th></tr></thead>
+      <thead><tr><th>Филиал</th><th>Заказы</th><th>Выручка</th><th>Чек, ₽</th><th>Валовая</th><th>Маржа</th><th>Доля ВТЛ</th><th>Дорогих в ВТЛ</th><th>Валовая г/г</th></tr></thead>
       <tbody>
-        <tr><td>Дубровинского</td><td class="tnum">2 018</td><td class="tnum">16,8 млн</td><td class="tnum">8 309</td><td class="tnum">11,23 млн</td><td class="tnum">67,0%</td><td class="tnum">83,7%</td><td class="tnum">14,5%</td><td class="tnum">11,3%</td><td class="tnum down">−3,6%</td></tr>
-        <tr><td>Горького</td><td class="tnum">2 046</td><td class="tnum">16,5 млн</td><td class="tnum">8 041</td><td class="tnum">10,36 млн</td><td class="tnum">63,0%</td><td class="tnum">83,8%</td><td class="tnum">14,9%</td><td class="tnum">24,9%</td><td class="tnum down">−5,1%</td></tr>
-        <tr><td>Гуртьева</td><td class="tnum">1 299</td><td class="tnum">11,3 млн</td><td class="tnum">8 701</td><td class="tnum">6,96 млн</td><td class="tnum">61,6%</td><td class="tnum">85,8%</td><td class="tnum">24,5%</td><td class="tnum">9,1%</td><td class="tnum flat">0,0%</td></tr>
-        <tr><td>Карачевское</td><td class="tnum">1 234</td><td class="tnum">9,3 млн</td><td class="tnum">7 563</td><td class="tnum">6,03 млн</td><td class="tnum">64,6%</td><td class="tnum">88,5%</td><td class="tnum">17,7%</td><td class="tnum">16,0%</td><td class="tnum down">−7,3%</td></tr>
-        <tr><td>Раздольная</td><td class="tnum">1 394</td><td class="tnum">8,7 млн</td><td class="tnum">6 238</td><td class="tnum">5,80 млн</td><td class="tnum">66,7%</td><td class="tnum">88,7%</td><td class="tnum">8,5%</td><td class="tnum">10,2%</td><td class="tnum down">−5,0%</td></tr>
-        <tr class="net"><td>Сеть</td><td class="tnum">7 991</td><td class="tnum">62,5 млн</td><td class="tnum">7 827</td><td class="tnum">40,38 млн</td><td class="tnum">64,6%</td><td class="tnum">85,7%</td><td class="tnum">15,7%</td><td class="tnum">14,8%</td><td class="tnum">−4,2%</td></tr>
+        <tr><td>Дубровинского</td><td class="tnum">2 018</td><td class="tnum">16,8 млн</td><td class="tnum">8 309</td><td class="tnum">11,23 млн</td><td class="tnum">67,0%</td><td class="tnum">14,5%</td><td class="tnum">11,3%</td><td class="tnum down">−3,6%</td></tr>
+        <tr><td>Горького</td><td class="tnum">2 046</td><td class="tnum">16,5 млн</td><td class="tnum">8 041</td><td class="tnum">10,36 млн</td><td class="tnum">63,0%</td><td class="tnum">14,9%</td><td class="tnum">24,9%</td><td class="tnum down">−5,1%</td></tr>
+        <tr><td>Гуртьева</td><td class="tnum">1 299</td><td class="tnum">11,3 млн</td><td class="tnum">8 701</td><td class="tnum">6,96 млн</td><td class="tnum">61,6%</td><td class="tnum">24,5%</td><td class="tnum">9,1%</td><td class="tnum flat">0,0%</td></tr>
+        <tr><td>Карачевское</td><td class="tnum">1 234</td><td class="tnum">9,3 млн</td><td class="tnum">7 563</td><td class="tnum">6,03 млн</td><td class="tnum">64,6%</td><td class="tnum">17,7%</td><td class="tnum">16,0%</td><td class="tnum down">−7,3%</td></tr>
+        <tr><td>Раздольная</td><td class="tnum">1 394</td><td class="tnum">8,7 млн</td><td class="tnum">6 238</td><td class="tnum">5,80 млн</td><td class="tnum">66,7%</td><td class="tnum">8,5%</td><td class="tnum">10,2%</td><td class="tnum down">−5,0%</td></tr>
+        <tr class="net"><td>Сеть</td><td class="tnum">7 991</td><td class="tnum">62,5 млн</td><td class="tnum">7 827</td><td class="tnum">40,38 млн</td><td class="tnum">64,6%</td><td class="tnum">15,7%</td><td class="tnum">14,8%</td><td class="tnum">−4,2%</td></tr>
       </tbody>
     </table>
     <div class="callout">Валовая прибыль снизилась у четырёх филиалов из пяти. Средний чек при этом вырос везде, от 2,5% до 12%. Значит потери идут не от цены, и следующий шаг — понять, какой показатель их создаёт.</div>
   </div>
-  <div class="foot"><span><span class="defn">Комплектность — доля заказов, где куплены и линза, и оправа</span></span><span><span class="defn">Дорогие линзы — бренд <b>ODV</b></span></span></div>
+  <div class="foot"><span>Данные за 12 месяцев по 16.09.2026</span><span><span class="defn">Дорогие линзы — бренд <b>ODV</b></span></span></div>
 </section>
 
 <!-- 3 -->
 <section class="slide">
   <div class="num">03</div>
   <div class="head"><div class="eyebrow">Шаг 3 · где источник отставания</div>
-    <h2>Восемь показателей из девяти у филиалов совпадают</h2></div>
+    <h2>Семь показателей из восьми у филиалов совпадают</h2></div>
   <div class="body">
     <div class="split" style="grid-template-columns:1.3fr 1fr">
       <table>
@@ -234,7 +237,6 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
         <tbody>
           <tr><td>Заказы, динамика г/г</td><td class="tnum">−8,0% … −11,5%</td><td style="text-align:left;font-weight:400;color:var(--muted)">поток снизился у всех одинаково</td></tr>
           <tr><td>Маржа</td><td class="tnum">61,6% … 67,0%</td><td style="text-align:left;font-weight:400;color:var(--muted)">разница 5 пунктов</td></tr>
-          <tr><td>Комплектность заказа</td><td class="tnum">83,7% … 88,7%</td><td style="text-align:left;font-weight:400;color:var(--muted)">разница 5 пунктов</td></tr>
           <tr><td>Заказов на клиента</td><td class="tnum">1,14 … 1,20</td><td style="text-align:left;font-weight:400;color:var(--muted)">различий нет</td></tr>
           <tr><td>Заказов на продавца</td><td class="tnum">617 … 697</td><td style="text-align:left;font-weight:400;color:var(--muted)">нагрузка ровная</td></tr>
           <tr class="pick"><td>Доля ВТЛ</td><td class="tnum">8,5% … 24,5%</td><td style="text-align:left;font-weight:600">разница почти в три раза</td></tr>
@@ -243,7 +245,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
       <div style="display:flex;flex-direction:column;gap:.9em">
         <div class="panel"><h3>Поток не объясняет разницу</h3><p>Заказы снизились во всех пяти салонах в пределах трёх пунктов друг от друга. Это общерыночное движение, и оно одинаково давит на всех.</p></div>
         <div class="panel"><h3>Средний чек идёт следом за ВТЛ</h3><p>Самый низкий чек у Раздольной, 6 238 ₽ при доле ВТЛ 8,5%. Самый высокий у Гуртьевой, 8 701 ₽ при доле 24,5%.</p></div>
-        <div class="callout" style="border-left-color:var(--good)">Мы проверили девять показателей. Восемь у филиалов близкие. Разрыв создаёт один — доля ВТЛ в заказах.</div>
+        <div class="callout" style="border-left-color:var(--good)">Мы проверили восемь показателей. Семь у филиалов близкие. Разрыв создаёт один — доля ВТЛ в заказах.</div>
       </div>
     </div>
   </div>
@@ -260,66 +262,24 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
     <table>
       <thead><tr><th>Филиал</th><th>Средняя оправа</th><th>Доля ВТЛ</th><th>Ожидаемо при таком покупателе</th><th>Разрыв</th><th>Валовая на столе, в год</th></tr></thead>
       <tbody>
-        <tr class="pick"><td>Дубровинского</td><td class="tnum">3 408 ₽</td><td class="tnum">14,5%</td><td class="tnum">18,7%</td><td class="tnum down"><b>−4,2 пп</b></td><td class="tnum"><b>2,23 млн</b></td></tr>
-        <tr class="pick"><td>Горького</td><td class="tnum">3 321 ₽</td><td class="tnum">14,9%</td><td class="tnum">18,2%</td><td class="tnum down"><b>−3,3 пп</b></td><td class="tnum"><b>1,85 млн</b></td></tr>
-        <tr class="pick"><td>Раздольная</td><td class="tnum">2 179 ₽</td><td class="tnum">8,5%</td><td class="tnum">10,9%</td><td class="tnum down"><b>−2,4 пп</b></td><td class="tnum"><b>1,26 млн</b></td></tr>
-        <tr><td>Карачевское</td><td class="tnum">2 860 ₽</td><td class="tnum">17,7%</td><td class="tnum">15,2%</td><td class="tnum up">+2,5 пп</td><td class="tnum">0,63 млн</td></tr>
+        <tr class="pick"><td>Дубровинского</td><td class="tnum">3 408 ₽</td><td class="tnum">14,5%</td><td class="tnum">18,7%</td><td class="tnum down"><b>−4,2 пп</b></td><td class="tnum"><b>1,96 млн</b></td></tr>
+        <tr class="pick"><td>Горького</td><td class="tnum">3 321 ₽</td><td class="tnum">14,9%</td><td class="tnum">18,2%</td><td class="tnum down"><b>−3,3 пп</b></td><td class="tnum"><b>1,67 млн</b></td></tr>
+        <tr class="pick"><td>Раздольная</td><td class="tnum">2 179 ₽</td><td class="tnum">8,5%</td><td class="tnum">10,9%</td><td class="tnum down"><b>−2,4 пп</b></td><td class="tnum"><b>2,00 млн</b></td></tr>
+        <tr><td>Карачевское</td><td class="tnum">2 860 ₽</td><td class="tnum">17,7%</td><td class="tnum">15,2%</td><td class="tnum up">+2,5 пп</td><td class="tnum">0,83 млн</td></tr>
         <tr><td>Гуртьева</td><td class="tnum">3 156 ₽</td><td class="tnum">24,5%</td><td class="tnum">17,1%</td><td class="tnum up">+7,4 пп</td><td class="tnum">0,31 млн</td></tr>
       </tbody>
     </table>
     <div class="split">
-      <div class="callout">В пилот берём <b>Дубровинского, Горького и Раздольную</b>. У них покупатель готов к дорогой линзе, но получает простую. Вместе это <b>5,35 млн валовой прибыли в год</b>.</div>
+      <div class="callout">В пилот берём <b>Дубровинского, Горького и Раздольную</b>. У них покупатель готов к дорогой линзе, но получает простую. Вместе это <b>5,63 млн валовой прибыли в год</b>.</div>
       <div class="callout" style="border-left-color:var(--good)">Карачевское и Гуртьева продают больше ВТЛ, чем можно ожидать от их покупателя. Им нужен не пилот, а сохранение того, что уже работает.</div>
     </div>
   </div>
-  <div class="foot"><span>Тройка не меняется при любом способе постановки цели: единый потолок, норма 50% или поправка на покупателя</span><span>Связь «оправа → ВТЛ» на пяти точках слабая, служит проверкой выбора, а не моделью</span></div>
-</section>
-
-<!-- 5 -->
-<section class="slide">
-  <div class="num">05</div>
-  <div class="head"><div class="eyebrow">Шаг 3 · профиль выбранных</div><h2>У каждого филиала свой разрыв</h2></div>
-  <div class="split-3" style="flex:1;min-height:0">
-    <div class="panel" style="border-left:3px solid var(--c1)">
-      <h3>Дубровинского</h3>
-      <p style="color:var(--ink);font-weight:500;margin-bottom:.5em">Самый дорогой покупатель, самая низкая доля ВТЛ</p>
-      <table style="font-size:.9375em"><tbody>
-        <tr><td>Оправа</td><td class="tnum">3 408 ₽ — 1-е место</td></tr>
-        <tr><td>Доля ВТЛ</td><td class="tnum">14,5% — 5-е место</td></tr>
-        <tr><td>Маржа</td><td class="tnum">67,0% — 1-е место</td></tr>
-        <tr><td>Заказов</td><td class="tnum">2 018</td></tr>
-      </tbody></table>
-      <p style="margin-top:auto;padding-top:.6em">Филиал с лучшей экономикой в сети продаёт линзы хуже всех. Работать с предложением линзы к дорогой оправе.</p>
-    </div>
-    <div class="panel" style="border-left:3px solid var(--c1)">
-      <h3>Горького</h3>
-      <p style="color:var(--ink);font-weight:500;margin-bottom:.5em">Умеет продавать дорогое, но продаёт редко</p>
-      <table style="font-size:.9375em"><tbody>
-        <tr><td>Оправа</td><td class="tnum">3 321 ₽ — 2-е место</td></tr>
-        <tr><td>Доля ВТЛ</td><td class="tnum">14,9% — 4-е место</td></tr>
-        <tr><td>Дорогих в ВТЛ</td><td class="tnum">24,9% — 1-е место</td></tr>
-        <tr><td>Заказов</td><td class="tnum">2 046</td></tr>
-      </tbody></table>
-      <p style="margin-top:auto;padding-top:.6em">Если ВТЛ предложили, он с высокой вероятностью будет дорогим. Не хватает самого предложения.</p>
-    </div>
-    <div class="panel" style="border-left:3px solid var(--c1)">
-      <h3>Раздольная</h3>
-      <p style="color:var(--ink);font-weight:500;margin-bottom:.5em">Другой покупатель и самая низкая база</p>
-      <table style="font-size:.9375em"><tbody>
-        <tr><td>Оправа</td><td class="tnum">2 179 ₽ — 5-е место</td></tr>
-        <tr><td>Доля ВТЛ</td><td class="tnum">8,5% — 5-е место</td></tr>
-        <tr><td>Средний чек</td><td class="tnum">6 238 ₽ — 5-е место</td></tr>
-        <tr><td>Заказов</td><td class="tnum">1 394</td></tr>
-      </tbody></table>
-      <p style="margin-top:auto;padding-top:.6em">Оправа здесь дешевле на 36%, чем на Дубровинского. Цель ставим ниже сетевой: 18,3%, а не 24,5%.</p>
-    </div>
-  </div>
-  <div class="foot"><span>Места указаны среди пяти массовых салонов</span><span>Тройка даёт 68% заказов сети и 41,9 млн выручки</span></div>
+  <div class="foot"><span>Тройка не меняется при любом способе постановки цели: единый потолок, норма 50% или поправка на покупателя</span><span>Деньги посчитаны при доведении до лучшего результата сети — 24,5% ВТЛ и 24,9% дорогих внутри</span></div>
 </section>
 
 <!-- 6 -->
 <section class="slide">
-  <div class="num">06</div>
+  <div class="num">05</div>
   <div class="head"><div class="eyebrow">Шаг 3 · что происходит с ВТЛ</div>
     <h2>Доля ВТЛ по сети выросла, доля дорогих линз внутри неё снизилась</h2></div>
   <div class="body" style="gap:.6em">
@@ -367,7 +327,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 7 -->
 <section class="slide">
-  <div class="num">07</div>
+  <div class="num">06</div>
   <div class="head"><div class="eyebrow">Шаг 3 · сотрудники выбранных филиалов</div>
     <h2>Доля ВТЛ у продавцов различается втрое</h2>
     <div class="dek">Восемь продавцов трёх филиалов пилота, у каждого от 500 заказов за год.</div></div>
@@ -390,30 +350,9 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
   <div class="foot"><span>Данные за 12 месяцев по 16.09.2026</span><span>Алексеева Г. Ю. работает в нескольких салонах, показаны заказы на Раздольной</span></div>
 </section>
 
-<!-- 8 -->
-<section class="slide">
-  <div class="num">08</div>
-  <div class="head"><div class="eyebrow">Шаг 4 · управляемые рычаги</div><h2>На что влияем в каждом филиале</h2></div>
-  <div class="body">
-    <table>
-      <thead><tr><th>Филиал</th><th style="text-align:left">Источник отставания</th><th style="text-align:left">Рычаг</th><th>Сейчас</th><th>Цель</th><th>Валовая в год</th></tr></thead>
-      <tbody>
-        <tr class="pick"><td>Дубровинского</td><td style="text-align:left;font-weight:400">Дорогая оправа продаётся с простой линзой</td><td style="text-align:left;font-weight:400">Предложение линзы под уровень оправы</td><td class="tnum">14,5%</td><td class="tnum"><b>26,1%</b></td><td class="tnum"><b>2,23 млн</b></td></tr>
-        <tr class="pick"><td>Горького</td><td style="text-align:left;font-weight:400">ВТЛ предлагают редко, хотя продают хорошо</td><td style="text-align:left;font-weight:400">Регулярность предложения ВТЛ</td><td class="tnum">14,9%</td><td class="tnum"><b>25,6%</b></td><td class="tnum"><b>1,85 млн</b></td></tr>
-        <tr class="pick"><td>Раздольная</td><td style="text-align:left;font-weight:400">Самая низкая база и более экономный покупатель</td><td style="text-align:left;font-weight:400">Доступный ВТЛ в каждом втором заказе</td><td class="tnum">8,5%</td><td class="tnum"><b>18,3%</b></td><td class="tnum"><b>1,26 млн</b></td></tr>
-      </tbody>
-    </table>
-    <div class="split">
-      <div class="panel"><h3>Откуда взялись целевые значения</h3><p>Цель для каждого филиала равна доле ВТЛ, которую показывает лучший в сети результат при таком же покупателе. Для Раздольной это 18,3%, а не сетевые 24,5%: там дешевле оправа и ниже готовность платить.</p></div>
-      <div class="panel" style="border-left:3px solid var(--good)"><h3>Второй рычаг общий для трёх</h3><p>Доля дорогих линз внутри ВТЛ. На Горького она 24,9%, на Дубровинского 11,3%, на Раздольной 10,2%. Уровень Горького достижим для двух остальных без изменения ассортимента.</p></div>
-    </div>
-  </div>
-  <div class="foot"><span>Цели рассчитаны по связи средней цены оправы и доли ВТЛ</span><span>Итого по трём филиалам: 5,35 млн валовой прибыли в год</span></div>
-</section>
-
 <!-- 9 -->
 <section class="slide">
-  <div class="num">09</div>
+  <div class="num">07</div>
   <div class="head"><div class="eyebrow">Шаг 4 · чего не хватает для управления</div>
     <h2>Долю своих рецептов сейчас посчитать нельзя</h2></div>
   <div class="body">
@@ -441,44 +380,44 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 10 · ФИНМОДЕЛЬ -->
 <section class="slide">
-  <div class="num">10</div>
-  <div class="head"><div class="eyebrow">Шаг 5 · финансовый эффект · двигайте ползунки</div><h2>Вклад каждого филиала</h2></div>
+  <div class="num">08</div>
+  <div class="head"><div class="eyebrow">Шаг 5 · финансовый эффект · двигайте ползунки</div><h2>Сколько стоит каждый пункт</h2></div>
   <div class="model">
     <div class="controls">
       <div class="ctl">
-        <label for="sv">Насколько закрываем разрыв по доле ВТЛ <b id="svv">100%</b></label>
-        <input type="range" id="sv" min="0" max="150" value="100" step="5">
+        <label for="sv">Доля ВТЛ в заказах <span class="note">сейчас по сети 15,7%</span> <b id="svv">24,5%</b></label>
+        <input type="range" id="sv" min="8" max="50" value="24.5" step="0.5">
         <div class="ticks">
-          <span class="s" style="left:0">0</span>
-          <span style="left:33%">половина</span>
-          <span style="left:66%">цель</span>
-          <span class="e" style="left:100%">150%</span>
+          <span class="s" style="left:0">8%</span>
+          <span style="left:39%">Гуртьева 24,5%</span>
+          <span class="e" style="left:100%">норма 50%</span>
         </div>
       </div>
       <div class="ctl">
         <label for="sp">Доля дорогих линз внутри ВТЛ <span class="note">сейчас по сети 14,8%</span> <b id="spv">24,9%</b></label>
-        <input type="range" id="sp" min="8" max="35" value="24.9" step="0.1">
+        <input type="range" id="sp" min="5" max="40" value="24.9" step="0.1">
         <div class="ticks">
-          <span class="s" style="left:0">8%</span>
-          <span style="left:62%">Горького 24,9%</span>
-          <span class="e" style="left:100%">35%</span>
+          <span class="s" style="left:0">5%</span>
+          <span style="left:57%">Горького 24,9%</span>
+          <span class="e" style="left:100%">40%</span>
         </div>
       </div>
-      <div class="presets">
-        <button type="button" class="preset" data-v="50" data-d="20">Половина пути</button>
-        <button type="button" class="preset" data-v="100" data-d="24.9">Цель пилота</button>
-        <button type="button" class="preset" data-v="150" data-d="28.6">Максимум</button>
+      <div>
+        <div style="font-size:.9375em;font-weight:500;margin-bottom:.45em">Сценарий и филиалы</div>
+        <div class="presets" style="margin-bottom:.45em">
+          <button type="button" class="preset" data-v="24.5" data-d="24.9">Лучшее в сети</button>
+          <button type="button" class="preset" data-v="19.5" data-d="17.5">Половина пути</button>
+          <button type="button" class="preset" data-v="50" data-d="24.9">Норма стандарта</button>
+        </div>
+        <div class="branches" id="br"></div>
       </div>
-      <table style="font-size:.875em" id="tbl">
-        <thead><tr><th>Филиал</th><th>ВТЛ сейчас</th><th>ВТЛ станет</th><th>Валовая в год</th></tr></thead>
-        <tbody></tbody>
-      </table>
+      <div class="arith" id="arith"></div>
     </div>
     <div class="out">
       <div class="bignum" style="border-left:3px solid var(--primary)">
         <div class="k">Прирост валовой прибыли, в год</div>
         <div class="v" id="gp">—</div>
-        <div class="u" id="gpu">по трём филиалам пилота</div>
+        <div class="u" id="gpu">на выбранных филиалах при достижении цели</div>
       </div>
       <div class="pair">
         <div class="bignum"><div class="k">Прирост выручки, в год</div><div class="v" id="rev">—</div><div class="u">млн ₽</div></div>
@@ -486,7 +425,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
       </div>
       <div class="panel" style="padding:.75em .95em">
         <div style="font-size:.875em;color:var(--muted);line-height:1.5">
-          <b style="color:var(--ink)">Цель пилота</b> — доля ВТЛ, которую даёт лучший результат сети при таком же покупателе: 26,1% на Дубровинского, 25,6% на Горького, 18,3% на Раздольной. Разгон за три месяца считаем как треть, две трети и полный эффект.
+          <b style="color:var(--ink)">По умолчанию — «Лучшее в сети»:</b> каждый филиал дотягивается до результата, который уже есть у вас. Это не наш норматив, а ваши собственные цифры: 24,5% ВТЛ у Гуртьевой и 24,9% дорогих линз у Горького.
         </div>
       </div>
     </div>
@@ -496,7 +435,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 11 -->
 <section class="slide">
-  <div class="num">11</div>
+  <div class="num">09</div>
   <div class="head"><div class="eyebrow">Шаг 6 · решение о пилоте · все цифры в валовой прибыли</div><h2>Стоимость и окупаемость</h2></div>
   <div class="body">
     <div class="split" style="grid-template-columns:.92fr 1.08fr">
@@ -515,17 +454,17 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
           <thead><tr><th>Накопленным итогом</th><th>Месяц 1</th><th>Месяц 2</th><th>Месяц 3</th></tr></thead>
           <tbody>
             <tr><td>Затраты</td><td class="tnum">138 тыс</td><td class="tnum">228 тыс</td><td class="tnum">318 тыс</td></tr>
-            <tr><td>Прирост валовой, цель</td><td class="tnum">149 тыс</td><td class="tnum">446 тыс</td><td class="tnum">892 тыс</td></tr>
-            <tr><td><b>Сальдо, цель</b></td><td class="tnum up"><b>+11 тыс</b></td><td class="tnum up"><b>+218 тыс</b></td><td class="tnum up"><b>+574 тыс</b></td></tr>
-            <tr><td>Прирост валовой, половина пути</td><td class="tnum">70 тыс</td><td class="tnum">209 тыс</td><td class="tnum">418 тыс</td></tr>
-            <tr><td><b>Сальдо, половина пути</b></td><td class="tnum down"><b>−68 тыс</b></td><td class="tnum down"><b>−19 тыс</b></td><td class="tnum up"><b>+100 тыс</b></td></tr>
+            <tr><td>Прирост валовой, цель</td><td class="tnum">156 тыс</td><td class="tnum">469 тыс</td><td class="tnum">938 тыс</td></tr>
+            <tr><td><b>Сальдо, цель</b></td><td class="tnum up"><b>+18 тыс</b></td><td class="tnum up"><b>+241 тыс</b></td><td class="tnum up"><b>+620 тыс</b></td></tr>
+            <tr><td>Прирост валовой, половина пути</td><td class="tnum">84 тыс</td><td class="tnum">251 тыс</td><td class="tnum">501 тыс</td></tr>
+            <tr><td><b>Сальдо, половина пути</b></td><td class="tnum down"><b>−54 тыс</b></td><td class="tnum up"><b>+23 тыс</b></td><td class="tnum up"><b>+183 тыс</b></td></tr>
           </tbody>
         </table>
       </div>
     </div>
     <div class="strip3">
-      <div style="border-left:3px solid var(--good)"><div class="k">ROI за пилот, по валовой</div><div class="v">180%</div><div class="u">при достижении цели · 31% при половине пути</div></div>
-      <div><div class="k">Остаётся после пилота</div><div class="v">4,27 млн ₽</div><div class="u">валовой в год, за вычетом сопровождения</div></div>
+      <div style="border-left:3px solid var(--good)"><div class="k">ROI за пилот, по валовой</div><div class="v">195%</div><div class="u">при достижении цели · 58% при половине пути</div></div>
+      <div><div class="k">Остаётся после пилота</div><div class="v">4,55 млн ₽</div><div class="u">валовой в год, за вычетом сопровождения</div></div>
       <div><div class="k">Если дойти до нормы 50%</div><div class="v">17,45 млн ₽</div><div class="u">валовой в год на той же тройке</div></div>
     </div>
   </div>
@@ -534,7 +473,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 12 -->
 <section class="slide">
-  <div class="num">12</div>
+  <div class="num">10</div>
   <div class="head"><div class="eyebrow">Шаг 6 · пилот, месяц 1 из 3</div><h2>Запуск управленческого цикла</h2>
     <div class="dek">Задача месяца — собрать цикл и один раз пройти его без нас.</div></div>
   <div class="weeks">
@@ -550,7 +489,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 13 -->
 <section class="slide">
-  <div class="num">13</div>
+  <div class="num">11</div>
   <div class="head"><div class="eyebrow">Шаг 6 · пилот, месяц 2 из 3</div><h2>Закрепление</h2>
     <div class="dek">CSM переходит из позиции ведущего в позицию проверяющего.</div></div>
   <div class="weeks">
@@ -566,7 +505,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 14 -->
 <section class="slide">
-  <div class="num">14</div>
+  <div class="num">12</div>
   <div class="head"><div class="eyebrow">Шаг 6 · пилот, месяц 3 из 3</div><h2>Передача процесса</h2>
     <div class="dek">Цель месяца — процесс работает без нас, и это подтверждено чек-листом.</div></div>
   <div class="weeks">
@@ -585,7 +524,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 <div class="nav">
   <button id="prev" aria-label="Предыдущий слайд">‹</button>
   <div class="dots" id="dots"></div>
-  <span class="counter" id="counter">1 / 15</span>
+  <span class="counter" id="counter">1 / 13</span>
   <button id="next" aria-label="Следующий слайд">›</button>
 </div>
 <p class="mobhint">Разведите пальцами, чтобы увеличить таблицы</p>
@@ -636,40 +575,47 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
   go(parseInt((location.hash||'#0').slice(1),10)||0);
 
   // ---------- финмодель ----------
-  // цель = доля ВТЛ, которую даёт лучший результат сети при таком же покупателе
   var B=[
-    {n:"Дубровинского", o:2018, v:14.5, tgt:26.1, d:11.3},
-    {n:"Горького",      o:2046, v:14.9, tgt:25.6, d:24.9},
-    {n:"Раздольная",    o:1394, v:8.5,  tgt:18.3, d:10.2}
+    {n:"Дубровинского", o:2018, v:14.5, d:11.3, on:true},
+    {n:"Горького",      o:2046, v:14.9, d:24.9, on:true},
+    {n:"Раздольная",    o:1394, v:8.5,  d:10.2, on:true},
+    {n:"Карачевское",   o:1234, v:17.7, d:16.0, on:false},
+    {n:"Гуртьева",      o:1299, v:24.5, d:9.1,  on:false}
   ];
   var GP0=3820, GP1=10783, GP2=16930;
   var RV0=5822, RV1=16713, RV2=29631;
   var sv=document.getElementById('sv'), sp=document.getElementById('sp');
-  var svv=document.getElementById('svv'), spv=document.getElementById('spv');
-  var tb=document.querySelector('#tbl tbody');
-  var f0=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0});
+  var svv=document.getElementById('svv'), spv=document.getElementById('spv'), wrap=document.getElementById('br');
+  var fmt=new Intl.NumberFormat('ru-RU');
   var f1=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
   var f2=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
-
+  B.forEach(function(b){
+    var l=document.createElement('label');
+    l.innerHTML='<input type="checkbox" '+(b.on?'checked':'')+'> '+b.n;
+    l.querySelector('input').addEventListener('change',function(e){b.on=e.target.checked;calc()});
+    wrap.appendChild(l);
+  });
   function calc(){
-    var share=parseFloat(sv.value)/100, td=parseFloat(sp.value);
-    svv.textContent=f0.format(parseFloat(sv.value))+'%';
-    spv.textContent=f1.format(td)+'%';
-    var gp=0, rev=0, rows='';
+    var tv=parseFloat(sv.value), td=parseFloat(sp.value);
+    svv.textContent=f1.format(tv)+'%'; spv.textContent=f1.format(td)+'%';
+    var gp=0, rev=0, nOrd=0, addC=0, addP=0;
     B.forEach(function(b){
-      var nv=b.v+(b.tgt-b.v)*share; if(nv<b.v) nv=b.v;
-      var nd=Math.max(b.d,td);
-      var pO=b.o*b.v/100*b.d/100, pN=b.o*nv/100*nd/100;
-      var cO=b.o*b.v/100-pO,      cN=b.o*nv/100-pN;
-      var g=(cN-cO)*(GP1-GP0)+(pN-pO)*(GP2-GP0);
-      rev+=(cN-cO)*(RV1-RV0)+(pN-pO)*(RV2-RV0);
-      gp+=g;
-      rows+='<tr><td>'+b.n+'</td><td class="tnum">'+f1.format(b.v)+'%</td><td class="tnum"><b>'+f1.format(nv)+'%</b></td><td class="tnum"><b>'+f2.format(g/1e6)+' млн</b></td></tr>';
+      if(!b.on) return;
+      var nv=Math.max(b.v,tv), nd=Math.max(b.d,td);
+      var pOld=b.o*b.v/100*b.d/100,  pNew=b.o*nv/100*nd/100;
+      var cOld=b.o*b.v/100-pOld,     cNew=b.o*nv/100-pNew;
+      gp  += (cNew-cOld)*(GP1-GP0) + (pNew-pOld)*(GP2-GP0);
+      rev += (cNew-cOld)*(RV1-RV0) + (pNew-pOld)*(RV2-RV0);
+      nOrd+=b.o; addC+=cNew-cOld; addP+=pNew-pOld;
     });
-    tb.innerHTML=rows;
     document.getElementById('gp').textContent  = gp>0 ? f2.format(gp/1e6)+' млн ₽' : '—';
     document.getElementById('rev').textContent = rev>0 ? f2.format(rev/1e6) : '—';
-    document.getElementById('pil').textContent = gp>0 ? f0.format(Math.round(gp/6/1000))+' тыс' : '—';
+    document.getElementById('pil').textContent = gp>0 ? fmt.format(Math.round(gp/6/1000))+' тыс' : '—';
+    document.getElementById('gpu').textContent = nOrd ? fmt.format(nOrd)+' заказов в год на выбранных филиалах' : 'выберите филиалы';
+    document.getElementById('arith').innerHTML =
+      '+<b>'+fmt.format(Math.round(addC))+'</b> заказов в обычный ВТЛ × <b>'+fmt.format(GP1-GP0)+' ₽</b><br>'+
+      '+<b>'+fmt.format(Math.round(addP))+'</b> заказов в дорогой ВТЛ × <b>'+fmt.format(GP2-GP0)+' ₽</b><br>'+
+      'за пилот — шестая часть года: разгон 1/3 → 2/3 → полный';
   }
   document.querySelectorAll('.preset').forEach(function(btn){
     btn.addEventListener('click',function(){ sv.value=btn.dataset.v; sp.value=btn.dataset.d; calc(); });
