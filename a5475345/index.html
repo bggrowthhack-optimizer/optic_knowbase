@@ -23,7 +23,8 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--ground);color:var(--ink);font-family:var(--sans);margin:0;
-  line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+  line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden;-webkit-text-size-adjust:100%}
+
 .stage{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px}
 
 /* Кадр занимает доступное место, слайд внутри всегда рисуется в 1280x720
@@ -59,6 +60,7 @@ h2{font-size:2.25em;font-weight:700;letter-spacing:-.025em;line-height:1.18}
 .dots i{width:7px;height:7px;border-radius:999px;background:var(--border-strong);cursor:pointer;display:block}
 .dots i.on{background:var(--primary);width:20px}
 .counter{font-variant-numeric:tabular-nums;min-width:52px;text-align:center;font-weight:600;color:var(--ink)}
+.hint{display:none;font-size:12px;line-height:1.4;color:var(--muted);text-align:center;max-width:32em}
 
 /* блоки */
 .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1em}
@@ -161,6 +163,15 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 .kpe{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--good);
   border-radius:10px;padding:.7em 1em;font-size:.8125em;line-height:1.45}
 .kpe b{font-weight:600}
+/* Телефон и планшет: страницу НЕ запираем. При overflow:hidden и height:100%
+   пинч-зум срабатывает, но сдвинуть увеличенное некуда — браузер возвращает
+   масштаб обратно, и выглядит это как «зум не работает». */
+@media (max-width:860px){
+  html,body{height:auto}
+  body{overflow:visible}
+  .stage{height:auto;min-height:100svh;padding:10px}
+  .hint{display:block}
+}
 </style>
 </head>
 <body>
@@ -540,6 +551,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
   <span class="counter" id="counter">1 / 13</span>
   <button id="next" aria-label="Следующий слайд">›</button>
 </div>
+<p class="hint">Слайд показан целиком. Разведите пальцами, чтобы увеличить и читать таблицы —<br>или поверните телефон горизонтально.</p>
 </div>
 
 <script>
