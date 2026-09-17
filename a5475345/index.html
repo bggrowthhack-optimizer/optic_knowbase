@@ -74,6 +74,7 @@ tr:last-child td{border-bottom:none}
 tr.net td{border-top:2px solid var(--border-strong);font-weight:600;color:var(--muted)}
 tr.pick td{background:#EEF3FE}
 tr.pick td:first-child{font-weight:700}
+table.nw td:first-child,table.nw th:first-child{white-space:nowrap}
 .delta{font-weight:600}
 .up{color:var(--good-t)} .down{color:var(--bad-t)} .flat{color:var(--warn-t)}
 .callout{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--primary);
@@ -221,8 +222,16 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
       </tbody>
     </table>
     <div class="callout">Валовая прибыль снизилась у четырёх филиалов из пяти. Средний чек при этом вырос везде, от 2,5% до 12%. Значит потери идут не от цены, и следующий шаг — понять, какой показатель их создаёт.</div>
+    <div class="split" style="gap:1em">
+      <div class="panel" style="padding:.75em 1em;border-left:3px solid var(--c1)">
+        <div style="font-size:.9375em;line-height:1.45"><b style="font-weight:600">ВТЛ — высокотехнологичные линзы.</b> <span style="color:var(--muted)">Прогрессивные, офисные и бифокальные линзы, фотохром и покрытия BlueGuard. Всё, что дороже и сложнее обычной однофокальной линзы.</span></div>
+      </div>
+      <div class="panel" style="padding:.75em 1em;border-left:3px solid var(--c3)">
+        <div style="font-size:.9375em;line-height:1.45"><b style="font-weight:600">Дорогие линзы — бренд ODV внутри ВТЛ.</b> <span style="color:var(--muted)">Линейки Mono, Lux DRP, Standart SP, Premium DRP2, Camber, Bifocal DRS. Средняя цена 12 045 ₽ против 5 499 ₽ у покрытий.</span></div>
+      </div>
+    </div>
   </div>
-  <div class="foot"><span>Данные за 12 месяцев по 16.09.2026</span><span><span class="defn">Дорогие линзы — бренд <b>ODV</b></span></span></div>
+  <div class="foot"><span>Данные за 12 месяцев по 16.09.2026</span><span>Валовая прибыль = выручка минус закупочная цена</span></div>
 </section>
 
 <!-- 3 -->
@@ -231,11 +240,11 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
   <div class="head"><div class="eyebrow">Шаг 3 · где источник отставания</div>
     <h2>Семь показателей из восьми у филиалов совпадают</h2></div>
   <div class="body">
-    <div class="split" style="grid-template-columns:1.3fr 1fr">
-      <table>
-        <thead><tr><th>Показатель</th><th>Разброс между филиалами</th><th style="text-align:left">Что это значит</th></tr></thead>
+    <div class="split" style="grid-template-columns:1.55fr 1fr">
+      <table class="nw">
+        <thead><tr><th style="white-space:nowrap">Показатель</th><th style="white-space:nowrap">Разброс</th><th style="text-align:left">Что это значит</th></tr></thead>
         <tbody>
-          <tr><td>Заказы, динамика г/г</td><td class="tnum">−8,0% … −11,5%</td><td style="text-align:left;font-weight:400;color:var(--muted)">поток снизился у всех одинаково</td></tr>
+          <tr><td>Динамика заказов</td><td class="tnum">−8,0% … −11,5%</td><td style="text-align:left;font-weight:400;color:var(--muted)">поток снизился у всех одинаково</td></tr>
           <tr><td>Маржа</td><td class="tnum">61,6% … 67,0%</td><td style="text-align:left;font-weight:400;color:var(--muted)">разница 5 пунктов</td></tr>
           <tr><td>Заказов на клиента</td><td class="tnum">1,14 … 1,20</td><td style="text-align:left;font-weight:400;color:var(--muted)">различий нет</td></tr>
           <tr><td>Заказов на продавца</td><td class="tnum">617 … 697</td><td style="text-align:left;font-weight:400;color:var(--muted)">нагрузка ровная</td></tr>
