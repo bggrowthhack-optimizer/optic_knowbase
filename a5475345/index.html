@@ -19,19 +19,24 @@
   --bad:#DF202E;  --bad-t:#DF202E;  --bad-bg:#FCE9EA;
   --info:#0095D3; --info-t:#007DBA; --info-bg:#E6F4FB;
   --c1:#4076F5; --c2:#00A68A; --c3:#A46BF5; --c5:#FC8C45;
+  --reserve:90px;   /* место под кнопки под слайдом */
 }
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{height:auto}
 body{background:var(--ground);color:var(--ink);font-family:var(--sans);margin:0;
-  line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden;-webkit-text-size-adjust:100%}
+  line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 
-.stage{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px}
+.stage{min-height:100svh;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;gap:14px;padding:16px}
+.stage>.viewport{margin-top:auto}
+.stage>:last-child{margin-bottom:auto}
 
 /* Кадр занимает доступное место, слайд внутри всегда рисуется в 1280x720
    и масштабируется целиком. Так вёрстка одинакова при любом размере окна:
    раньше кегль упирался в нижнюю границу clamp, а слайд продолжал сжиматься,
    и содержимое наезжало друг на друга. */
-.viewport{position:relative;width:min(1280px,94vw,150vh);aspect-ratio:16/9;flex:none}
+.viewport{position:relative;flex:none;aspect-ratio:16/9;
+  width:min(1280px, 94vw, calc((100svh - var(--reserve)) * 16 / 9))}
 .slide{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left;
   transform:scale(var(--k,1));background:var(--bg);border:1px solid var(--border);
   border-radius:16px;padding:48px;display:none;flex-direction:column;overflow:hidden;
@@ -60,7 +65,7 @@ h2{font-size:2.25em;font-weight:700;letter-spacing:-.025em;line-height:1.18}
 .dots i{width:7px;height:7px;border-radius:999px;background:var(--border-strong);cursor:pointer;display:block}
 .dots i.on{background:var(--primary);width:20px}
 .counter{font-variant-numeric:tabular-nums;min-width:52px;text-align:center;font-weight:600;color:var(--ink)}
-.mobhint{display:none;font-size:12px;line-height:1.4;color:var(--muted);text-align:center;max-width:32em}
+.mobhint{display:none;font-size:12px;line-height:1.3;margin:0;color:var(--muted);text-align:center;max-width:32em}
 
 /* блоки */
 .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1em}
@@ -166,14 +171,12 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 /* Телефон и планшет: страницу НЕ запираем. При overflow:hidden и height:100%
    пинч-зум срабатывает, но сдвинуть увеличенное некуда — браузер возвращает
    масштаб обратно, и выглядит это как «зум не работает». */
-@media (max-width:860px){
-  html,body{height:auto}
-  body{overflow:visible}
-  /* justify-content:center при содержимом выше контейнера срезает верх:
-     переполнение уходит за начало прокрутки вместе с верхним отступом.
-     Поэтому прижимаем к началу, а центрируем уже запасом снизу. */
-  .stage{height:auto;min-height:100svh;justify-content:flex-start;
-    padding:14px 10px 24px;gap:12px}
+/* Сенсорный экран — а не «узкий»: горизонтальный телефон бывает шире 900px
+   и под порог по ширине не попадал, из-за чего на нём действовали
+   десктопные правила. Под слайдом стоят кнопки и подсказка — запас больше. */
+@media (hover:none) and (pointer:coarse){
+  :root{--reserve:135px}
+  .stage{padding:14px 10px 22px;gap:12px}
   .mobhint{display:block}
 }
 </style>
@@ -555,7 +558,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
   <span class="counter" id="counter">1 / 13</span>
   <button id="next" aria-label="Следующий слайд">›</button>
 </div>
-<p class="mobhint">Слайд показан целиком. Разведите пальцами, чтобы увеличить и читать таблицы —<br>или поверните телефон горизонтально.</p>
+<p class="mobhint">Разведите пальцами, чтобы увеличить таблицы</p>
 </div>
 
 <script>
