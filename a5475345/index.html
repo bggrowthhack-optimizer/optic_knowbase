@@ -354,42 +354,19 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
         <tr><td>Лосева В. И.</td><td style="text-align:left;font-weight:400;color:var(--muted)">Раздольная</td><td class="tnum">821</td><td class="tnum">13,7%</td><td><div class="barwrap"><div class="bar" style="width:6em"><i style="width:31%;background:#A0BAF8"></i></div><span class="n" style="font-weight:700">6,2%</span></div></td></tr>
       </tbody>
     </table>
-    <div class="callout">На Дубровинского два продавца из трёх работают с ВТЛ вдвое лучше третьего, при одинаковом покупателе и одном ассортименте. Разницу создаёт порядок работы, и его можно описать и передать.</div>
+    <div class="split" style="grid-template-columns:1.15fr .85fr">
+      <div class="callout">На Дубровинского два продавца из трёх работают с ВТЛ вдвое лучше третьего, при одинаковом покупателе и одном ассортименте. Разницу создаёт порядок работы, и его можно описать и передать.</div>
+      <div class="panel" style="border-left:3px solid var(--bad);padding:.9em 1.1em">
+        <div style="font-size:.9375em;line-height:1.45"><b style="font-weight:600">Одного показателя для управления не хватает.</b> <span style="color:var(--muted)">Доля своих рецептов не считается: в ИТИГРИСЕ нет связи заказа с рецептом. То же было отмечено в аудите 2023–24 и не изменилось. Включаем на первых неделях пилота.</span></div>
+      </div>
+    </div>
   </div>
   <div class="foot"><span>Данные за 12 месяцев по 16.09.2026</span><span>Алексеева Г. Ю. работает в нескольких салонах, показаны заказы на Раздольной</span></div>
 </section>
 
-<!-- 9 -->
-<section class="slide">
-  <div class="num">07</div>
-  <div class="head"><div class="eyebrow">Шаг 5 · что мешает измерять</div>
-    <h2>Долю своих рецептов сейчас посчитать нельзя</h2></div>
-  <div class="body">
-    <div class="split-3">
-      <div class="panel"><h3>1 · Дорогая линза требует замеров</h3><p>Межцентровое расстояние, высота установки, рабочие дистанции.</p></div>
-      <div class="panel"><h3>2 · Замеры делает свой врач или оптометрист</h3><p>В чужом рецепте этих данных нет, и заказ уходит в простую линзу.</p></div>
-      <div class="panel"><h3>3 · Доля своих рецептов задаёт потолок</h3><p>Сколько своих рецептов, столько возможностей предложить дорогую линзу.</p></div>
-    </div>
-    <div class="split">
-      <div class="panel" style="border-left:3px solid var(--bad)">
-        <h3>Показатель не фиксируется</h3>
-        <p>В ИТИГРИСЕ нет связи заказа с рецептом. Поля офтальмолога и даты рецепта пустые во всех 115 341 строке выгрузки. То же самое было отмечено в аудите 2023–24, слайды 17 и 38, и за полтора года фиксация не появилась.</p>
-        <p style="margin-top:auto;padding-top:.6em;color:var(--ink);font-weight:500">Настройка занимает неделю. Покажем, как это включить, на первых неделях пилота.</p>
-      </div>
-      <div class="panel">
-        <h3>Пока считаем по допущению</h3>
-        <p>Принимаем долю чужих рецептов за 25% по статистике Оптимайзера на сопоставимых сетях. Продажи дорогих линз по чужим рецептам считаем нулевыми.</p>
-        <p style="margin-top:.6em">В аудите 2023–24 стояло около 50%. Это уточнение допущения, а не пересмотр прошлых выводов.</p>
-        <p style="margin-top:auto;padding-top:.6em;color:var(--ink);font-weight:500">С первой недели пилота показатель начнёт считаться по факту.</p>
-      </div>
-    </div>
-  </div>
-  <div class="foot"><span>Проверено по всем 115 341 строке выгрузки</span><span>Среди 47 видов услуг нет ни одной диагностической</span></div>
-</section>
-
 <!-- 10 · ФИНМОДЕЛЬ -->
 <section class="slide">
-  <div class="num">08</div>
+  <div class="num">07</div>
   <div class="head"><div class="eyebrow">Шаг 6 · финансовый эффект · двигайте ползунки</div><h2>Сколько стоит каждый пункт</h2></div>
   <div class="model">
     <div class="controls">
@@ -444,7 +421,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 11 -->
 <section class="slide">
-  <div class="num">09</div>
+  <div class="num">08</div>
   <div class="head"><div class="eyebrow">Шаг 7 · решение о пилоте · все цифры в валовой прибыли</div><h2>Стоимость и окупаемость</h2></div>
   <div class="body">
     <div class="split" style="grid-template-columns:.92fr 1.08fr">
@@ -482,12 +459,12 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 12 -->
 <section class="slide">
-  <div class="num">10</div>
+  <div class="num">09</div>
   <div class="head"><div class="eyebrow">Шаг 7 · пилот, месяц 1 из 3</div><h2>Запуск управленческого цикла</h2>
     <div class="dek">Задача месяца — собрать цикл и один раз пройти его без нас.</div></div>
   <div class="weeks">
     <div class="week"><div class="w">Неделя 1</div><div class="t"><b>Установочная встреча.</b> Собственник, руководитель, РОПы, Руслан и CSM. Фиксируем фокус, три филиала, роли, график и формат контроля.</div></div>
-    <div class="week"><div class="w">Недели 1–2</div><div class="t"><b>Настройка данных.</b> Связь заказа с рецептом в ИТИГРИСЕ и единый список ВТЛ у нас, у вас и у вашего специалиста. Без этого показатель не измерить.</div></div>
+    <div class="week"><div class="w">Недели 1–2</div><div class="t"><b>Настройка данных.</b> Включаем связь заказа с рецептом в ИТИГРИСЕ — этого нет с прошлого аудита. Плюс единый список ВТЛ у нас, у вас и у вашего специалиста.</div></div>
     <div class="week"><div class="w">Неделя 2</div><div class="t"><b>Стандарт задачи.</b> Показатель, сотрудник, причина отклонения, действие, срок, способ проверки. Плюс разбор разделов Оптимайзера.</div></div>
     <div class="week"><div class="w">Недели 2–3</div><div class="t"><b>Первый цикл.</b> Анализ, задача, работа с сотрудником, контроль, результат. Планёрку ведёт ваш руководитель, CSM наблюдает.</div></div>
     <div class="week"><div class="w">Неделя 4</div><div class="t"><b>Самостоятельный цикл.</b> Руководитель проводит анализ, планёрку и постановку задач без участия CSM. Качество оцениваем после.</div></div>
@@ -498,7 +475,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 13 -->
 <section class="slide">
-  <div class="num">11</div>
+  <div class="num">10</div>
   <div class="head"><div class="eyebrow">Шаг 7 · пилот, месяц 2 из 3</div><h2>Закрепление</h2>
     <div class="dek">CSM переходит из позиции ведущего в позицию проверяющего.</div></div>
   <div class="weeks">
@@ -514,7 +491,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 
 <!-- 14 -->
 <section class="slide">
-  <div class="num">12</div>
+  <div class="num">11</div>
   <div class="head"><div class="eyebrow">Шаг 7 · пилот, месяц 3 из 3</div><h2>Передача процесса</h2>
     <div class="dek">Цель месяца — процесс работает без нас, и это подтверждено чек-листом.</div></div>
   <div class="weeks">
@@ -533,7 +510,7 @@ input[type=range]:focus-visible{outline:2px solid var(--primary);outline-offset:
 <div class="nav">
   <button id="prev" aria-label="Предыдущий слайд">‹</button>
   <div class="dots" id="dots"></div>
-  <span class="counter" id="counter">1 / 13</span>
+  <span class="counter" id="counter">1 / 12</span>
   <button id="next" aria-label="Следующий слайд">›</button>
 </div>
 <p class="mobhint">Разведите пальцами, чтобы увеличить таблицы</p>
