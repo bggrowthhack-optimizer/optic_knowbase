@@ -39,6 +39,12 @@
       ],
     },
     {
+      label: 'Предложения',
+      items: [
+        { title: 'Цикл рОПа (прототип)', href: 'sections/proposal-rop-cycle.html', icon: 'sparkles', ready: true },
+      ],
+    },
+    {
       label: 'Инструкции',
       items: [
         { title: 'Декомпозиция плана продаж', href: 'guides/plan-decomposition.html', icon: 'guide', ready: true },
@@ -118,6 +124,7 @@
       'sections/warehouse.html',
       'sections/meeting-protocols.html',
       'sections/whats-new.html',
+      'sections/proposal-rop-cycle.html',
     ].includes(href);
   }
 
