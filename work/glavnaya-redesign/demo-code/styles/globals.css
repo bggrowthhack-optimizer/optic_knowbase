@@ -1,0 +1,522 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./design-tokens.css";
+@import "./semantic-colors.css";
+@import "./animations.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-border-strong: var(--border-strong);
+  --color-overlay: var(--overlay);
+
+  /* Заливки статусов */
+  --color-excellent: var(--excellent);
+  --color-good: var(--good);
+  --color-poor: var(--poor);
+  --color-purple: var(--purple);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Текстовые пары статусов (контраст AA на светлой карточке).
+     Утилиты text-excellent/text-good/... переопределены на них в semantic-colors.css,
+     поэтому в компонентах достаточно писать text-good — правка не нужна. */
+  --color-excellent-text: var(--excellent-text);
+  --color-good-text: var(--good-text);
+  --color-poor-text: var(--poor-text);
+  --color-purple-text: var(--purple-text);
+  --color-success-text: var(--success-text);
+  --color-warning-text: var(--warning-text);
+  --color-info-text: var(--info-text);
+
+  /* Нижняя ступень шкалы: метки и бейджи в плотных таблицах */
+  --text-2xs: var(--font-size-2xs);
+  --text-2xs--line-height: 1.3;
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+
+  /* Каркас страницы: одно значение для шапки, контента и сайдбара */
+  --container-page: var(--page-max-width);
+  --spacing-sidebar: var(--sidebar-width);
+  --spacing-sidebar-collapsed: var(--sidebar-width-collapsed);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  /* Сообщаем браузеру активную тему: от неё зависят системные полосы прокрутки,
+     подсветка автозаполнения, календарь у input[type=date] и меню у select. */
+  :root {
+    color-scheme: light;
+  }
+
+  :root.dark {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Резервируем место под полосу прокрутки, чтобы страница не «прыгала»
+       при открытии модалки. Раньше эту задачу решал хак
+       `body { overflow: visible !important }`, который заодно отключал
+       блокировку прокрутки фона у Radix Dialog. */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-family-sans);
+    /* 1.5 вместо 1.625: интерфейс плотный (таблицы, KPI-карточки),
+       увеличенный интерлиньяж разрежал строки и ломал ритм. */
+    line-height: var(--line-height-normal);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: -0.01em;
+  }
+
+  /* Длинный текст (описания, отчёты, markdown) читается с большим интерлиньяжем */
+  p, li {
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* Links */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Cursor pointer for all interactive elements */
+  button:not(:disabled),
+  a[href],
+  input[type="submit"]:not(:disabled),
+  input[type="button"]:not(:disabled),
+  input[type="reset"]:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  input[type="file"]:not(:disabled),
+  select:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="link"],
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="option"]:not([aria-disabled="true"]),
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  [role="switch"]:not([aria-disabled="true"]),
+  [tabindex]:not([tabindex="-1"]):not(:disabled),
+  [data-slot="button"]:not(:disabled),
+  [data-slot="trigger"]:not(:disabled),
+  summary,
+  label:has(input[type="checkbox"]),
+  label:has(input[type="radio"]),
+  label[for] {
+    cursor: pointer;
+  }
+
+  /* Ensure disabled elements have appropriate cursor */
+  button:disabled,
+  input:disabled,
+  select:disabled,
+  textarea:disabled,
+  [aria-disabled="true"],
+  [data-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+/* Custom scrollbar */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--muted-foreground) 30%, transparent);
+  border-radius: 9999px;
+  transition: all 200ms ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--muted-foreground) 50%, transparent);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--muted-foreground) 30%, transparent) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+/* Print styles */
+@media print {
+  @page {
+    size: A4;
+    margin: 2cm;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    background: white;
+  }
+
+  /* Radix-модалки (Dialog) на время открытия вешают на body блокировку
+     прокрутки: position: relative и компенсацию ширины скроллбара отступом
+     и полем справа. Body при этом становится containing block для
+     .print-version, и лишние 30px уезжали в правое поле страницы. */
+  body[data-scroll-locked] {
+    position: static !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .print-version,
+  .print-version * {
+    visibility: visible !important;
+  }
+
+  .print-version {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #000;
+  }
+
+  .print-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #000;
+  }
+
+  .print-header h1 {
+    font-size: 18pt;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    color: #000;
+  }
+
+  .print-header h2 {
+    font-size: 14pt;
+    font-weight: normal;
+    margin: 0;
+    color: #333;
+  }
+
+  .print-section {
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+  }
+
+  .print-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .print-section h3 {
+    font-size: 13pt;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #666;
+    page-break-after: avoid;
+  }
+
+  .print-section p {
+    margin: 4px 0;
+  }
+
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 9pt;
+  }
+
+  .print-table th,
+  .print-table td {
+    border: 1px solid #666;
+    padding: 5px 6px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .print-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    font-size: 8pt;
+    text-transform: uppercase;
+  }
+
+  .print-table td:first-child {
+    width: 30%;
+  }
+
+  .print-list {
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+
+  .print-list li {
+    margin: 6px 0;
+    page-break-inside: avoid;
+  }
+
+  .print-list li p {
+    margin: 2px 0 0 0;
+    color: #555;
+    font-size: 9pt;
+  }
+
+  .print-list strong {
+    font-weight: bold;
+  }
+
+  /* Markdown-документы (протоколы встреч): печатаем то же дерево, что
+     рендерит ReactMarkdown, поэтому стили теговые, а не по классам. */
+  .print-markdown h1 {
+    font-size: 15pt;
+    font-weight: bold;
+    margin: 16px 0 8px 0;
+    page-break-after: avoid;
+  }
+
+  .print-markdown h2 {
+    font-size: 13pt;
+    font-weight: bold;
+    margin: 14px 0 8px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #666;
+    page-break-after: avoid;
+  }
+
+  .print-markdown h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 12px 0 6px 0;
+    page-break-after: avoid;
+  }
+
+  .print-markdown h4,
+  .print-markdown h5,
+  .print-markdown h6 {
+    font-size: 11pt;
+    font-weight: bold;
+    margin: 10px 0 6px 0;
+    page-break-after: avoid;
+  }
+
+  .print-markdown p {
+    margin: 6px 0;
+  }
+
+  .print-markdown ul,
+  .print-markdown ol {
+    margin: 6px 0;
+    padding-left: 22px;
+  }
+
+  .print-markdown ul {
+    list-style: disc;
+  }
+
+  .print-markdown ol {
+    list-style: decimal;
+  }
+
+  .print-markdown li {
+    margin: 4px 0;
+    page-break-inside: avoid;
+  }
+
+  .print-markdown blockquote {
+    margin: 8px 0;
+    padding-left: 12px;
+    border-left: 3px solid #999;
+    color: #333;
+  }
+
+  .print-markdown table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 10pt;
+  }
+
+  .print-markdown th,
+  .print-markdown td {
+    border: 1px solid #666;
+    padding: 5px 6px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .print-markdown th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+
+  .print-markdown code,
+  .print-markdown pre {
+    font-family: 'Courier New', monospace;
+    font-size: 10pt;
+    white-space: pre-wrap;
+  }
+
+  .print-markdown hr {
+    border: none;
+    border-top: 1px solid #999;
+    margin: 12px 0;
+  }
+
+  /* Журнал перемещений: многоколоночные таблицы — равномерные колонки */
+  .print-journal .print-table {
+    font-size: 8pt;
+  }
+
+  .print-journal .print-table td:first-child {
+    width: auto;
+  }
+
+  .print-journal .print-section p {
+    font-size: 8.5pt;
+    color: #555;
+  }
+}
+
+/* Date Range Picker Custom Styles */
+.rdp-custom td[aria-selected="true"] {
+  background-color: transparent !important;
+}
+
+.rdp-custom td[aria-selected="true"] > button {
+  background-color: var(--primary) !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.rdp-custom td[aria-selected="true"] > button:hover {
+  background-color: var(--primary) !important;
+  filter: brightness(0.9);
+}
+
+.rdp-custom td.rdp-range_middle:not([aria-selected="true"]) {
+  background-color: color-mix(in oklch, var(--primary) 10%, transparent) !important;
+}
+
+.rdp-custom .rdp-day_today {
+  background-color: transparent !important;
+}
+
+.rdp-custom .rdp-day_today > button {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+/* Плотная Главная: на ноутбуке и шире всё содержимое страницы и открытые с неё
+   окна/поповеры — 80% от обычного размера (как браузерный масштаб 80%).
+   Меню слева не трогаем, чтобы оно не прыгало при переходе между страницами. */
+@media (min-width: 1024px) {
+  .home-dense-root,
+  body.home-dense [role='dialog'],
+  body.home-dense [data-radix-popper-content-wrapper] > * {
+    zoom: 0.8;
+  }
+}
