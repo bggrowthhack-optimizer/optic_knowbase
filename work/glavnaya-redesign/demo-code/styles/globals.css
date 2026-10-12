@@ -519,4 +519,10 @@
   body.home-dense [data-radix-popper-content-wrapper] > * {
     zoom: 0.8;
   }
+
+  /* Ширина компенсирует масштаб 0.8: 1750px * 0.8 ≈ 1400px на экране —
+     столько же, сколько сейчас на остальных страницах без масштаба. */
+  .home-dense-root {
+    --page-max-width: 1750px;
+  }
 }
