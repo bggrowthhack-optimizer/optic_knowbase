@@ -574,9 +574,9 @@ export function TaskFormModal({ isOpen, onClose, onSave, onCloseTask, employees,
 
   // --- Контрольная проверка при завершении (прототип) ---
   // Контрольную задачу узнаём по началу текста, дату исходной задачи — по строке
-  // «Исходная задача от ДД.ММ.ГГГГ». В продукте это будут отдельные поля задачи.
+  // «Контрольная точка к задаче от ДД.ММ.ГГГГ». В продукте это будут отдельные поля задачи.
   const isControlTask = !!editTask?.work_plan?.startsWith('Контрольная проверка:')
-  const controlOrigin = editTask?.work_plan?.match(/Исходная задача от (\d{2})\.(\d{2})\.(\d{4})/)
+  const controlOrigin = editTask?.work_plan?.match(/Контрольная точка к задаче от (\d{2})\.(\d{2})\.(\d{4})/)
   const [controlOn, setControlOn] = useState(false)
   const [controlPreset, setControlPreset] = useState<'1w' | '2w' | '1m' | 'custom'>('2w')
   const [controlCustomDate, setControlCustomDate] = useState<Date | undefined>(undefined)
@@ -704,7 +704,7 @@ export function TaskFormModal({ isOpen, onClose, onSave, onCloseTask, employees,
     `Контрольная проверка: ${basePlan}`,
     `Результат встречи ${fmtRu(taskDate)}: ${workResult.trim() || '—'}`,
     `${metricAffected} на ${fmtRu(taskDate)}: ${valueAtTask ?? '…'} (среднее за 3 недели)`,
-    `Исходная задача от ${fmtRu(originIso)}`,
+    `Контрольная точка к задаче от ${fmtRu(originIso)}`,
   ].join('\n')
 
   // When category switches to organizational — reset employee/metric to org placeholders
@@ -960,7 +960,6 @@ export function TaskFormModal({ isOpen, onClose, onSave, onCloseTask, employees,
           <div className="flex items-center justify-between px-4 py-4 md:px-7 md:py-5">
             <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground">
               {editTask ? 'Редактировать задачу' : 'Новая задача'}
-              {isControlTask && <Badge variant="info" className="font-medium">Контрольная</Badge>}
             </h2>
             <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg bg-muted text-muted-foreground hover:bg-border transition-colors" aria-label="Закрыть">
               <X className="w-4 h-4" />
