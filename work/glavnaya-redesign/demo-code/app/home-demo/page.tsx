@@ -189,6 +189,8 @@ function CompactProgressHeader({ progress }: { progress: MonthlyProgress }) {
  *  (см. YESTERDAY_RESULTS ниже) до тех пор, пока рОП не решит, что с ним делать. */
 interface TodayItem {
   id: string
+  /** День задачи, YYYY-MM-DD */
+  date: string
   employee: string
   role: string
   branch: string
@@ -198,10 +200,45 @@ interface TodayItem {
   time: string
   status: TaskStatus
 }
-const TODAY_ITEMS: TodayItem[] = [
-  { id: '1', employee: 'Сидоров Дмитрий Николаевич', role: 'Врач', branch: 'Садовая 7', category: 'development', workPlan: 'Поддерживающий разбор % рекомендаций ВТЛ', metric: '% рекомендаций ВТЛ', time: '11:00', status: 'completed' },
-  { id: '4', employee: 'Волков Игорь Олегович', role: 'Консультант', branch: 'Ленина 24', category: 'development', workPlan: 'Повторная встреча — 2-я неделя подряд по % рецепт → заказ', metric: '% рецепт → заказ', time: '15:30', status: 'pending' },
+/** «Сегодня» в демо — следующий день после последних данных (актуальны на 06.10). */
+const DEMO_TODAY = '2026-10-07'
+/** План задач на несколько дней вокруг сегодня — для раскрытого плана на 3 дня
+ *  с пролистыванием. В реальном продукте — getWeeklyTasks за нужные даты. */
+const PLAN_ITEMS: TodayItem[] = [
+  { id: 'p1', date: '2026-10-05', employee: 'Сидоров Дмитрий Николаевич', role: 'Врач', branch: 'Садовая 7', category: 'development', workPlan: 'Общий разбор показаний по шаблону', metric: '% рекомендаций ВТЛ', time: '11:00', status: 'completed' },
+  { id: 'p2', date: '2026-10-05', employee: 'Козлова Елена Андреевна', role: 'Врач', branch: 'Ленина 24', category: 'development', workPlan: 'Встреча по итогам недели', metric: '% рекомендаций ВТЛ', time: '14:00', status: 'failed' },
+  { id: 'p3', date: '2026-10-06', employee: 'Кузнецов Артём Сергеевич', role: 'Консультант', branch: 'Садовая 7', category: 'development', workPlan: 'Разбор вчерашних продаж — где терялась допродажа по оправе', metric: 'Средний чек', time: '10:00', status: 'completed' },
+  // Прошлый день, задача осталась незакрытой — видно, если пролистать назад
+  { id: 'p4', date: '2026-10-06', employee: 'Новикова Ольга Павловна', role: 'Консультант', branch: 'Садовая 7', category: 'development', workPlan: 'Короткий разбор: что мешало предлагать оправу дороже', metric: 'Средний чек оправ', time: '17:00', status: 'pending' },
+  { id: '1', date: '2026-10-07', employee: 'Сидоров Дмитрий Николаевич', role: 'Врач', branch: 'Садовая 7', category: 'development', workPlan: 'Поддерживающий разбор % рекомендаций ВТЛ', metric: '% рекомендаций ВТЛ', time: '11:00', status: 'completed' },
+  { id: '4', date: '2026-10-07', employee: 'Волков Игорь Олегович', role: 'Консультант', branch: 'Ленина 24', category: 'development', workPlan: 'Повторная встреча — 2-я неделя подряд по % рецепт → заказ', metric: '% рецепт → заказ', time: '15:30', status: 'pending' },
+  { id: 'p5', date: '2026-10-08', employee: 'Новикова Ольга Павловна', role: 'Консультант', branch: 'Садовая 7', category: 'development', workPlan: 'Отработка допродажи оправы — ролевая игра', metric: 'Средний чек', time: '12:00', status: 'pending' },
+  { id: 'p6', date: '2026-10-08', employee: 'Кузнецов Артём Сергеевич', role: 'Консультант', branch: 'Садовая 7', category: 'organizational', workPlan: 'Согласовать график смен на ноябрь', time: '17:00', status: 'pending' },
+  { id: 'p7', date: '2026-10-09', employee: 'Сидоров Дмитрий Николаевич', role: 'Врач', branch: 'Садовая 7', category: 'development', workPlan: 'Разбор записи приёма — показать момент с возражением «дорого»', metric: '% рекомендаций ВТЛ', time: '14:00', status: 'pending' },
+  { id: 'p8', date: '2026-10-10', employee: 'Козлова Елена Андреевна', role: 'Врач', branch: 'Ленина 24', category: 'development', workPlan: 'Разобрать чек-лист приёма по рекомендациям ВТЛ', metric: '% рекомендаций ВТЛ', time: '11:30', status: 'pending' },
+  // 11.10 — задач нет
+  { id: 'p9', date: '2026-10-12', employee: 'Волков Игорь Олегович', role: 'Консультант', branch: 'Ленина 24', category: 'development', workPlan: 'Ролевая игра: возражение «подумаю» после рецепта', metric: '% рецепт → заказ', time: '12:00', status: 'pending' },
+  { id: 'p10', date: '2026-10-14', employee: 'Волков Игорь Олегович', role: 'Консультант', branch: 'Ленина 24', category: 'development', workPlan: 'Контрольная проверка: % рецепт → заказ', metric: '% рецепт → заказ', time: '15:30', status: 'pending' },
 ]
+const TODAY_ITEMS: TodayItem[] = PLAN_ITEMS.filter(i => i.date === DEMO_TODAY)
+
+function addDaysIso(iso: string, n: number): string {
+  const d = new Date(`${iso}T00:00:00Z`)
+  d.setUTCDate(d.getUTCDate() + n)
+  return d.toISOString().slice(0, 10)
+}
+/** «07.10» */
+function planDayShort(iso: string): string {
+  const [, m, d] = iso.split('-')
+  return `${d}.${m}`
+}
+/** «Сегодня, ср 07.10» / «Завтра, чт 08.10» / «Пт, 09.10» */
+function planDayLabel(iso: string): string {
+  const diff = Math.round((Date.parse(iso) - Date.parse(DEMO_TODAY)) / 864e5)
+  const wd = new Date(`${iso}T00:00:00Z`).toLocaleDateString('ru-RU', { weekday: 'short', timeZone: 'UTC' })
+  const rel = diff === 0 ? 'Сегодня' : diff === 1 ? 'Завтра' : diff === -1 ? 'Вчера' : null
+  return rel ? `${rel}, ${wd} ${planDayShort(iso)}` : `${wd[0].toUpperCase()}${wd.slice(1)}, ${planDayShort(iso)}`
+}
 
 /** Не «вчера» единичным днём (шум одного сложного клиента), а среднее за
  * последние 3 дня против нормы — устойчивый паттерн, а не случайность.
@@ -1422,9 +1459,12 @@ function IndicatorsRow() {
   // Статусы задач — локально, как и весь прототип. В реальном виде это было бы
   // полем WeeklyTask.status, меняемым через updateWeeklyTask (как в /tasks).
   const [statuses, setStatuses] = useState<Record<string, TaskStatus>>(
-    () => Object.fromEntries(TODAY_ITEMS.map(i => [i.id, i.status])),
+    () => Object.fromEntries(PLAN_ITEMS.map(i => [i.id, i.status])),
   )
-  const doneToday = Object.values(statuses).filter(s => s === 'completed').length
+  const doneToday = TODAY_ITEMS.filter(i => statuses[i.id] === 'completed').length
+  // Раскрытый план — 3 дня подряд; стрелки сдвигают на 1 день в обе стороны.
+  const [planOffset, setPlanOffset] = useState(0)
+  const planDays = [0, 1, 2].map(i => addDaysIso(DEMO_TODAY, planOffset + i))
   const drops = YESTERDAY_RESULTS.filter(r => r.isDrop)
 
   // «В план дня» / «Поставить задачу» / завершение задачи с результатом —
@@ -1532,79 +1572,123 @@ function IndicatorsRow() {
       </Card>
 
 
-      {/* Раскрытый список — отдельной карточкой на всю ширину под обеими
-          шапками: «Внимание» остаётся на своём месте, ничего не переезжает. */}
+      {/* Раскрытый план — 3 дня рядом, по колонке на день. Стрелки сдвигают
+          на 1 день (назад тоже можно), «Сегодня» возвращает к сегодня.
+          На телефоне — одна колонка, листается теми же стрелками. */}
       {open === 'today' && (
         <Card className="overflow-hidden">
-          <div className="flex justify-end px-5 pt-3">
+          <div className="flex items-center gap-2 px-4 md:px-5 py-2.5 border-b border-border/60">
+            <button
+              aria-label="Предыдущий день"
+              onClick={() => setPlanOffset(o => o - 1)}
+              className="h-8 w-8 inline-flex items-center justify-center rounded-md border border-border bg-background hover:bg-muted transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="text-sm font-medium tabular-nums text-center min-w-[3.5rem] md:min-w-[7.5rem]">
+              <span className="hidden md:inline">{planDayShort(planDays[0])} — {planDayShort(planDays[2])}</span>
+              <span className="md:hidden">{planDayShort(planDays[0])}</span>
+            </span>
+            <button
+              aria-label="Следующий день"
+              onClick={() => setPlanOffset(o => o + 1)}
+              className="h-8 w-8 inline-flex items-center justify-center rounded-md border border-border bg-background hover:bg-muted transition-colors"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setPlanOffset(0)}
+              disabled={planOffset === 0}
+              className="ml-1 rounded-md border border-border bg-background px-3 h-8 text-sm font-medium hover:bg-muted transition-colors disabled:opacity-40 disabled:hover:bg-background"
+            >
+              Сегодня
+            </button>
             <button
               onClick={() => setTaskModalPreset({ metric: '', workPlan: '' })}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+              className="ml-auto inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
             >
               <Plus className="w-3.5 h-3.5" /> Задача
             </button>
           </div>
-          <div className="divide-y divide-border/50">
-            {TODAY_ITEMS.filter(item => {
-              const s = statuses[item.id]
-              return s !== 'completed' && s !== 'failed'
-            }).map((item) => {
-              const status = statuses[item.id]
-              const styles = taskStatusStyles(status)
+          <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-border/60">
+            {planDays.map((iso, idx) => {
+              const items = PLAN_ITEMS.filter(i => i.date === iso).sort((x, y) => x.time.localeCompare(y.time))
+              const isClosed = (i: TodayItem) => statuses[i.id] === 'completed' || statuses[i.id] === 'failed'
+              const openItems = items.filter(i => !isClosed(i))
+              const closedItems = items.filter(isClosed)
+              const isToday = iso === DEMO_TODAY
+              const isPast = iso < DEMO_TODAY
+              // Сегодня и прошлые дни — «закрыто из всего», будущие — сколько задач
+              const counter = isToday || isPast
+                ? `${items.filter(i => statuses[i.id] === 'completed').length} из ${items.length}`
+                : String(items.length)
               return (
-                <div key={item.id} className={`flex items-start gap-3 px-5 py-3 ${styles.card}`}>
-                  <TaskCloseButtons status={status} onClose={(target) => handleCloseToday(item, target)} size="sm" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <span className="text-xs text-muted-foreground">{item.time}</span>
-                      <span className="text-xs text-muted-foreground opacity-40">·</span>
-                      <CategoryBadge category={item.category} />
-                    </div>
-                    <div className={`font-medium text-sm ${styles.title}`}>
-                      {item.employee} <span className="font-normal text-muted-foreground">({item.role})</span>
-                    </div>
-                    <ClampText className={`text-sm mt-0.5 ${styles.title}`}>{item.workPlan}</ClampText>
-                    {item.metric && (
-                      <span className="inline-block mt-1.5 text-2xs font-medium text-muted-foreground bg-muted rounded px-2 py-0.5">{item.metric}</span>
-                    )}
+                <div key={iso} className={`min-w-0 ${idx > 0 ? 'hidden md:block' : ''}`}>
+                  <div className={`flex items-baseline gap-1.5 px-4 py-2 border-b border-border/50 ${isToday ? 'bg-primary/5' : 'bg-muted/30'}`}>
+                    <span className={`text-sm font-semibold ${isToday ? 'text-primary' : 'text-foreground'}`}>{planDayLabel(iso)}</span>
+                    {items.length > 0 && <span className="text-sm text-muted-foreground tabular-nums">· {counter}</span>}
                   </div>
+                  {items.length === 0 ? (
+                    <div className="px-4 py-8 text-sm text-muted-foreground text-center">Задач нет</div>
+                  ) : (
+                    <>
+                      <div className="divide-y divide-border/50">
+                        {openItems.map((item) => {
+                          const status = statuses[item.id]
+                          const styles = taskStatusStyles(status)
+                          return (
+                            <div key={item.id} className={`flex items-start gap-2.5 px-4 py-3 ${styles.card}`}>
+                              <TaskCloseButtons status={status} onClose={(target) => handleCloseToday(item, target)} size="sm" />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1.5 mb-1">
+                                  <span className="text-xs text-muted-foreground tabular-nums">{item.time}</span>
+                                  <span className="text-xs text-muted-foreground opacity-40">·</span>
+                                  <CategoryBadge category={item.category} />
+                                </div>
+                                <div className={`font-medium text-sm ${styles.title}`}>
+                                  {item.employee} <span className="font-normal text-muted-foreground">({item.role})</span>
+                                </div>
+                                <ClampText className={`text-sm mt-0.5 ${styles.title}`}>{item.workPlan}</ClampText>
+                                {item.metric && (
+                                  <span className="inline-block mt-1.5 text-2xs font-medium text-muted-foreground bg-muted rounded px-2 py-0.5">{item.metric}</span>
+                                )}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                      {closedItems.length > 0 && (
+                        <div className="border-t bg-muted/20 divide-y divide-border/50">
+                          {closedItems.map((item) => {
+                            const status = statuses[item.id]
+                            return (
+                              <div key={item.id} className="flex items-start gap-2.5 px-4 py-2.5 opacity-60">
+                                <Check className="w-3.5 h-3.5 mt-0.5 shrink-0 text-muted-foreground" />
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-1.5 mb-0.5">
+                                    <span className="text-xs text-muted-foreground tabular-nums">{item.time}</span>
+                                    <span className="text-xs text-muted-foreground opacity-40">·</span>
+                                    <CategoryBadge category={item.category} />
+                                  </div>
+                                  <div className="text-sm text-muted-foreground line-through">
+                                    {item.employee} <span className="font-normal">({item.role})</span>
+                                  </div>
+                                  <div className="text-sm text-muted-foreground/80 line-through">{item.workPlan}</div>
+                                </div>
+                                <span className="text-2xs font-medium text-muted-foreground shrink-0 mt-0.5">
+                                  {status === 'failed' ? 'Отменена' : 'Завершена'}
+                                </span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )
             })}
           </div>
-
-          {TODAY_ITEMS.some(item => {
-            const s = statuses[item.id]
-            return s === 'completed' || s === 'failed'
-          }) && (
-            <div className="border-t bg-muted/20 divide-y divide-border/50">
-              {TODAY_ITEMS.filter(item => {
-                const s = statuses[item.id]
-                return s === 'completed' || s === 'failed'
-              }).map((item) => {
-                const status = statuses[item.id]
-                return (
-                  <div key={item.id} className="flex items-start gap-3 px-5 py-2.5 opacity-60">
-                    <Check className="w-3.5 h-3.5 mt-0.5 shrink-0 text-muted-foreground" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-xs text-muted-foreground">{item.time}</span>
-                        <span className="text-xs text-muted-foreground opacity-40">·</span>
-                        <CategoryBadge category={item.category} />
-                      </div>
-                      <div className="text-sm text-muted-foreground line-through">
-                        {item.employee} <span className="font-normal">({item.role})</span>
-                      </div>
-                      <div className="text-sm text-muted-foreground/80 line-through">{item.workPlan}</div>
-                    </div>
-                    <span className="text-2xs font-medium text-muted-foreground shrink-0 mt-0.5">
-                      {status === 'failed' ? 'Отменена' : 'Завершена'}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          )}
         </Card>
       )}
 
