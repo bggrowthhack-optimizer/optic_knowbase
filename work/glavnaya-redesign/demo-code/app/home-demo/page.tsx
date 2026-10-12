@@ -7,6 +7,7 @@ import { getKpiData, getBranchesDataWithWeeks, getMonthlyProgress, getMetricsSet
 import { TaskFormModal, TaskCloseButtons, CategoryBadge, taskStatusStyles, type ManagerOption, type TaskCloseStatus } from '@/components/task-shared'
 import { ModalShell, ModalCloseButton } from '@/components/ui/modal-shell'
 import { ClampText } from '@/components/ui/clamp-text'
+import { cn } from '@/lib/utils'
 import { GroupedEmployeeList, WeeklyTaskCreate, TaskStatus } from '@/types'
 import { KpiCard } from '@/components/kpi-card'
 import { BranchCard } from '@/components/branch-card'
@@ -1603,9 +1604,15 @@ function IndicatorsRow() {
             >
               Сегодня
             </button>
+            <Link
+              href="/tasks"
+              className="ml-auto inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+            >
+              Раздел «Задачи» <ArrowRight className="w-3 h-3" />
+            </Link>
             <button
               onClick={() => setTaskModalPreset({ metric: '', workPlan: '' })}
-              className="ml-auto inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
             >
               <Plus className="w-3.5 h-3.5" /> Задача
             </button>
@@ -1613,9 +1620,9 @@ function IndicatorsRow() {
           <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x divide-border/60">
             {planDays.map((iso, idx) => {
               const items = PLAN_ITEMS.filter(i => i.date === iso).sort((x, y) => x.time.localeCompare(y.time))
-              const isClosed = (i: TodayItem) => statuses[i.id] === 'completed' || statuses[i.id] === 'failed'
-              const openItems = items.filter(i => !isClosed(i))
-              const closedItems = items.filter(isClosed)
+              // Задача закрыта (завершена/отменена) — сразу пропадает из плана дня,
+              // историю смотрят в разделе «Задачи» (ссылка выше).
+              const openItems = items.filter(i => statuses[i.id] !== 'completed' && statuses[i.id] !== 'failed')
               const isToday = iso === DEMO_TODAY
               const isPast = iso < DEMO_TODAY
               // Сегодня и прошлые дни — «закрыто из всего», будущие — сколько задач
@@ -1630,60 +1637,45 @@ function IndicatorsRow() {
                   </div>
                   {items.length === 0 ? (
                     <div className="px-4 py-8 text-sm text-muted-foreground text-center">Задач нет</div>
+                  ) : openItems.length === 0 ? (
+                    <div className="px-4 py-8 text-sm text-muted-foreground text-center">Всё закрыто</div>
                   ) : (
-                    <>
-                      <div className="divide-y divide-border/50">
-                        {openItems.map((item) => {
-                          const status = statuses[item.id]
-                          const styles = taskStatusStyles(status)
-                          return (
-                            <div key={item.id} className={`flex items-start gap-2.5 px-4 py-3 ${styles.card}`}>
-                              <TaskCloseButtons status={status} onClose={(target) => handleCloseToday(item, target)} size="sm" />
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-1.5 mb-1">
-                                  <span className="text-xs text-muted-foreground tabular-nums">{item.time}</span>
-                                  <span className="text-xs text-muted-foreground opacity-40">·</span>
-                                  <CategoryBadge category={item.category} />
-                                </div>
-                                <div className={`font-medium text-sm ${styles.title}`}>
-                                  {item.employee} <span className="font-normal text-muted-foreground">({item.role})</span>
-                                </div>
-                                <ClampText className={`text-sm mt-0.5 ${styles.title}`}>{item.workPlan}</ClampText>
-                                {item.metric && (
-                                  <span className="inline-block mt-1.5 text-2xs font-medium text-muted-foreground bg-muted rounded px-2 py-0.5">{item.metric}</span>
-                                )}
+                    <div className="p-2.5 space-y-2">
+                      {openItems.map((item) => {
+                        const status = statuses[item.id]
+                        const styles = taskStatusStyles(status)
+                        return (
+                          // Та же карточка строки, что в «Задачах»/«Карте сотрудника»
+                          // (TaskCardItem в employee-tasks-panel.tsx).
+                          <div key={item.id} className={cn('flex items-start gap-3 p-3 rounded-lg border transition-colors', styles.card)}>
+                            <TaskCloseButtons
+                              status={status}
+                              onClose={(target) => handleCloseToday(item, target)}
+                              onReschedule={() => alert('В продукте откроется быстрый выбор даты: завтра / послезавтра / через неделю / своя дата')}
+                              size="sm"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 mb-1">
+                                <CategoryBadge category={item.category} />
                               </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                      {closedItems.length > 0 && (
-                        <div className="border-t bg-muted/20 divide-y divide-border/50">
-                          {closedItems.map((item) => {
-                            const status = statuses[item.id]
-                            return (
-                              <div key={item.id} className="flex items-start gap-2.5 px-4 py-2.5 opacity-60">
-                                <Check className="w-3.5 h-3.5 mt-0.5 shrink-0 text-muted-foreground" />
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-1.5 mb-0.5">
-                                    <span className="text-xs text-muted-foreground tabular-nums">{item.time}</span>
-                                    <span className="text-xs text-muted-foreground opacity-40">·</span>
-                                    <CategoryBadge category={item.category} />
-                                  </div>
-                                  <div className="text-sm text-muted-foreground line-through">
-                                    {item.employee} <span className="font-normal">({item.role})</span>
-                                  </div>
-                                  <div className="text-sm text-muted-foreground/80 line-through">{item.workPlan}</div>
-                                </div>
-                                <span className="text-2xs font-medium text-muted-foreground shrink-0 mt-0.5">
-                                  {status === 'failed' ? 'Отменена' : 'Завершена'}
+                              <div className={`font-medium text-sm ${styles.title}`}>
+                                {item.employee} <span className="font-normal text-muted-foreground">({item.role})</span>
+                              </div>
+                              <ClampText className={`text-sm mt-0.5 ${styles.title}`}>{item.workPlan}</ClampText>
+                              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                {item.metric && (
+                                  <span className="px-1.5 py-0.5 text-xs font-medium rounded border border-border bg-muted text-muted-foreground">{item.metric}</span>
+                                )}
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  {item.time}
                                 </span>
                               </div>
-                            )
-                          })}
-                        </div>
-                      )}
-                    </>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   )}
                 </div>
               )

@@ -15,7 +15,7 @@ export interface ManagerOption {
   id: number
   name: string
 }
-import { Check, X, Pause, RotateCcw, Upload, Mic, Trash2, Loader2, Sparkles, Info, CalendarCheck } from 'lucide-react'
+import { Check, X, Pause, RotateCcw, Upload, Mic, Trash2, Loader2, Sparkles, Info, CalendarCheck, CalendarClock } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -248,11 +248,15 @@ const CLOSE_ACTIONS: {
 export function TaskCloseButtons({
   status,
   onClose,
+  onReschedule,
   size = 'md',
   labeled = false,
 }: {
   status: TaskStatus
   onClose: (target: TaskCloseStatus) => void
+  /** Задача 2 «Перенос задачи на другой день» — кнопка видна везде, где видна
+   *  задача. Опциональна, пока перенос не подключён во всех местах. */
+  onReschedule?: () => void
   size?: 'sm' | 'md'
   labeled?: boolean
 }) {
@@ -283,6 +287,22 @@ export function TaskCloseButtons({
               </Tooltip>
             )
           })}
+          {onReschedule && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onReschedule() }}
+                  aria-label="Перенести"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md border text-sm font-medium transition-colors border-border text-muted-foreground/50 hover:border-primary hover:text-primary"
+                >
+                  <CalendarClock className="w-4 h-4" />
+                  Перенести
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Перенести — на другой день, время сохранится</TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </TooltipProvider>
     )
@@ -316,6 +336,25 @@ export function TaskCloseButtons({
             </Tooltip>
           )
         })}
+        {onReschedule && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onReschedule() }}
+                aria-label="Перенести"
+                className={cn(
+                  box,
+                  'rounded border flex items-center justify-center transition-colors',
+                  'border-border text-muted-foreground/50 hover:border-primary hover:text-primary',
+                )}
+              >
+                <CalendarClock className={ic} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Перенести — на другой день, время сохранится</TooltipContent>
+          </Tooltip>
+        )}
       </div>
     </TooltipProvider>
   )
