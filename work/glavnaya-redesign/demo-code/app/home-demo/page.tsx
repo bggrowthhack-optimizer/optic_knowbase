@@ -984,10 +984,10 @@ function BranchAnalysisModal({
 
   return (
     <>
-      <ModalShell open={open} onClose={onClose} title="Анализ филиала" className="max-w-2xl max-h-[85vh]">
-        <div className="flex flex-col max-h-[85vh]">
-          <div className="px-5 pt-5 pb-3 border-b shrink-0">
-            <h2 className="text-lg font-semibold mb-3">Анализ филиала{branchName && <span className="font-normal text-muted-foreground"> · {branchName}</span>}</h2>
+      <ModalShell open={open} onClose={onClose} title="Анализ филиала" className="max-w-2xl lg:max-w-[1400px] max-h-[85vh] lg:max-h-[90vh]">
+        <div className="flex flex-col max-h-[85vh] lg:max-h-[90vh]">
+          <div className="px-5 pt-5 pb-3 lg:py-3 border-b shrink-0 lg:flex lg:items-center lg:gap-6">
+            <h2 className="text-lg font-semibold mb-3 lg:mb-0">Анализ филиала{branchName && <span className="font-normal text-muted-foreground"> · {branchName}</span>}</h2>
             <div className="inline-flex items-center gap-1 bg-muted rounded-lg p-0.5">
               {([
                 { id: 'overview', label: 'Обзор месяца' },
@@ -1005,7 +1005,7 @@ function BranchAnalysisModal({
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-5 space-y-6">
+          <div className="flex-1 overflow-y-auto p-5 lg:p-4 space-y-6">
            {tab === 'overview' && <>
             {/* Один отчёт, одна рамка — заголовок-вывод + таблица причин
                 под ним, разделённые тонкой линией, а не два разных по стилю
@@ -1027,7 +1027,8 @@ function BranchAnalysisModal({
               const explained = PLAN_BLOCKERS.reduce((sum, b) => sum + b.impactAmount, 0)
               const rest = Math.max(0, gap - explained)
               return (
-                <>
+                <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
+                 <div className="space-y-6">
                   {/* Шапка — явно «план продаж на очки» (не общая выручка) и
                       только доли: темп месяца против выполнения, прогноз и
                       недобор. Абсолютные суммы факта/прогноза убраны — их
@@ -1081,6 +1082,7 @@ function BranchAnalysisModal({
                     )}
                   </div>
 
+                 </div>
                   {/* Сравнение с прошлым месяцем — за те же дни (1–N число),
                       а не с целым месяцем: иначе октябрь на 6-е всегда «хуже». */}
                   <div>
@@ -1123,12 +1125,12 @@ function BranchAnalysisModal({
                       </table>
                     </div>
                   </div>
-                </>
+                </div>
               )
             })()}
            </>}
 
-           {tab === 'shift' && <>
+           {tab === 'shift' && <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-6 lg:items-start">
             {/* Обзор смены — вторая вкладка, та же логика отчёта, что на
                 вкладке «Обзор», но за вчера и с фокусом на действие: факт/
                 план смены одной фразой + тренд, воронка (где именно теряем
@@ -1192,7 +1194,7 @@ function BranchAnalysisModal({
               {attention.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-4">Все в пределах нормы — отклонений нет.</p>
               ) : (
-                <div className="rounded-lg border border-border overflow-hidden divide-y divide-border">
+                <div className="rounded-lg border border-border overflow-hidden divide-y divide-border lg:max-h-[calc(90vh-9.5rem)] lg:overflow-y-auto">
                   {Array.from(new Set(attention.map(x => x.employee))).map(name => {
                     const items = attention.filter(x => x.employee === name)
                     return (
@@ -1212,7 +1214,7 @@ function BranchAnalysisModal({
                 </div>
               )}
             </div>
-           </>}
+           </div>}
 
            {tab === 'trend' && (() => {
             const rub = (n: number) => Math.round(n).toLocaleString('ru-RU') + ' ₽'
@@ -1261,7 +1263,7 @@ function BranchAnalysisModal({
                 </td>
               )
             }
-            return <>
+            return <div className="space-y-6 lg:space-y-5">
               {/* Сверху — итог текстом и к чему ведёт, если так пойдёт дальше. */}
               <div className="rounded-lg border border-border px-4 py-3">
                 <h3 className="text-sm font-semibold">Последние 7 дней</h3>
@@ -1278,6 +1280,7 @@ function BranchAnalysisModal({
                 </p>
               </div>
 
+              <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-6 lg:items-start">
               {/* Таблица вместо графиков: последние 7 дней против тех же 7 дней
                   месяц, 2 месяца и год назад. Под значением прошлого периода —
                   насколько сейчас лучше/хуже. На телефоне — прокрутка вбок. */}
@@ -1307,7 +1310,7 @@ function BranchAnalysisModal({
                   // На телефоне таблица шире экрана — сразу прокручиваем к
                   // последней неделе, она важнее старых.
                   <div ref={el => { if (el) el.scrollLeft = el.scrollWidth }} className="rounded-lg border border-border overflow-x-auto">
-                    <table className="w-full text-sm min-w-[520px]">
+                    <table className="w-full text-sm min-w-[520px] lg:[&_td]:py-1.5">
                       <thead>
                         <tr className="text-2xs text-muted-foreground bg-muted">
                           <th className="sticky left-0 z-10 bg-muted text-left font-medium px-4 py-2 min-w-[150px]">Показатель</th>
@@ -1356,7 +1359,7 @@ function BranchAnalysisModal({
                   </div>
                 ) : (
                 <div className="rounded-lg border border-border overflow-x-auto">
-                  <table className="w-full text-sm min-w-[520px]">
+                  <table className="w-full text-sm min-w-[520px] lg:[&_td]:py-1.5">
                     <thead>
                       <tr className="text-2xs text-muted-foreground bg-muted/40">
                         <th className="sticky left-0 z-10 bg-muted text-left font-medium px-4 py-2 min-w-[150px]">Показатель</th>
@@ -1396,7 +1399,7 @@ function BranchAnalysisModal({
                 <div>
                   <h3 className="text-sm font-semibold">Кто тянет вниз</h3>
                   <p className="text-xs text-muted-foreground mt-0.5 mb-2.5">Просели за последние 7 дней сильнее остальных · нажмите, чтобы разобрать</p>
-                  <div className="rounded-lg border border-border overflow-hidden divide-y divide-border">
+                  <div className="rounded-lg border border-border overflow-hidden divide-y divide-border lg:max-h-[calc(90vh-17rem)] lg:overflow-y-auto">
                     {Array.from(new Set(TREND_DRAGGERS.map(x => x.employee))).map(name => {
                       const key = `trend:${name}`
                       return (
@@ -1415,7 +1418,8 @@ function BranchAnalysisModal({
                   </div>
                 </div>
               )}
-            </>
+              </div>
+            </div>
            })()}
           </div>
         </div>
