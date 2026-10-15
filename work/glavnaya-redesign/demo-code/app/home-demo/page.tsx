@@ -1101,20 +1101,21 @@ function BranchAnalysisModal({
                             const diff = r.cur - r.prev
                             const better = r.lowerIsBetter ? diff < 0 : diff > 0
                             const fmt = (n: number) => r.unit === '₽' ? Math.round(n).toLocaleString('ru-RU') + ' ₽' : `${n}${r.unit}`
-                            const diffText = r.unit === '%'
-                              ? `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.abs(diff)} п.п.`
-                              : `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / r.prev) * 100)}%`
+                            // Доли (%) — без «п.п.»: само значение зелёное, если лучше, и красное, если хуже.
+                            const isShare = r.unit === '%'
+                            const shareTone = diff === 0 ? '' : better ? 'text-excellent' : 'text-poor'
+                            const diffText = `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / r.prev) * 100)}%`
                             return (
                               <tr key={r.label}>
                                 <td className="px-4 py-2 text-foreground leading-snug">{r.label}</td>
                                 <td className="px-2 py-2 text-right tabular-nums text-muted-foreground whitespace-nowrap">{fmt(r.prev)}</td>
-                                <td className="pl-2 pr-4 sm:pr-2 py-2 text-right tabular-nums font-medium whitespace-nowrap">
+                                <td className={`pl-2 pr-4 sm:pr-2 py-2 text-right tabular-nums font-medium whitespace-nowrap ${isShare ? shareTone : ''}`}>
                                   {fmt(r.cur)}
                                   {/* На телефоне изменение — под значением, отдельная колонка не влезает. */}
-                                  <span className={`sm:hidden block text-2xs ${diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'}`}>{diff === 0 ? '—' : diffText}</span>
+                                  {!isShare && <span className={`sm:hidden block text-2xs ${diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'}`}>{diff === 0 ? '—' : diffText}</span>}
                                 </td>
                                 <td className={`hidden sm:table-cell pl-2 pr-4 py-2 text-right tabular-nums text-xs font-medium whitespace-nowrap ${diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'}`}>
-                                  {diff === 0 ? '—' : diffText}
+                                  {isShare ? '' : diff === 0 ? '—' : diffText}
                                 </td>
                               </tr>
                             )
@@ -1251,13 +1252,14 @@ function BranchAnalysisModal({
               const cur = r.values[r.values.length - 1]
               const diff = cur - past
               const better = r.lowerIsBetter ? diff < 0 : diff > 0
-              const txt = r.unit === '%'
-                ? `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.abs(diff)} п.п.`
-                : `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / past) * 100)}%`
+              const isShare = r.unit === '%'
+              const txt = `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / past) * 100)}%`
+              const tone = diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'
               return (
                 <td className="px-2 py-2 text-right align-top whitespace-nowrap">
-                  <span className="block tabular-nums text-muted-foreground">{fmtVal(r, past)}</span>
-                  <span className={`block text-2xs tabular-nums ${diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'}`}>{diff === 0 ? '—' : txt}</span>
+                  {/* Доли — без «п.п.»: значение того периода красим по сравнению с «сейчас». */}
+                  <span className={`block tabular-nums ${isShare ? tone : 'text-muted-foreground'}`}>{fmtVal(r, past)}</span>
+                  {!isShare && <span className={`block text-2xs tabular-nums ${tone}`}>{diff === 0 ? '—' : txt}</span>}
                 </td>
               )
             }
@@ -1336,14 +1338,15 @@ function BranchAnalysisModal({
                                 const prev = i > 0 ? r.values[i - 1] : null
                                 const diff = prev === null ? 0 : v - prev
                                 const better = r.lowerIsBetter ? diff < 0 : diff > 0
-                                const txt = prev === null ? '' : r.unit === '%'
-                                  ? `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.abs(diff)} п.п.`
-                                  : `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / prev) * 100)}%`
+                                const isShare = r.unit === '%'
+                                const txt = prev === null ? '' : `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / prev) * 100)}%`
+                                // Доли — без «п.п.»: значение зелёное, если лучше прошлой недели, красное, если хуже.
+                                const shareTone = isShare && diff !== 0 ? (better ? 'text-excellent' : 'text-poor') : ''
                                 return (
                                   <td key={i} className={`py-2 text-right align-top whitespace-nowrap ${last ? 'pl-2 pr-4' : 'px-2'}`}>
-                                    <span className={`block tabular-nums ${last ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>{fmtVal(r, v)}</span>
+                                    <span className={`block tabular-nums ${last ? 'font-semibold' : ''} ${shareTone || (last ? 'text-foreground' : 'text-muted-foreground')}`}>{fmtVal(r, v)}</span>
                                     {/* Изменение к предыдущей неделе */}
-                                    {prev !== null && (
+                                    {prev !== null && !isShare && (
                                       <span className={`block text-2xs tabular-nums ${diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'}`}>{diff === 0 ? '—' : txt}</span>
                                     )}
                                   </td>
