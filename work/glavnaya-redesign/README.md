@@ -6,3 +6,4 @@
 - `glavnaya-artifact.html` — снимок демо Главной (опубликован: https://claude.ai/artifact/AVEY47PLimczV12XZCfKgo).
 - `meetings/` — расшифровки встреч (07.10 К–Руслан 3.10, 08.10 с Леной Каракозовой).
 - `demo-code/` — изменённые файлы прототипа `/home-demo` из optics_summary (frontend/src/…) и скрипты снимка артефакта.
+- `prototip-obzor-mesyatsa.html` — самодостаточный прототип вкладки «Обзор месяца» (окно «Анализ филиала»), открывается двойным кликом, без сервера.
