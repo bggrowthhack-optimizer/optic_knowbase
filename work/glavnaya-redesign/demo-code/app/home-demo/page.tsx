@@ -1092,8 +1092,7 @@ function BranchAnalysisModal({
                           <tr className="text-2xs text-muted-foreground bg-muted/40">
                             <th className="text-left font-medium px-4 py-2">Показатель</th>
                             <th className="text-right font-medium px-2 py-2">{MONTH_COMPARE.prevLabel}</th>
-                            <th className="text-right font-medium pl-2 pr-4 sm:pr-2 py-2">{MONTH_COMPARE.curLabel}</th>
-                            <th className="hidden sm:table-cell text-right font-medium pl-2 pr-4 py-2 w-16"></th>
+                            <th className="text-right font-medium pl-2 pr-4 py-2">{MONTH_COMPARE.curLabel}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
@@ -1101,22 +1100,13 @@ function BranchAnalysisModal({
                             const diff = r.cur - r.prev
                             const better = r.lowerIsBetter ? diff < 0 : diff > 0
                             const fmt = (n: number) => r.unit === '₽' ? Math.round(n).toLocaleString('ru-RU') + ' ₽' : `${n}${r.unit}`
-                            // Доли (%) — без «п.п.»: само значение зелёное, если лучше, и красное, если хуже.
-                            const isShare = r.unit === '%'
-                            const shareTone = diff === 0 ? '' : better ? 'text-excellent' : 'text-poor'
-                            const diffText = `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / r.prev) * 100)}%`
+                            // Без «%» и «п.п.»: само значение зелёное, если лучше, и красное, если хуже.
+                            const tone = diff === 0 ? '' : better ? 'text-excellent' : 'text-poor'
                             return (
                               <tr key={r.label}>
                                 <td className="px-4 py-2 text-foreground leading-snug">{r.label}</td>
                                 <td className="px-2 py-2 text-right tabular-nums text-muted-foreground whitespace-nowrap">{fmt(r.prev)}</td>
-                                <td className={`pl-2 pr-4 sm:pr-2 py-2 text-right tabular-nums font-medium whitespace-nowrap ${isShare ? shareTone : ''}`}>
-                                  {fmt(r.cur)}
-                                  {/* На телефоне изменение — под значением, отдельная колонка не влезает. */}
-                                  {!isShare && <span className={`sm:hidden block text-2xs ${diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'}`}>{diff === 0 ? '—' : diffText}</span>}
-                                </td>
-                                <td className={`hidden sm:table-cell pl-2 pr-4 py-2 text-right tabular-nums text-xs font-medium whitespace-nowrap ${diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'}`}>
-                                  {isShare ? '' : diff === 0 ? '—' : diffText}
-                                </td>
+                                <td className={`pl-2 pr-4 py-2 text-right tabular-nums font-medium whitespace-nowrap ${tone}`}>{fmt(r.cur)}</td>
                               </tr>
                             )
                           })}
@@ -1252,14 +1242,11 @@ function BranchAnalysisModal({
               const cur = r.values[r.values.length - 1]
               const diff = cur - past
               const better = r.lowerIsBetter ? diff < 0 : diff > 0
-              const isShare = r.unit === '%'
-              const txt = `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / past) * 100)}%`
+              // Без «%» и «п.п.»: значение того периода красим по сравнению с «сейчас».
               const tone = diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'
               return (
                 <td className="px-2 py-2 text-right align-top whitespace-nowrap">
-                  {/* Доли — без «п.п.»: значение того периода красим по сравнению с «сейчас». */}
-                  <span className={`block tabular-nums ${isShare ? tone : 'text-muted-foreground'}`}>{fmtVal(r, past)}</span>
-                  {!isShare && <span className={`block text-2xs tabular-nums ${tone}`}>{diff === 0 ? '—' : txt}</span>}
+                  <span className={`block tabular-nums ${tone}`}>{fmtVal(r, past)}</span>
                 </td>
               )
             }
@@ -1338,17 +1325,11 @@ function BranchAnalysisModal({
                                 const prev = i > 0 ? r.values[i - 1] : null
                                 const diff = prev === null ? 0 : v - prev
                                 const better = r.lowerIsBetter ? diff < 0 : diff > 0
-                                const isShare = r.unit === '%'
-                                const txt = prev === null ? '' : `${diff > 0 ? '+' : diff < 0 ? '−' : ''}${Math.round(Math.abs(diff / prev) * 100)}%`
-                                // Доли — без «п.п.»: значение зелёное, если лучше прошлой недели, красное, если хуже.
-                                const shareTone = isShare && diff !== 0 ? (better ? 'text-excellent' : 'text-poor') : ''
+                                // Без «%» и «п.п.»: значение зелёное, если лучше предыдущей недели, красное, если хуже.
+                                const tone = diff !== 0 ? (better ? 'text-excellent' : 'text-poor') : ''
                                 return (
                                   <td key={i} className={`py-2 text-right align-top whitespace-nowrap ${last ? 'pl-2 pr-4' : 'px-2'}`}>
-                                    <span className={`block tabular-nums ${last ? 'font-semibold' : ''} ${shareTone || (last ? 'text-foreground' : 'text-muted-foreground')}`}>{fmtVal(r, v)}</span>
-                                    {/* Изменение к предыдущей неделе */}
-                                    {prev !== null && !isShare && (
-                                      <span className={`block text-2xs tabular-nums ${diff === 0 ? 'text-muted-foreground' : better ? 'text-excellent' : 'text-poor'}`}>{diff === 0 ? '—' : txt}</span>
-                                    )}
+                                    <span className={`block tabular-nums ${last ? 'font-semibold' : ''} ${tone || (last ? 'text-foreground' : 'text-muted-foreground')}`}>{fmtVal(r, v)}</span>
                                   </td>
                                 )
                               })}
