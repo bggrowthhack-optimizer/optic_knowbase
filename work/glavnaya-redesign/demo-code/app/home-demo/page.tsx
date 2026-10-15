@@ -597,11 +597,11 @@ interface PlanBlocker {
   /** Что исправлять — крупно, первой строкой. Симптом (plainText) — под ним
    *  мелко: рОП читает сначала то, на что может повлиять. */
   title: string
-  /** Факт против плана по показателю — отдельной строкой под причиной. */
-  factVsPlan: { label: string; fact: string; plan: string }
-  /** Чья это зона по методике (chto-meshaet-planu.md, п.4): роль, не фамилия —
-   *  в месячном обзоре людей не называем. */
-  owner: 'Консультант' | 'Врач' | 'Врач и консультант'
+  /** Предположение словами: что скорее всего работает плохо и почему так
+   *  думаем. В продукте пишет LLM по таблице типовых причин из методики
+   *  «Что мешает плану» (п.11); `**…**` — выделенные роли («врач», «консультант»).
+   *  Фамилий в месячном обзоре нет. */
+  explanation: string
   impactAmount: number
   deviationPercent: number
   affectedCount: number
@@ -704,9 +704,8 @@ const TREND_WEEKS: { weekLabels: string[]; rows: TrendRow[]; extraLossIfContinue
 const PLAN_BLOCKERS: PlanBlocker[] = [
   {
     metric: 'Конверсия подбор → заказ',
-    title: 'После подбора не предлагают вариант подешевле — клиент уходит думать',
-    factVsPlan: { label: 'Конверсия подбор → заказ', fact: '67%', plan: '75%' },
-    owner: 'Врач и консультант',
+    title: 'Скорее всего, клиенты уходят после приёма «подумать» — их сомнения не снимают',
+    explanation: '**Врач** не объясняет, чем очки помогут именно этому клиенту и что будет, если отказаться. **Консультант** не выясняет у врача рекомендации, не работает с возражениями и не возвращается к ушедшим клиентам. Заказом заканчивается 67% рецептов вместо 75%: 13 клиентов ушли без покупки.',
     plainText: '13 клиентов ушли без заказа после подбора',
     causeText: 'Чаще всего — после подбора клиенту не предложили вариант подешевле или другую оправу, и он ушёл думать',
     factValue: 67, planValue: 75, deviationPercent: 8, impactAmount: 310000, affectedCount: 13,
@@ -714,18 +713,16 @@ const PLAN_BLOCKERS: PlanBlocker[] = [
   {
     // ВТЛ выше по приоритету влияния на чек, поэтому идёт первым из двух блоков.
     metric: '% рекомендаций ВТЛ',
-    title: 'Мало продают ВТЛ',
-    factVsPlan: { label: 'Доля ВТЛ в продажах', fact: '18%', plan: '28%' },
-    owner: 'Врач и консультант',
+    title: 'Скорее всего, высокотехнологичные линзы (ВТЛ) рекомендуют формально и не убеждают',
+    explanation: '**Врач** рекомендует ВТЛ вскользь и не объясняет, чем они лучше обычных линз; **консультант** не достраивает доверие и не рассказывает о пользе. ВТЛ — 18% продаж вместо 28%, из-за этого средний чек просел: 23 200 ₽ вместо 25 400 ₽.',
     plainText: 'Тянет вниз средний чек: 23 200 ₽ вместо 25 400 ₽',
     causeText: 'Доля высокотехнологичных линз в продажах — 18% вместо 28% по плану',
     factValue: 23200, planValue: 25400, deviationPercent: 9, impactAmount: 120000, affectedCount: 2, isMonetary: true,
   },
   {
     metric: '% чужих заказов',
-    title: 'Много клиентов с чужим рецептом',
-    factVsPlan: { label: 'Доля чужих заказов', fact: '15%', plan: '9%' },
-    owner: 'Консультант',
+    title: 'Скорее всего, клиентам с чужим рецептом не предлагают пройти диагностику у нас',
+    explanation: '**Консультант** не объясняет, чем наша диагностика, сервис и гарантия лучше внешнего рецепта. Таких заказов 15% вместо 9%, а чек у этих клиентов обычно ниже.',
     plainText: 'У них чек обычно ниже',
     causeText: 'Доля клиентов с рецептом от другого врача — 15% вместо 9% по плану, а у них чек обычно ниже',
     factValue: 23200, planValue: 25400, deviationPercent: 9, impactAmount: 95000, affectedCount: 2, isMonetary: true,
@@ -1043,7 +1040,7 @@ function BranchAnalysisModal({
               const explained = PLAN_BLOCKERS.reduce((sum, b) => sum + b.impactAmount, 0)
               const rest = Math.max(0, gap - explained)
               return (
-                <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-6 lg:items-start">
+                <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-6 lg:items-stretch">
                   {/* Шапка — явно «план продаж на очки» (не общая выручка) и
                       только доли: темп месяца против выполнения, прогноз и
                       недобор. Абсолютные суммы факта/прогноза убраны — их
@@ -1080,34 +1077,32 @@ function BranchAnalysisModal({
                     </p>
                   </div>
 
-                  <div className="lg:col-start-2 lg:row-start-1 lg:row-span-2">
+                  <div className="lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:flex lg:flex-col">
                     <h3 className="text-sm font-semibold">Что мешает плану</h3>
                     <p className="text-xs text-muted-foreground mt-0.5 mb-2.5">Сколько из-за этого не доберём к концу месяца</p>
                     {PLAN_BLOCKERS.length === 0 ? (
                       <p className="text-sm text-muted-foreground text-center py-4 rounded-lg border border-border">Ничего ощутимо не тормозит план.</p>
                     ) : (
-                      <div className="rounded-lg border border-border overflow-hidden divide-y divide-border lg:max-h-[calc(90vh-9rem)] lg:overflow-y-auto">
+                      <div className="rounded-lg border border-border overflow-hidden divide-y divide-border lg:max-h-[calc(90vh-9rem)] lg:overflow-y-auto lg:flex-1 lg:flex lg:flex-col">
                         {PLAN_BLOCKERS.map((b, i) => (
                           <div key={b.title} className="flex items-start gap-3 px-4 py-3">
                             <span className="mt-0.5 inline-flex w-5 h-5 shrink-0 rounded-full bg-muted items-center justify-center text-2xs font-semibold text-muted-foreground">{i + 1}</span>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-foreground">{b.title}</p>
-                              {/* Одна серая строка: факт против плана и что происходит. */}
-                              <p className="text-xs text-muted-foreground mt-0.5">
-                                {b.factVsPlan.label} <span className="font-semibold text-foreground tabular-nums">{b.factVsPlan.fact}</span>, план {b.factVsPlan.plan} · {b.plainText.replace(/(\d) (?=\d|₽)/g, '$1\u00a0')}
+                              {/* Предположение словами: цифры алгоритма человеку неочевидны. */}
+                              <p className="text-sm text-muted-foreground leading-snug mt-1.5">
+                                {b.explanation.replace(/(\d) (?=\d|₽)/g, '$1\u00a0').split('**').map((part, k) =>
+                                  k % 2 === 1 ? <strong key={k} className="font-semibold text-foreground">{part}</strong> : part)}
                               </p>
-                              {/* На телефоне сумма и роль — под текстом, а не колонкой справа. */}
-                              <p className="sm:hidden mt-1 text-sm font-semibold text-poor tabular-nums">−{rub(b.impactAmount)} <span className="text-xs font-normal text-muted-foreground">· {b.owner}</span></p>
+                              {/* На телефоне сумма — под текстом, а не колонкой справа. */}
+                              <p className="sm:hidden mt-1.5 text-sm font-semibold text-poor tabular-nums">−{rub(b.impactAmount)}</p>
                             </div>
-                            <div className="hidden sm:block shrink-0 text-right">
-                              <p className="text-sm font-semibold text-poor tabular-nums whitespace-nowrap">−{rub(b.impactAmount)}</p>
-                              <p className="text-2xs text-muted-foreground mt-0.5 whitespace-nowrap">{b.owner}</p>
-                            </div>
+                            <p className="hidden sm:block shrink-0 text-sm font-semibold text-poor tabular-nums whitespace-nowrap">−{rub(b.impactAmount)}</p>
                           </div>
                         ))}
-                        <div className="px-4 py-2.5 bg-muted/50 text-xs text-muted-foreground">
+                        <div className="px-4 py-2.5 bg-muted/50 text-xs text-muted-foreground lg:mt-auto">
                           Из-за этого — <span className="font-semibold text-foreground tabular-nums">{rub(explained)}</span>
-                          {rest > 0 && <> из {rub(gap)}. Остальные <span className="tabular-nums">{rub(rest)}</span> — просто меньше клиентов</>}
+                          {rest > 0 && <> из {rub(gap)}. Остальные <span className="tabular-nums">{rub(rest)}</span> — обратившихся пришло меньше плана: стоит пересмотреть план по трафику или начать работу с базой</>}
                         </div>
                       </div>
                     )}
@@ -1115,11 +1110,11 @@ function BranchAnalysisModal({
 
                   {/* Сравнение с прошлым месяцем — за те же дни (1–N число),
                       а не с целым месяцем: иначе октябрь на 6-е всегда «хуже». */}
-                  <div className="lg:col-start-1 lg:row-start-2">
+                  <div className="lg:col-start-1 lg:row-start-2 lg:flex lg:flex-col">
                     <h3 className="text-sm font-semibold">К прошлому месяцу</h3>
                     <p className="text-xs text-muted-foreground mt-0.5 mb-2.5">{MONTH_COMPARE.range}</p>
-                    <div className="rounded-lg border border-border overflow-hidden">
-                      <table className="w-full text-sm">
+                    <div className="rounded-lg border border-border overflow-hidden lg:flex-1">
+                      <table className="w-full text-sm lg:h-full">
                         <thead>
                           <tr className="text-2xs text-muted-foreground bg-muted/40">
                             <th className="text-left font-medium px-4 py-2">Показатель</th>
