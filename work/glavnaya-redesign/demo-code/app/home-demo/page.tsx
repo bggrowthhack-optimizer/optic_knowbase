@@ -1028,12 +1028,11 @@ function BranchAnalysisModal({
               const rest = Math.max(0, gap - explained)
               return (
                 <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
-                 <div className="space-y-6">
                   {/* Шапка — явно «план продаж на очки» (не общая выручка) и
                       только доли: темп месяца против выполнения, прогноз и
                       недобор. Абсолютные суммы факта/прогноза убраны — их
                       не с чем сравнить взглядом, а недобор и так в рублях. */}
-                  <div className="rounded-lg border border-border px-4 py-3">
+                  <div className="rounded-lg border border-border px-4 py-3 lg:col-start-1 lg:row-start-1">
                     <div className="flex items-start justify-between gap-3">
                       <h3 className="text-sm font-semibold">План продаж на очки</h3>
                       <span className={`shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${zoneConfig.className}`}>
@@ -1055,7 +1054,7 @@ function BranchAnalysisModal({
                     </p>
                   </div>
 
-                  <div>
+                  <div className="lg:col-start-2 lg:row-start-1 lg:row-span-2">
                     <h3 className="text-sm font-semibold">Что мешает плану</h3>
                     <p className="text-xs text-muted-foreground mt-0.5 mb-2.5">Сколько из-за этого не доберём к концу месяца</p>
                     {PLAN_BLOCKERS.length === 0 ? (
@@ -1082,10 +1081,9 @@ function BranchAnalysisModal({
                     )}
                   </div>
 
-                 </div>
                   {/* Сравнение с прошлым месяцем — за те же дни (1–N число),
                       а не с целым месяцем: иначе октябрь на 6-е всегда «хуже». */}
-                  <div>
+                  <div className="lg:col-start-1 lg:row-start-2">
                     <h3 className="text-sm font-semibold">К прошлому месяцу</h3>
                     <p className="text-xs text-muted-foreground mt-0.5 mb-2.5">{MONTH_COMPARE.range}</p>
                     <div className="rounded-lg border border-border overflow-hidden">
