@@ -1049,7 +1049,7 @@ function BranchAnalysisModal({
               const explained = PLAN_BLOCKERS.reduce((sum, b) => sum + b.impactAmount, 0)
               const rest = Math.max(0, gap - explained)
               return (
-                <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-6 lg:items-start">
+                <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[auto_1fr] lg:gap-6 lg:items-start">
                   {/* Шапка — явно «план продаж на очки» (не общая выручка) и
                       только доли: темп месяца против выполнения, прогноз и
                       недобор. Абсолютные суммы факта/прогноза убраны — их
@@ -1116,10 +1116,10 @@ function BranchAnalysisModal({
                                       <span className="font-semibold text-poor tabular-nums">{b.factVsPlan.fact}</span>
                                       <span className="text-muted-foreground">, план {b.factVsPlan.plan}</span>
                                     </p>
-                                    <p className="mt-1.5 text-2xs font-semibold uppercase tracking-wide text-muted-foreground">Что именно не делают</p>
-                                    <ul className="mt-0.5 text-xs text-foreground list-disc pl-4 marker:text-muted-foreground">
-                                      {b.typical.map(t => <li key={t}>{t}</li>)}
-                                    </ul>
+                                    <p className="mt-1.5 text-xs text-foreground leading-snug">
+                                      <span className="text-2xs font-semibold uppercase tracking-wide text-muted-foreground">Что именно не делают: </span>
+                                      {b.typical.map(t => t.charAt(0).toLowerCase() + t.slice(1)).join('; ')}
+                                    </p>
                                     {/* На телефоне сумма — под текстом, а не колонкой справа. */}
                                     <p className="sm:hidden mt-1.5 text-sm font-semibold text-poor tabular-nums">−{rub(b.impactAmount)}</p>
                                   </div>
