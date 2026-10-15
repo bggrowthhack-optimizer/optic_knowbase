@@ -602,9 +602,9 @@ interface PlanBlocker {
   group: 'orders' | 'check'
   /** Факт против плана по показателю — отдельной строкой под причиной. */
   factVsPlan: { label: string; fact: string; plan: string }
-  /** Что именно не делают — типовые причины из таблицы методики (п.9),
-   *  в продукте формулировку подбирает LLM под ситуацию. */
-  typical: string[]
+  /** Чья это зона по методике (chto-meshaet-planu.md, п.4): роль, не фамилия —
+   *  в месячном обзоре людей не называем. */
+  owner: 'Консультант' | 'Врач' | 'Врач и консультант'
   impactAmount: number
   deviationPercent: number
   affectedCount: number
@@ -710,7 +710,7 @@ const PLAN_BLOCKERS: PlanBlocker[] = [
     title: 'После подбора не предлагают вариант подешевле — клиент уходит думать',
     group: 'orders',
     factVsPlan: { label: 'Конверсия подбор → заказ', fact: '67%', plan: '75%' },
-    typical: ['Не работает с возражениями', 'Не работает с ушедшими клиентами', 'Не рассказывает, как очки решат проблему', 'Не объясняет последствия отказа'],
+    owner: 'Врач и консультант',
     plainText: '13 клиентов ушли без заказа после подбора',
     causeText: 'Чаще всего — после подбора клиенту не предложили вариант подешевле или другую оправу, и он ушёл думать',
     factValue: 67, planValue: 75, deviationPercent: 8, impactAmount: 310000, affectedCount: 13,
@@ -721,7 +721,7 @@ const PLAN_BLOCKERS: PlanBlocker[] = [
     title: 'Мало продают ВТЛ',
     group: 'check',
     factVsPlan: { label: 'Доля ВТЛ в продажах', fact: '18%', plan: '28%' },
-    typical: ['Не объясняет пользу ВТЛ', 'Не предлагает и не презентует покрытия', 'Не объясняет разницу между простыми и ВТЛ', 'Плохо передаёт информацию консультанту'],
+    owner: 'Врач и консультант',
     plainText: 'Тянет вниз средний чек: 23 200 ₽ вместо 25 400 ₽',
     causeText: 'Доля высокотехнологичных линз в продажах — 18% вместо 28% по плану',
     factValue: 23200, planValue: 25400, deviationPercent: 9, impactAmount: 120000, affectedCount: 2, isMonetary: true,
@@ -731,7 +731,7 @@ const PLAN_BLOCKERS: PlanBlocker[] = [
     title: 'Много клиентов с чужим рецептом',
     group: 'check',
     factVsPlan: { label: 'Доля чужих заказов', fact: '15%', plan: '9%' },
-    typical: ['Не предлагает клиентам с чужим рецептом пройти диагностику у нас', 'Не объясняет разницу в сервисе и гарантии между нашей диагностикой и внешним рецептом'],
+    owner: 'Консультант',
     plainText: 'У них чек обычно ниже',
     causeText: 'Доля клиентов с рецептом от другого врача — 15% вместо 9% по плану, а у них чек обычно ниже',
     factValue: 23200, planValue: 25400, deviationPercent: 9, impactAmount: 95000, affectedCount: 2, isMonetary: true,
@@ -1049,7 +1049,7 @@ function BranchAnalysisModal({
               const explained = PLAN_BLOCKERS.reduce((sum, b) => sum + b.impactAmount, 0)
               const rest = Math.max(0, gap - explained)
               return (
-                <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[auto_1fr] lg:gap-6 lg:items-start">
+                <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-6 lg:items-start">
                   {/* Шапка — явно «план продаж на очки» (не общая выручка) и
                       только доли: темп месяца против выполнения, прогноз и
                       недобор. Абсолютные суммы факта/прогноза убраны — их
@@ -1111,14 +1111,13 @@ function BranchAnalysisModal({
                                   <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-foreground">{b.title}</p>
                                     <p className="text-xs text-muted-foreground mt-0.5">{b.plainText}</p>
-                                    <p className="text-xs mt-1">
-                                      <span className="text-muted-foreground">{b.factVsPlan.label}:</span>{' '}
-                                      <span className="font-semibold text-poor tabular-nums">{b.factVsPlan.fact}</span>
-                                      <span className="text-muted-foreground">, план {b.factVsPlan.plan}</span>
-                                    </p>
-                                    <p className="mt-1.5 text-xs text-foreground leading-snug">
-                                      <span className="text-2xs font-semibold uppercase tracking-wide text-muted-foreground">Что именно не делают: </span>
-                                      {b.typical.map(t => t.charAt(0).toLowerCase() + t.slice(1)).join('; ')}
+                                    <p className="text-xs mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                                      <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-2xs font-medium text-foreground">{b.owner}</span>
+                                      <span>
+                                        <span className="text-muted-foreground">{b.factVsPlan.label}:</span>{' '}
+                                        <span className="font-semibold text-poor tabular-nums">{b.factVsPlan.fact}</span>
+                                        <span className="text-muted-foreground">, план {b.factVsPlan.plan}</span>
+                                      </span>
                                     </p>
                                     {/* На телефоне сумма — под текстом, а не колонкой справа. */}
                                     <p className="sm:hidden mt-1.5 text-sm font-semibold text-poor tabular-nums">−{rub(b.impactAmount)}</p>
