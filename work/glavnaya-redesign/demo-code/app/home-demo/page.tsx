@@ -597,9 +597,6 @@ interface PlanBlocker {
   /** Что исправлять — крупно, первой строкой. Симптом (plainText) — под ним
    *  мелко: рОП читает сначала то, на что может повлиять. */
   title: string
-  /** Ветка дерева причин: «Количество заказов» или «Средний чек»
-   *  (см. chto-meshaet-planu.md, п.4). */
-  group: 'orders' | 'check'
   /** Факт против плана по показателю — отдельной строкой под причиной. */
   factVsPlan: { label: string; fact: string; plan: string }
   /** Чья это зона по методике (chto-meshaet-planu.md, п.4): роль, не фамилия —
@@ -708,7 +705,6 @@ const PLAN_BLOCKERS: PlanBlocker[] = [
   {
     metric: 'Конверсия подбор → заказ',
     title: 'После подбора не предлагают вариант подешевле — клиент уходит думать',
-    group: 'orders',
     factVsPlan: { label: 'Конверсия подбор → заказ', fact: '67%', plan: '75%' },
     owner: 'Врач и консультант',
     plainText: '13 клиентов ушли без заказа после подбора',
@@ -719,7 +715,6 @@ const PLAN_BLOCKERS: PlanBlocker[] = [
     // ВТЛ выше по приоритету влияния на чек, поэтому идёт первым из двух блоков.
     metric: '% рекомендаций ВТЛ',
     title: 'Мало продают ВТЛ',
-    group: 'check',
     factVsPlan: { label: 'Доля ВТЛ в продажах', fact: '18%', plan: '28%' },
     owner: 'Врач и консультант',
     plainText: 'Тянет вниз средний чек: 23 200 ₽ вместо 25 400 ₽',
@@ -729,7 +724,6 @@ const PLAN_BLOCKERS: PlanBlocker[] = [
   {
     metric: '% чужих заказов',
     title: 'Много клиентов с чужим рецептом',
-    group: 'check',
     factVsPlan: { label: 'Доля чужих заказов', fact: '15%', plan: '9%' },
     owner: 'Консультант',
     plainText: 'У них чек обычно ниже',
@@ -1093,41 +1087,24 @@ function BranchAnalysisModal({
                       <p className="text-sm text-muted-foreground text-center py-4 rounded-lg border border-border">Ничего ощутимо не тормозит план.</p>
                     ) : (
                       <div className="rounded-lg border border-border overflow-hidden divide-y divide-border lg:max-h-[calc(90vh-9rem)] lg:overflow-y-auto">
-                        {([
-                          { id: 'orders', title: 'Количество заказов' },
-                          { id: 'check', title: 'Средний чек' },
-                        ] as const).map(g => {
-                          const items = PLAN_BLOCKERS.filter(b => b.group === g.id)
-                          if (items.length === 0) return null
-                          return (
-                            <div key={g.id} className="divide-y divide-border">
-                              <div className="flex items-center justify-between gap-3 px-4 py-2 bg-muted/50">
-                                <p className="text-xs font-semibold text-foreground">{g.title}</p>
-                                <p className="text-xs font-semibold text-poor tabular-nums whitespace-nowrap">−{rub(items.reduce((sum, b) => sum + b.impactAmount, 0))}</p>
-                              </div>
-                              {items.map(b => (
-                                <div key={b.title} className="flex items-start gap-3 px-4 py-2.5">
-                                  <span className="mt-0.5 inline-flex w-5 h-5 shrink-0 rounded-full bg-muted items-center justify-center text-2xs font-semibold text-muted-foreground">{PLAN_BLOCKERS.indexOf(b) + 1}</span>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-foreground">{b.title}</p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">{b.plainText}</p>
-                                    <p className="text-xs mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-                                      <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-2xs font-medium text-foreground">{b.owner}</span>
-                                      <span>
-                                        <span className="text-muted-foreground">{b.factVsPlan.label}:</span>{' '}
-                                        <span className="font-semibold text-poor tabular-nums">{b.factVsPlan.fact}</span>
-                                        <span className="text-muted-foreground">, план {b.factVsPlan.plan}</span>
-                                      </span>
-                                    </p>
-                                    {/* На телефоне сумма — под текстом, а не колонкой справа. */}
-                                    <p className="sm:hidden mt-1.5 text-sm font-semibold text-poor tabular-nums">−{rub(b.impactAmount)}</p>
-                                  </div>
-                                  <p className="hidden sm:block shrink-0 text-sm font-semibold text-poor tabular-nums whitespace-nowrap">−{rub(b.impactAmount)}</p>
-                                </div>
-                              ))}
+                        {PLAN_BLOCKERS.map((b, i) => (
+                          <div key={b.title} className="flex items-start gap-3 px-4 py-3">
+                            <span className="mt-0.5 inline-flex w-5 h-5 shrink-0 rounded-full bg-muted items-center justify-center text-2xs font-semibold text-muted-foreground">{i + 1}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-foreground">{b.title}</p>
+                              {/* Одна серая строка: факт против плана и что происходит. */}
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {b.factVsPlan.label} <span className="font-semibold text-foreground tabular-nums">{b.factVsPlan.fact}</span>, план {b.factVsPlan.plan} · {b.plainText.replace(/(\d) (?=\d|₽)/g, '$1\u00a0')}
+                              </p>
+                              {/* На телефоне сумма и роль — под текстом, а не колонкой справа. */}
+                              <p className="sm:hidden mt-1 text-sm font-semibold text-poor tabular-nums">−{rub(b.impactAmount)} <span className="text-xs font-normal text-muted-foreground">· {b.owner}</span></p>
                             </div>
-                          )
-                        })}
+                            <div className="hidden sm:block shrink-0 text-right">
+                              <p className="text-sm font-semibold text-poor tabular-nums whitespace-nowrap">−{rub(b.impactAmount)}</p>
+                              <p className="text-2xs text-muted-foreground mt-0.5 whitespace-nowrap">{b.owner}</p>
+                            </div>
+                          </div>
+                        ))}
                         <div className="px-4 py-2.5 bg-muted/50 text-xs text-muted-foreground">
                           Из-за этого — <span className="font-semibold text-foreground tabular-nums">{rub(explained)}</span>
                           {rest > 0 && <> из {rub(gap)}. Остальные <span className="tabular-nums">{rub(rest)}</span> — просто меньше клиентов</>}
