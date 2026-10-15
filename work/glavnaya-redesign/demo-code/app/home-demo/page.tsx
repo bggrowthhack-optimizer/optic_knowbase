@@ -984,7 +984,7 @@ function BranchAnalysisModal({
 
   return (
     <>
-      <ModalShell open={open} onClose={onClose} title="Анализ филиала" className="max-w-2xl lg:max-w-[1400px] max-h-[85vh] lg:max-h-[90vh]">
+      <ModalShell open={open} onClose={onClose} title="Анализ филиала" className="analysis-dialog max-w-2xl lg:max-w-[1500px] max-h-[85vh] lg:max-h-[90vh]">
         <div className="flex flex-col max-h-[85vh] lg:max-h-[90vh]">
           <div className="px-5 pt-5 pb-3 lg:py-3 border-b shrink-0 lg:flex lg:items-center lg:gap-6">
             <h2 className="text-lg font-semibold mb-3 lg:mb-0">Анализ филиала{branchName && <span className="font-normal text-muted-foreground"> · {branchName}</span>}</h2>

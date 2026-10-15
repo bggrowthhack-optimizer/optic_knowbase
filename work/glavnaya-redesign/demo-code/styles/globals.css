@@ -525,4 +525,10 @@
   .home-dense-root {
     --page-max-width: 1750px;
   }
+
+  /* «Анализ филиала» — много текста и таблиц, при 80% плохо читается:
+     окно остаётся обычного размера, но шире (см. BranchAnalysisModal). */
+  body.home-dense [role='dialog'].analysis-dialog {
+    zoom: 1;
+  }
 }
